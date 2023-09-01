@@ -35,5 +35,21 @@ public class ProductController
     {
         return _productRepository.GetProducts();
     }
-    
+
+    public void BuyProduct(Product product, int boughtProducts)
+    {
+        
+        if (product.Stock < boughtProducts)
+        {
+            throw new ArgumentException("There are not enough products");
+        }
+
+        if (product.Stock == boughtProducts)
+        {
+            RemoveProduct(product);
+            return;
+        }
+
+        product.Stock -= boughtProducts;
+    }
 }
