@@ -14,6 +14,15 @@ public class ProductController
 
     public void RemoveProduct(Product product)
     {
+        var products = _productRepository.GetProducts();
+
+        var deleteProduct = products.FirstOrDefault(toCheckProduct => toCheckProduct.Equals(product));
+        
+        if (deleteProduct is null)
+        {
+            throw new NullReferenceException("Product was not found");
+        }
+        
         _productRepository.RemoveProduct(product);
     }
 
