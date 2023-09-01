@@ -20,4 +20,17 @@ public class Product
           
           ratings.Add(toAddRating);
      }
+     
+     public override bool Equals(object obj)
+     {
+          //Check for null and compare run-time types.
+          if ((obj is null) || ! this.GetType().Equals(obj.GetType()))
+          {
+               return false;
+          }
+          else {
+               Product p = (Product) obj;
+               return (Name == p.Name);
+          }
+     }
 }
