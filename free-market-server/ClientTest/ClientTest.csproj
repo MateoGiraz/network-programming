@@ -11,4 +11,34 @@
       <ProjectReference Include="..\BusinessLogic\BusinessLogic.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Include="bin\Debug\net6.0\BusinessLogic.dll" />
+      <Content Include="bin\Debug\net6.0\BusinessLogic.pdb" />
+      <Content Include="bin\Debug\net6.0\ClientTest" />
+      <Content Include="bin\Debug\net6.0\ClientTest.deps.json" />
+      <Content Include="bin\Debug\net6.0\ClientTest.dll" />
+      <Content Include="bin\Debug\net6.0\ClientTest.pdb" />
+      <Content Include="bin\Debug\net6.0\ClientTest.runtimeconfig.json" />
+      <Content Include="bin\Debug\net6.0\CoreBusiness.dll" />
+      <Content Include="bin\Debug\net6.0\CoreBusiness.pdb" />
+      <Content Include="bin\Debug\net6.0\Factory.dll" />
+      <Content Include="bin\Debug\net6.0\Factory.pdb" />
+      <Content Include="bin\Debug\net6.0\IRepository.dll" />
+      <Content Include="bin\Debug\net6.0\IRepository.pdb" />
+      <Content Include="bin\Debug\net6.0\MemoryRepository.dll" />
+      <Content Include="bin\Debug\net6.0\MemoryRepository.pdb" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="bin\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="bin\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="bin\**" />
+    </ItemGroup>
+
 </Project>

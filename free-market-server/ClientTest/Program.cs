@@ -1,5 +1,6 @@
 ﻿using CoreBusiness;
 using BusinessLogic;
+using ServerConnection;
 
 /* *** DISCLAIMER ***
  Solo existe la relacion con CoreBusiness para testear. Cuando esto funcione no necesitamos
@@ -26,3 +27,7 @@ foreach (var product in list)
 {
     Console.WriteLine("There are " + product.Stock + " " + product.Name);
 }
+
+var app = new Server();
+app.Listen(3000);
+
