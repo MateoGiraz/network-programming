@@ -9,6 +9,7 @@ public class Product
      public int Stock;
      public int Price;
      public List<Rating> ratings;
+     public Owner Client;
 
      public void AddRating(int score, string comment)
      {
