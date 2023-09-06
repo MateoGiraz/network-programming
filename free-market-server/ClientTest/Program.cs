@@ -10,27 +10,34 @@ using ServerConnection;
 ProductController pr = new();
 OwnerController or = new();
 /*Cuando tengamos la parte de cliente ya no necesitariamos tener al cliente como variable*/
-Owner mockClient = new Owner
+Owner user = new Owner
 {
     UserName = "Joaquin",
     Password = "A12345"
 };
 
-Owner mockClient2 = new Owner
+Owner user2 = new Owner
 {
     UserName = "Mateo",
     Password = "A12345"
 };
 
-Owner mockClient3 = new Owner
+Owner user3 = new Owner
 {
     UserName = "Paxo",
     Password = "PA4CHO0"
 };
 
-or.LogIn(mockClient.UserName,mockClient.Password);
-or.LogIn(mockClient2.UserName,mockClient2.Password);
-or.LogIn(mockClient3.UserName,mockClient3.Password);
+
+List<Owner> owners=or.GetOwners();
+foreach (var owner in owners)
+{
+    Console.WriteLine(" Owner: "+ owner.UserName);
+}
+
+or.LogIn(user.UserName,user.Password);
+or.LogIn(user2.UserName,user2.Password);
+or.LogIn(user3.UserName,user3.Password);
 
 
 
@@ -40,7 +47,7 @@ var patata = new Product()
     Description = "Es una patata bro",
     Price = 10,
     Stock = 5,
-    Owner = mockClient
+    Owner = user
 };
 
 var tomato = new Product()
@@ -49,7 +56,7 @@ var tomato = new Product()
     Description = "No se que esperabas",
     Price = 120,
     Stock = 12,
-    Owner = mockClient2
+    Owner = user2
 };
 
 var villa = new Product()
@@ -58,7 +65,7 @@ var villa = new Product()
     Description = "Muy caro, mejor hacer una plaia",
     Price = 4000,
     Stock = 2,
-    Owner = mockClient
+    Owner = user2
 };
 
 var resort = new Product()
@@ -67,7 +74,7 @@ var resort = new Product()
     Description = "Es un risolt papi",
     Price = 5000,
     Stock = 2,
-    Owner = mockClient2
+    Owner = user2
 };
 
 pr.AddProduct(patata);
@@ -85,17 +92,16 @@ foreach (var product in list)
 Console.WriteLine("");
 Console.WriteLine("PRUEBAS OWNER");
 Console.WriteLine("PRUEBAS LOGIN");
+
+Console.WriteLine("");
+Console.WriteLine("Login Exitoso:");
 or.LogIn("Joaco", "ReyDelTeteo");
-or.LogIn("Paxo", "PA4CHO0");
+Console.WriteLine("Login Contraseña Incorrecta:");
+or.LogIn("Paxo", "A12345");
 
-List<Owner> owners=or.GetOwners();
-foreach (var owner in owners)
-{
-    Console.WriteLine(" Owner: "+ owner.UserName);
-}
 
-pr.UpdateProduct(villa.Name,mockClient3,resort);
-pr.UpdateProduct(villa.Name,mockClient2,resort);
+pr.UpdateProduct(villa.Name,user3,resort);
+pr.UpdateProduct(villa.Name,user2,resort);
 
 
 
