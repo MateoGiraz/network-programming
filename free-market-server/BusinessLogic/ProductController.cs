@@ -52,4 +52,24 @@ public class ProductController
 
         product.Stock -= boughtProducts;
     }
+
+    public void UpdateProduct(String name,Owner editor, Product newProduct)
+    {
+        Product oldProduct = GetProduct(name);
+        if (oldProduct.Owner.Equals(editor))
+        {
+            newProduct.Stock = oldProduct.Stock;
+            _productRepository.RemoveProduct(oldProduct);
+            _productRepository.AddProduct(newProduct);
+            Console.WriteLine("Wei Ferb tenemos que hacer una playa pa nosotros");
+            
+        }
+        else
+        {
+            Console.WriteLine("Esta vaina no es tuia pai");
+            
+        }
+        
+        
+    }
 }

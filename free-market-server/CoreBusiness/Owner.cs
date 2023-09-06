@@ -2,8 +2,8 @@ namespace CoreBusiness;
 
 public class Owner
 {
-    public string userName;
-    public string password;
+    public string UserName;
+    public string Password;
 
     public override bool Equals(object? obj)
     {
@@ -13,7 +13,7 @@ public class Owner
         }
         else {
             Owner o = (Owner) obj;
-            return (userName == o.userName);
+            return (UserName == o.UserName);
         }
     }
 }
