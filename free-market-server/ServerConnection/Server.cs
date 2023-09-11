@@ -24,52 +24,34 @@ public class Server
         while (true)
         {
             var acceptedConnection = serverSocket.Accept();
-            Console.WriteLine($"Connected to client: {acceptedConnection.RemoteEndPoint}");
+            new Thread(() => HandleConnection(acceptedConnection)).Start();
+        }
+    }
 
+    private void HandleConnection(Socket acceptedConnection)
+    {
+        var receivedMessage = "";
+        Console.WriteLine($"Connected to client: {acceptedConnection.RemoteEndPoint}");
+        while (!receivedMessage.Equals("exit"))
+        {
             try
             {
-                byte[] receivedData = new byte[1024];
-                int bytesRead = acceptedConnection.Receive(receivedData);
+                var receivedData = new byte[1024];
+                var bytesRead = acceptedConnection.Receive(receivedData);
 
-                if (bytesRead > 0)
-                {
-                    //TODO: IMPLEMENTAR NUESTRO PROPIO PROTOCOLO. NO PODEMOS USAR JSON.
-                    string jsonString = Encoding.UTF8.GetString(receivedData, 0, bytesRead);
-                    Console.WriteLine($"Received data from {acceptedConnection.RemoteEndPoint} is {jsonString}");
-
-                    var credentials = JsonSerializer.Deserialize<UserCredentials>(jsonString);
-
-                    if (IsValidUser(credentials))
-                    {
-                        byte[] sendData = Encoding.Default.GetBytes(
-                            $"Valid credentials received from {acceptedConnection.RemoteEndPoint}: Username: {credentials.Username}, Password: {credentials.Password}");
-                        acceptedConnection.Send(sendData);
-                    }
-                    else
-                    {
-                        byte[] sendData = Encoding.Default.GetBytes(
-                            $"Invalid credentials received from {acceptedConnection.RemoteEndPoint}: Username: {credentials.Username}, Password: {credentials.Password}");
-                        acceptedConnection.Send(sendData);
-                    }
-                }
+                if (bytesRead == 0)
+                    continue;
+                
+                receivedMessage = Encoding.Default.GetString(receivedData, 0, bytesRead);
+                Console.WriteLine($"Received data from {acceptedConnection.RemoteEndPoint} is {receivedMessage}");
+                
+                var sendData = Encoding.Default.GetBytes($"Data received from {acceptedConnection.RemoteEndPoint} is: {receivedMessage}");
+                acceptedConnection.Send(sendData);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Exception: {ex.Message}");
             }
         }
-    }
-
-    // TODO: CREAR UN PAQUETE AUTENTICADOR, NADA DE ESTO TIENE QUE ESTAR ACA
-    private class UserCredentials
-    {
-        public string Username { get; set; }
-        public string Password { get; set; }
-    }
-
-    // TODO: ES UN EJEMPLO, EL SERVIDOR DEBERIA HABLAR CON UN CONTROLADOR DE FACHADA PARA TODO ESTO
-    private bool IsValidUser(UserCredentials credentials)
-    {
-        return credentials.Username == "admin" && credentials.Password == "password";
     }
 }

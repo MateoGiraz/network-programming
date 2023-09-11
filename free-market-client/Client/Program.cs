@@ -4,45 +4,42 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 
-
 namespace Client;
 
 class Program
 {
     static void Main()
     {
-        var serverEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 3000);
-
-        using Socket client = new(
-            serverEndPoint.AddressFamily,
+        Socket client = new(
+            AddressFamily.InterNetwork,
             SocketType.Stream,
             ProtocolType.Tcp);
-
+        
+        var localEndpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 0);
+        client.Bind(localEndpoint);
+        
+        var serverEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 3000);
         client.Connect(serverEndPoint);
-        Console.WriteLine("Enter your username:");
-        var username = Console.ReadLine();
 
-        Console.WriteLine("Enter your password:");
-        var password = Console.ReadLine();
-
-        var credentials = new UserCredentials
+        var message = "";
+        while (!message.Equals("exit"))
         {
-            Username = username,
-            Password = password
-        };
+            Console.WriteLine("Send a message:");
+            message = Console.ReadLine();
 
-        string jsonData = JsonSerializer.Serialize(credentials);
+            if (message is null || message.Length == 0)
+                continue;
+            
+            var byteMessage = Encoding.UTF8.GetBytes(message);
+            client.Send(byteMessage);
 
-        byte[] sendData = Encoding.UTF8.GetBytes(jsonData);
-        client.Send(sendData);
+            var receiveData = new byte[100];
+            var bytesRead = client.Receive(receiveData);
+            var serverResponse = Encoding.Default.GetString(receiveData, 0, bytesRead);
 
-        Console.WriteLine("Credentials sent to the server.");
-
-        byte[] receiveData = new byte[100];
-        var bytesRead = client.Receive(receiveData);
-        var serverAuthResponseserverAuthResponse = Encoding.Default.GetString(receiveData, 0, bytesRead);
-
-        Console.WriteLine($"Auth server response: {serverAuthResponseserverAuthResponse}");
+            Console.WriteLine($"Server response: {serverResponse}");
+        }
+        client.Shutdown(SocketShutdown.Both);
         client.Close();
     }
 }
