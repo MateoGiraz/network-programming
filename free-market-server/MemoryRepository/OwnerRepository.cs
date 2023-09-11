@@ -23,7 +23,7 @@ public class OwnerRepository : IRepositoryOwner
             var foundOwner = _owners.FirstOrDefault(owner => owner.UserName.Equals(name));
             if (foundOwner is null)
             {
-                throw new NullReferenceException("Product was not found");
+                throw new MemoryRepositoryException("Product was not found.");
             }
             return foundOwner;
     }
@@ -38,3 +38,4 @@ public class OwnerRepository : IRepositoryOwner
         return (_owners.FirstOrDefault(owner => owner.UserName.Equals(username))!=null);
     }
 }
+

@@ -22,7 +22,7 @@ public class ProductRepository : IRepositoryProduct
 
         if (foundProduct is null)
         {
-            throw new NullReferenceException("Product was not found");
+            throw new MemoryRepositoryException("Product was not found");
         }
 
         return foundProduct;

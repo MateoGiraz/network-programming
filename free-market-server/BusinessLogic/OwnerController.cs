@@ -10,16 +10,23 @@ public class OwnerController
 
     public void LogIn(String username, String password)
     {
-        if (_ownerRepository.Exists(username))
+        try
         {
-            Authenticator authenticator = new();
-            Owner foundOwner = GetOwner(username);
-            Authenticator.AuthenticateLogIn(foundOwner, password);
+            if (_ownerRepository.Exists(username))
+            {
+                Authenticator authenticator = new();
+                Owner foundOwner = GetOwner(username);
+                Authenticator.AuthenticateLogIn(foundOwner, password);
+            }
+            else
+            {
+                SignUp(username, password);
+                Console.WriteLine("Welcome, " + username);
+            }
         }
-        else
+        catch (AuthenticatorException ex)
         {
-            SignUp(username, password);
-            Console.WriteLine(username+", bienvenida al clan nenaza");
+            throw new BusinessLogicException(ex.Message);
         }
     }
 
@@ -54,3 +61,4 @@ public class OwnerController
     }
     
 }
+
