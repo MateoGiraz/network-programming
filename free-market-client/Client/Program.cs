@@ -1,14 +1,13 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Text.Json;
+using Microsoft.CSharp.RuntimeBinder;
 
-namespace Client;
+namespace free_market_client;
 
-class Program
+public static class Program
 {
-    static void Main()
+    public static void Main()
     {
         Socket client = new(
             AddressFamily.InterNetwork,
@@ -22,24 +21,43 @@ class Program
         client.Connect(serverEndPoint);
 
         var message = "";
-        while (!message.Equals("exit"))
+        while (message is not "exit")
         {
             Console.WriteLine("Send a message:");
             message = Console.ReadLine();
 
-            if (message is null || message.Length == 0)
+            if (message!.Length == 0)
                 continue;
+
+            var messageLength = ConvertStringToBytes(message).Length;
             
-            var byteMessage = Encoding.UTF8.GetBytes(message);
-            client.Send(byteMessage);
-
-            var receiveData = new byte[100];
-            var bytesRead = client.Receive(receiveData);
-            var serverResponse = Encoding.Default.GetString(receiveData, 0, bytesRead);
-
-            Console.WriteLine($"Server response: {serverResponse}");
+            SendMessage(ConvertIntToBytes(messageLength), client);
+            SendMessage(ConvertStringToBytes(message), client);
         }
         client.Shutdown(SocketShutdown.Both);
         client.Close();
+    }
+
+    private static byte[] ConvertStringToBytes(string message)
+    {
+        return Encoding.UTF8.GetBytes(message);
+    }
+
+    private static byte[] ConvertIntToBytes(int length)
+    {
+        return BitConverter.GetBytes(length);
+    }
+
+    private static void SendMessage(byte[] message, Socket client)
+    {
+        var size = message.Length;
+        var offset = 0;
+        while (offset < size)
+        {
+            var bytesSent = client.Send(message, offset, size, SocketFlags.None);
+            if (bytesSent == 0)
+                throw new Exception("possible server error");
+            offset += bytesSent;
+        }
     }
 }
