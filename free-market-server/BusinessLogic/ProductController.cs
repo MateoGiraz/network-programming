@@ -61,12 +61,12 @@ public class ProductController
             newProduct.Stock = oldProduct.Stock;
             _productRepository.RemoveProduct(oldProduct);
             _productRepository.AddProduct(newProduct);
-            Console.WriteLine("Wei Ferb tenemos que hacer una playa pa nosotros");
+            Console.WriteLine("Product "+newProduct.Name+" has been successfully updated");
             
         }
         else
         {
-            Console.WriteLine("Esta vaina no es tuia pai");
+            Console.WriteLine("You must be the owner of this product ("+name+") to be able to update it.");
             
         }
         

@@ -59,6 +59,5 @@ public class OwnerController
     {
         return _ownerRepository.GetOwners();
     }
-    
 }
 

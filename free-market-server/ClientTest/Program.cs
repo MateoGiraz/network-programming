@@ -95,8 +95,14 @@ Console.WriteLine("");
 Console.WriteLine("Login Exitoso:");
 or.LogIn("Joaco", "ReyDelTeteo");
 Console.WriteLine("Login Contraseña Incorrecta:");
-or.LogIn("Paxo", "A12345");
-
+try
+{
+    or.LogIn("Paxo", "A12345");
+}
+catch (BusinessLogicException ex)
+{
+    Console.WriteLine(ex.Message);
+}
 
 pr.UpdateProduct(villa.Name,user3,resort);
 pr.UpdateProduct(villa.Name,user2,resort);
