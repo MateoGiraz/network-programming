@@ -1,8 +1,10 @@
 ﻿using IRepository;
 using Factory;
 using CoreBusiness;
+using Common;
 using MemoryRepository;
 namespace BusinessLogic;
+
 
 public class OwnerController
 {
@@ -25,13 +27,28 @@ public class OwnerController
 
     private void SignUp(string username, string password)
     {
-        Owner newOwner = new Owner()
+        KOI KOI = new KOI();
+        if (IsStringValid(username) && IsStringValid(password))
+        {   
+            Owner newOwner = new Owner()
+            {
+                UserName = username,
+                Password = password
+            };
+            _ownerRepository.AddOwner(newOwner);
+        }
+        else
         {
-            UserName = username,
-            Password = password
-        };
-        _ownerRepository.AddOwner(newOwner);
+            //SendMessageOfError
+        }
     }
+
+    private bool IsStringValid(string username)
+    {
+        if (username.Contains("#")) return false;
+        return true;
+    }
+
 
     public void AddOwner(Owner owner)
     {

@@ -1,6 +1,10 @@
 ﻿using CoreBusiness;
 using BusinessLogic;
+using Common;
 using ServerConnection;
+
+
+
 
 /* *** DISCLAIMER ***
  Solo existe la relacion con CoreBusiness para testear. Cuando esto funcione no necesitamos
@@ -9,13 +13,15 @@ using ServerConnection;
 
 ProductController pr = new();
 OwnerController or = new();
+
 /*Cuando tengamos la parte de cliente ya no necesitariamos tener al cliente como variable*/
 Owner user = new Owner
 {
     UserName = "Joaquin",
     Password = "A12345"
 };
-
+Console.WriteLine("TESTSTRINGIFY");
+Console.WriteLine(KOI.stringify(user));
 Owner user2 = new Owner
 {
     UserName = "Mateo",
@@ -41,14 +47,15 @@ or.LogIn(user3.UserName,user3.Password);
 
 
 
-var patata = new Product()
+Product patata = new Product()
 {
     Name = "Patata",
     Description = "Es una patata bro",
     Price = 10,
     Stock = 5,
-    Owner = user
+    Owner = user,
 };
+
 
 var tomato = new Product()
 {
