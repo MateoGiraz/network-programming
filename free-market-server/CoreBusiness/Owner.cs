@@ -2,8 +2,8 @@ namespace CoreBusiness;
 
 public class Owner
 {
-    public string UserName;
-    public string Password;
+    public string UserName {get; set;}
+    public string Password { get; set;}
 
     public override bool Equals(object? obj)
     {

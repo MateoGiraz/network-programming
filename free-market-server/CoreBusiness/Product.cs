@@ -5,12 +5,12 @@ using System.Drawing;
 
 public class Product
 {
-     public string Name;
-     public string Description;
-     public int Stock;
-     public int Price;
-     public List<Rating> ratings;
-     public Owner Owner;
+     public string Name { get; set; }
+     public string Description { get; set; }
+     public int Stock { get; set; }
+     public int Price { get; set; }
+     public List<Rating> Ratings { get; set; }
+     public Owner Owner { get; set; }
      public byte[] ImageData { get; set; }
 
      public void AddRating(int score, string comment)
@@ -21,7 +21,7 @@ public class Product
                Comment = comment
           };
           
-          ratings.Add(toAddRating);
+          Ratings.Add(toAddRating);
      }
      
      public override bool Equals(object obj)

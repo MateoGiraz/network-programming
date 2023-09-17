@@ -1,5 +1,10 @@
-﻿using CoreBusiness;
+﻿using System.Collections;
+using System.ComponentModel.Design;
+using CoreBusiness;
 using BusinessLogic;
+using Common;
+using ServerConnection;
+
 /* *** DISCLAIMER ***
  Solo existe la relacion con CoreBusiness para testear. Cuando esto funcione no necesitamos
  el objeto producto, sino que vamos a representarlo como json o algo del estilo xd.
@@ -7,12 +12,22 @@ using BusinessLogic;
 
 ProductController pr = new();
 OwnerController or = new();
+
 /*Cuando tengamos la parte de cliente ya no necesitariamos tener al cliente como variable*/
 Owner user = new Owner
 {
     UserName = "Joaquin",
     Password = "A12345"
 };
+Console.WriteLine("test stringify user: ");
+
+var encodedUser = KOI.Stringify(user);
+Console.WriteLine(encodedUser);
+var userDic = KOI.Parse(encodedUser);
+
+Console.WriteLine(userDic["UserName"]);
+Console.WriteLine(userDic["Password"]);
+
 
 Owner user2 = new Owner
 {
@@ -26,28 +41,68 @@ Owner user3 = new Owner
     Password = "PA4CHO0"
 };
 
+/*
 
 List<Owner> owners=or.GetOwners();
 foreach (var owner in owners)
 {
     Console.WriteLine(" Owner: "+ owner.UserName);
 }
-
+*/
 or.LogIn(user.UserName,user.Password);
 or.LogIn(user2.UserName,user2.Password);
 or.LogIn(user3.UserName,user3.Password);
 
 
+var patataRatings = new List<Rating>()
+{
+    new()
+    {
+        Score = 1,
+        Comment = "Meh"
+    },
+    new()
+    {
+        Score = 10,
+        Comment = "Eggscellent!"
+    }
+};
 
-var patata = new Product()
+Product patata = new Product()
 {
     Name = "Patata",
     Description = "Es una patata bro",
     Price = 10,
     Stock = 5,
-    Owner = user
+    Owner = user,
+    Ratings = patataRatings,
 };
 
+Console.WriteLine("test stringify product: ");
+var encodedProduct = KOI.Stringify(patata);
+Console.WriteLine(encodedProduct);
+var productDic = KOI.Parse(encodedProduct);
+
+Console.WriteLine("Name: " + productDic["Name"]);
+Console.WriteLine("Description: " + productDic["Description"]);
+Console.WriteLine("Price: " + productDic["Price"]);
+Console.WriteLine("Stock: " + productDic["Stock"]);
+
+var productOwner = KOI.GetObjectMap(productDic["Owner"]);
+
+Console.WriteLine("Owner UserName: " + productOwner["UserName"]);
+Console.WriteLine("Owner Password: " + productOwner["Password"]);
+
+var prodRatings = KOI.GetObjectMapList(productDic["Ratings"]);
+
+foreach(var rating in prodRatings) {
+    Console.WriteLine("Rating Score: " + rating["Score"]);
+    Console.WriteLine("Rating Comment: " + rating["Comment"]);
+}
+
+//var productRatings = KOI.GetObjectMapList(productDic["Rating"]);
+
+/*
 var tomato = new Product()
 {
     Name = "Tomato",
@@ -107,4 +162,10 @@ catch (BusinessLogicException ex)
 pr.UpdateProduct(villa.Name,user3,resort);
 pr.UpdateProduct(villa.Name,user2,resort);
 
+
+
+var app = new Server();
+app.Listen(3000);
+
+*/
 
