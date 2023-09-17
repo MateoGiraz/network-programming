@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
-using CoreBusiness;
+//using CoreBusiness;
 
 
 namespace Common;
@@ -31,11 +31,12 @@ public class KOI {
 
         return result[..^2];
     }
-
-    public static Dictionary<string, Dictionary<string, string>> Parse(string str)
+    
+    public static Dictionary<string, object> Parse(string str)
     {
-        var result = new Dictionary<string, Dictionary<string, string>>();
+        var result = new Dictionary<string, object>();
         var objects = SplitObjects(str);
+        var isFirstObject = true;
         
         foreach(var obj in objects)
         {
@@ -46,16 +47,37 @@ public class KOI {
             var dic = new Dictionary<string, string>();
             foreach (var attribute in attributes)
             {
-                var atr = GetAttribute(attribute);
-                var key = atr[0];
-                var value = atr[1];
-                dic.Add(key,value); 
+                var (key, value) = GetAttribute(attribute);
+
+                if (isFirstObject)
+                {
+                    result.Add(key, value);
+                    continue;
+                } 
+                
+                dic.Add(key, value);
+            }
+
+
+            if (!isFirstObject)
+            {
+                result.Add(name, dic);
             }
             
-            result.Add(name, dic);
+            isFirstObject = false;
         }
         
         return result;
+    }
+
+    public static Dictionary<string, string> GetObjectMap(object obj)
+    {
+        if (obj is Dictionary<string, string> objDic)
+        {
+            return objDic;
+        }
+
+        throw new Exception("Obj is not a string -> string map");
     }
     
     public static void PrintEncoded(string encoded)
@@ -64,15 +86,26 @@ public class KOI {
         Print(dicList);
     }
 
-    public static void Print(Dictionary<string, Dictionary<string, string>> dicPair)
+    public static void Print(Dictionary<string, object> dicPair)
     {
-        foreach (var pair in dicPair)
+        foreach (var (key, value) in dicPair)
         {
-            Console.WriteLine(pair.Key);
-            foreach (var dic in pair.Value)
+            Console.WriteLine(key);
+            if (value is string)
             {
-                Console.WriteLine(dic);
+                Console.WriteLine(value);
+                continue;
             }
+
+            if (value is not Dictionary<string, string> map) 
+                continue;
+            
+            foreach (var mapPair in map)
+            {
+                Console.WriteLine(mapPair);
+            }
+
+
         }
     }
     
@@ -82,9 +115,10 @@ public class KOI {
     }
     
 
-    private static string[] GetAttribute(string attribute)
+    private static (string, string) GetAttribute(string attribute)
     {
-        return attribute.Split(SplitToken);
+        var data = attribute.Split(SplitToken);
+        return (data[0], data[1]);
     }
 
     private static string GetObjectName(string[] objData)

@@ -22,8 +22,11 @@ Owner user = new Owner
 Console.WriteLine("test stringify user: ");
 
 var encodedUser = KOI.Stringify(user);
+Console.WriteLine(encodedUser);
 var userDic = KOI.Parse(encodedUser);
-KOI.Print(userDic);
+
+Console.WriteLine(userDic["UserName"]);
+Console.WriteLine(userDic["Password"]);
 
 
 Owner user2 = new Owner
@@ -38,13 +41,14 @@ Owner user3 = new Owner
     Password = "PA4CHO0"
 };
 
+/*
 
 List<Owner> owners=or.GetOwners();
 foreach (var owner in owners)
 {
     Console.WriteLine(" Owner: "+ owner.UserName);
 }
-
+*/
 or.LogIn(user.UserName,user.Password);
 or.LogIn(user2.UserName,user2.Password);
 or.LogIn(user3.UserName,user3.Password);
@@ -62,8 +66,19 @@ Product patata = new Product()
 
 Console.WriteLine("test stringify product: ");
 var encodedProduct = KOI.Stringify(patata);
-KOI.PrintEncoded(encodedProduct);
+var productDic = KOI.Parse(encodedProduct);
 
+Console.WriteLine("Name: " + productDic["Name"]);
+Console.WriteLine("Description: " + productDic["Description"]);
+Console.WriteLine("Price: " + productDic["Price"]);
+Console.WriteLine("Stock: " + productDic["Stock"]);
+
+var productOwner = KOI.GetObjectMap(productDic["Owner"]);
+
+Console.WriteLine("Owner UserName: " + productOwner["UserName"]);
+Console.WriteLine("Owner Password: " + productOwner["Password"]);
+
+/*
 var tomato = new Product()
 {
     Name = "Tomato",
@@ -123,3 +138,4 @@ pr.UpdateProduct(villa.Name,user2,resort);
 var app = new Server();
 app.Listen(3000);
 
+*/
