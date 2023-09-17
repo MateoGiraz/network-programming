@@ -2,7 +2,7 @@ namespace CoreBusiness;
 
 public class Rating
 {
-    public int Score;
-    public string Comment;
+    public int Score { get; set; }
+    public string Comment { get; set; }
 
 }

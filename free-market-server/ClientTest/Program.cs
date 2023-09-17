@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.Design;
+﻿using System.Collections;
+using System.ComponentModel.Design;
 using CoreBusiness;
 using BusinessLogic;
 using Common;
@@ -54,6 +55,19 @@ or.LogIn(user2.UserName,user2.Password);
 or.LogIn(user3.UserName,user3.Password);
 
 
+var patataRatings = new List<Rating>()
+{
+    new()
+    {
+        Score = 1,
+        Comment = "Meh"
+    },
+    new()
+    {
+        Score = 10,
+        Comment = "Eggscellent!"
+    }
+};
 
 Product patata = new Product()
 {
@@ -62,10 +76,12 @@ Product patata = new Product()
     Price = 10,
     Stock = 5,
     Owner = user,
+    Ratings = patataRatings,
 };
 
 Console.WriteLine("test stringify product: ");
 var encodedProduct = KOI.Stringify(patata);
+Console.WriteLine(encodedProduct);
 var productDic = KOI.Parse(encodedProduct);
 
 Console.WriteLine("Name: " + productDic["Name"]);
@@ -77,6 +93,15 @@ var productOwner = KOI.GetObjectMap(productDic["Owner"]);
 
 Console.WriteLine("Owner UserName: " + productOwner["UserName"]);
 Console.WriteLine("Owner Password: " + productOwner["Password"]);
+
+var prodRatings = KOI.GetObjectMapList(productDic["Ratings"]);
+
+foreach(var rating in prodRatings) {
+    Console.WriteLine("Rating Score: " + rating["Score"]);
+    Console.WriteLine("Rating Comment: " + rating["Comment"]);
+}
+
+//var productRatings = KOI.GetObjectMapList(productDic["Rating"]);
 
 /*
 var tomato = new Product()

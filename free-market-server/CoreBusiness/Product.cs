@@ -9,7 +9,7 @@ public class Product
      public string Description { get; set; }
      public int Stock { get; set; }
      public int Price { get; set; }
-     public List<Rating> ratings { get; set; }
+     public List<Rating> Ratings { get; set; }
      public Owner Owner { get; set; }
      public byte[] ImageData { get; set; }
 
@@ -21,7 +21,7 @@ public class Product
                Comment = comment
           };
           
-          ratings.Add(toAddRating);
+          Ratings.Add(toAddRating);
      }
      
      public override bool Equals(object obj)
