@@ -22,9 +22,8 @@ Owner user = new Owner
 Console.WriteLine("test stringify user: ");
 
 var encodedUser = KOI.Stringify(user);
-var userMap = KOI.Parse(encodedUser);
-
-KOI.Print(userMap);
+var userDic = KOI.Parse(encodedUser);
+KOI.Print(userDic);
 
 
 Owner user2 = new Owner
