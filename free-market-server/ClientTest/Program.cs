@@ -1,9 +1,8 @@
-﻿using CoreBusiness;
+﻿using System.ComponentModel.Design;
+using CoreBusiness;
 using BusinessLogic;
 using Common;
 using ServerConnection;
-
-
 
 
 /* *** DISCLAIMER ***
@@ -20,8 +19,14 @@ Owner user = new Owner
     UserName = "Joaquin",
     Password = "A12345"
 };
-Console.WriteLine("TESTSTRINGIFY");
-Console.WriteLine(KOI.stringify(user));
+Console.WriteLine("test stringify user: ");
+
+var encodedUser = KOI.Stringify(user);
+var userMap = KOI.Parse(encodedUser);
+
+KOI.Print(userMap);
+
+
 Owner user2 = new Owner
 {
     UserName = "Mateo",
@@ -56,6 +61,9 @@ Product patata = new Product()
     Owner = user,
 };
 
+Console.WriteLine("test stringify product: ");
+var encodedProduct = KOI.Stringify(patata);
+KOI.PrintEncoded(encodedProduct);
 
 var tomato = new Product()
 {

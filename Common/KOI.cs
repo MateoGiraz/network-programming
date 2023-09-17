@@ -6,43 +6,68 @@ using CoreBusiness;
 
 
 namespace Common;
-    public class KOI
-    {
-        public static string stringify(object? obj)
+public class KOI {
+    public static string Stringify(object? obj) {
+
+        var type = obj!.GetType();
+        var props = type.GetProperties().ToList();
+        var result = "";
+
+        foreach (var prop in props)
         {
-            string result = "";
-            List<PropertyInfo> listaPropiedades = ObtenerPropiedades(obj);
-            int i = 0;
-            Console.WriteLine("Entro");
-            foreach (PropertyInfo propiedad in listaPropiedades)
+            var valor = prop.GetValue(obj);
+            if (valor == null) continue;
+
+            if (prop.PropertyType.IsPrimitive || prop.PropertyType == typeof(string))
             {
-                i++;
-                result +=(propiedad.Name+"#"+ propiedad.GetValue(obj).ToString());
-                if (listaPropiedades.Count() != i)
-                {
-                    result += "##";
-                }
-            }
-            return result;
-        }
-
-        static List<PropertyInfo> ObtenerPropiedades(object obj)
-        {
-            Type tipo = obj.GetType();
-            List<PropertyInfo> propiedades = tipo.GetProperties().ToList();
-            return propiedades;
-        }
-
-        public static Dictionary<string, string> Parse(string str)
-        {
-            Dictionary<string, string> result = new Dictionary<string, string>();
-            string[] Atributes = str.Split("##");
-            string[] Pieces = new string[2];
-            for (int i = 0; i < Atributes.Length; i++) {
-                Pieces = Atributes[i].Split("#");
-                result.Add(Pieces[0],Pieces[1]);
+                result += prop.Name + "#" + valor.ToString() + "##";
+                continue;
             }
 
-            return result;
+            result += prop.Name + "#" + Stringify(valor);
         }
+
+        return result[..^2];
+    }
+
+    public static List<Dictionary<string, string>> Parse(string str)
+    {
+        var result = new List<Dictionary<string, string>>();
+        var objects = str.Split("###");
+        
+        foreach(var obj in objects)
+        {
+            var dic = new Dictionary<string, string>();
+            var attributes = str.Split("##");
+            
+            foreach (var attribute in attributes)
+            {
+                var atr = attribute.Split("#");
+                var key = atr[0];
+                var value = atr[1];
+                dic.Add(key,value); 
+            }
+            
+            result.Add(dic);
+        }
+        
+        return result;
+    }
+
+    public static void PrintEncoded(string encoded)
+    {
+        var dicList = Parse(encoded);
+        Print(dicList);
+    }
+
+    public static void Print(List<Dictionary<string, string>> dicList)
+    {
+        foreach (var obj in dicList)
+        {
+            foreach (var pair in obj)
+            {
+                Console.WriteLine(pair);
+            }
+        }
+    }
 }
