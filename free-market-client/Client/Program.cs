@@ -1,48 +1,63 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Text.Json;
+using Microsoft.CSharp.RuntimeBinder;
 
+namespace free_market_client;
 
-namespace Client;
-
-class Program
+public static class Program
 {
-    static void Main()
+    public static void Main()
     {
-        var serverEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 3000);
-
-        using Socket client = new(
-            serverEndPoint.AddressFamily,
+        Socket client = new(
+            AddressFamily.InterNetwork,
             SocketType.Stream,
             ProtocolType.Tcp);
-
+        
+        var localEndpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 0);
+        client.Bind(localEndpoint);
+        
+        var serverEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 3000);
         client.Connect(serverEndPoint);
-        Console.WriteLine("Enter your username:");
-        var username = Console.ReadLine();
 
-        Console.WriteLine("Enter your password:");
-        var password = Console.ReadLine();
-
-        var credentials = new UserCredentials
+        var message = "";
+        while (message is not "exit")
         {
-            Username = username,
-            Password = password
-        };
+            Console.WriteLine("Send a message:");
+            message = Console.ReadLine();
 
-        string jsonData = JsonSerializer.Serialize(credentials);
+            if (message!.Length == 0)
+                continue;
 
-        byte[] sendData = Encoding.UTF8.GetBytes(jsonData);
-        client.Send(sendData);
-
-        Console.WriteLine("Credentials sent to the server.");
-
-        byte[] receiveData = new byte[100];
-        var bytesRead = client.Receive(receiveData);
-        var serverAuthResponseserverAuthResponse = Encoding.Default.GetString(receiveData, 0, bytesRead);
-
-        Console.WriteLine($"Auth server response: {serverAuthResponseserverAuthResponse}");
+            var messageLength = ConvertStringToBytes(message).Length;
+            
+            SendMessage(ConvertIntToBytes(messageLength), client);
+            SendMessage(ConvertStringToBytes(message), client);
+        }
+        client.Shutdown(SocketShutdown.Both);
         client.Close();
+    }
+
+    private static byte[] ConvertStringToBytes(string message)
+    {
+        return Encoding.UTF8.GetBytes(message);
+    }
+
+    private static byte[] ConvertIntToBytes(int length)
+    {
+        return BitConverter.GetBytes(length);
+    }
+
+    private static void SendMessage(byte[] message, Socket client)
+    {
+        var size = message.Length;
+        var offset = 0;
+        while (offset < size)
+        {
+            var bytesSent = client.Send(message, offset, size, SocketFlags.None);
+            if (bytesSent == 0)
+                throw new Exception("possible server error");
+            offset += bytesSent;
+        }
     }
 }

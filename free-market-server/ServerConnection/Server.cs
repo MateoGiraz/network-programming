@@ -24,52 +24,90 @@ public class Server
         while (true)
         {
             var acceptedConnection = serverSocket.Accept();
-            Console.WriteLine($"Connected to client: {acceptedConnection.RemoteEndPoint}");
+            new Thread(() => HandleConnection(acceptedConnection)).Start();
+        }
+    }
 
+    private void HandleConnection(Socket acceptedConnection)
+    {
+        var receivedMessage = "";
+        Console.WriteLine($"Connected to client: {acceptedConnection.RemoteEndPoint}");
+        
+        while (receivedMessage is not "exit")
+        {
             try
             {
-                byte[] receivedData = new byte[1024];
-                int bytesRead = acceptedConnection.Receive(receivedData);
+                var receiveDataLength = new byte[4];
+                var (bytesRead, messageLength) = ReceiveIntData(acceptedConnection, receiveDataLength);
+                
+                if (bytesRead == 0)
+                    break;
 
-                if (bytesRead > 0)
-                {
-                    //TODO: IMPLEMENTAR NUESTRO PROPIO PROTOCOLO. NO PODEMOS USAR JSON.
-                    string jsonString = Encoding.UTF8.GetString(receivedData, 0, bytesRead);
-                    Console.WriteLine($"Received data from {acceptedConnection.RemoteEndPoint} is {jsonString}");
+                var receiveData = new byte[messageLength];
+                (bytesRead, receivedMessage) = ReceiveStringData(acceptedConnection, receiveData);
 
-                    var credentials = JsonSerializer.Deserialize<UserCredentials>(jsonString);
+                if (bytesRead == 0)
+                    break;
+                
+                Console.WriteLine($"Received data from {acceptedConnection.RemoteEndPoint} is {receivedMessage}");
 
-                    if (IsValidUser(credentials))
-                    {
-                        byte[] sendData = Encoding.Default.GetBytes(
-                            $"Valid credentials received from {acceptedConnection.RemoteEndPoint}: Username: {credentials.Username}, Password: {credentials.Password}");
-                        acceptedConnection.Send(sendData);
-                    }
-                    else
-                    {
-                        byte[] sendData = Encoding.Default.GetBytes(
-                            $"Invalid credentials received from {acceptedConnection.RemoteEndPoint}: Username: {credentials.Username}, Password: {credentials.Password}");
-                        acceptedConnection.Send(sendData);
-                    }
-                }
+                var sendMessage =
+                    ConvertStringToBytes(
+                        $"Data received from {acceptedConnection.RemoteEndPoint} is: {receivedMessage}");
+                SendMessage(sendMessage, acceptedConnection);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Exception: {ex.Message}");
+                break;
             }
         }
     }
-
-    // TODO: CREAR UN PAQUETE AUTENTICADOR, NADA DE ESTO TIENE QUE ESTAR ACA
-    private class UserCredentials
+    
+    private static (int, byte[]) ReceiveData(Socket socket, byte[] receiveData)
     {
-        public string Username { get; set; }
-        public string Password { get; set; }
+        var size = receiveData.Length;
+        var offset = 0;
+        var bytesRead = 0;
+        
+        while (offset < size)
+        {
+            bytesRead = socket.Receive(receiveData, offset, size, SocketFlags.None);
+            if (bytesRead == 0)
+                throw new Exception("possible client error");
+            offset += bytesRead;
+        }
+
+        return (bytesRead, receiveData);
     }
 
-    // TODO: ES UN EJEMPLO, EL SERVIDOR DEBERIA HABLAR CON UN CONTROLADOR DE FACHADA PARA TODO ESTO
-    private bool IsValidUser(UserCredentials credentials)
+    private static (int, string) ReceiveStringData(Socket socket, byte[] receiveData)
     {
-        return credentials.Username == "admin" && credentials.Password == "password";
+        var (bytesRead, stringReceivedData) = ReceiveData(socket, receiveData);
+        return (bytesRead, Encoding.Default.GetString(stringReceivedData, 0, bytesRead));
+    }
+    
+    private static (int, int) ReceiveIntData(Socket socket, byte[] receiveData)
+    {
+        var (bytesRead, intReceivedData) = ReceiveData(socket, receiveData);
+        return (bytesRead, BitConverter.ToInt32(intReceivedData));
+    }
+
+    private static byte[] ConvertStringToBytes(string message)
+    {
+        return Encoding.UTF8.GetBytes(message);
+    }
+
+    private static void SendMessage(Byte[] message, Socket client)
+    {
+        var size = message.Length;
+        var offset = 0;
+        while (offset < size)
+        {
+            var bytesSent = client.Send(message, offset, size, SocketFlags.None);
+            if (bytesSent == 0)
+                throw new Exception("possible client error");
+            offset += bytesSent;
+        }
     }
 }

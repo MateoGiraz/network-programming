@@ -1,4 +1,6 @@
-﻿namespace BusinessLogic;
+﻿using System.Security.Authentication;
+
+namespace BusinessLogic;
 using CoreBusiness;
 public class Authenticator
 {
@@ -6,11 +8,12 @@ public class Authenticator
     {
         if (owner.Password.Equals(enteredPassword))
         {
-            Console.WriteLine("keloke "+owner.UserName);
+            Console.WriteLine("Welcome back, "+owner.UserName);
         }
         else
         {
-            Console.WriteLine("Usuario y/o contraseña incorrectas manín");
+            throw new AuthenticatorException("Invalid credentials, please try again.");
         }
     }
 }
+

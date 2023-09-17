@@ -5,7 +5,6 @@ using BusinessLogic;
 using Common;
 using ServerConnection;
 
-
 /* *** DISCLAIMER ***
  Solo existe la relacion con CoreBusiness para testear. Cuando esto funcione no necesitamos
  el objeto producto, sino que vamos a representarlo como json o algo del estilo xd.
@@ -151,12 +150,17 @@ Console.WriteLine("");
 Console.WriteLine("Login Exitoso:");
 or.LogIn("Joaco", "ReyDelTeteo");
 Console.WriteLine("Login Contraseña Incorrecta:");
-or.LogIn("Paxo", "A12345");
-
+try
+{
+    or.LogIn("Paxo", "A12345");
+}
+catch (BusinessLogicException ex)
+{
+    Console.WriteLine(ex.Message);
+}
 
 pr.UpdateProduct(villa.Name,user3,resort);
 pr.UpdateProduct(villa.Name,user2,resort);
-
 
 
 
@@ -164,3 +168,4 @@ var app = new Server();
 app.Listen(3000);
 
 */
+
