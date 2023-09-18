@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Text.Json;
+using Common.Protocol;
 
 namespace ServerConnection;
 
@@ -50,11 +50,7 @@ public class Server
                     break;
                 
                 Console.WriteLine($"Received data from {acceptedConnection.RemoteEndPoint} is {receivedMessage}");
-
-                var sendMessage =
-                    ConvertStringToBytes(
-                        $"Data received from {acceptedConnection.RemoteEndPoint} is: {receivedMessage}");
-                SendMessage(sendMessage, acceptedConnection);
+                KOI.PrintEncoded(receivedMessage);
             }
             catch (Exception ex)
             {

@@ -34,7 +34,6 @@ public class OwnerController
 
     private void SignUp(string username, string password)
     {
-        KOI KOI = new KOI();
         if (IsStringValid(username) && IsStringValid(password))
         {   
             Owner newOwner = new Owner()

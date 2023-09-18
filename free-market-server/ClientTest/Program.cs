@@ -2,7 +2,7 @@
 using System.ComponentModel.Design;
 using CoreBusiness;
 using BusinessLogic;
-using Common;
+using Common.Protocol;
 using ServerConnection;
 
 /* *** DISCLAIMER ***

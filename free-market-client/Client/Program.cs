@@ -1,6 +1,8 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using Common;
+using Common.Protocol;
 using Microsoft.CSharp.RuntimeBinder;
 
 namespace free_market_client;
@@ -19,16 +21,22 @@ public static class Program
         
         var serverEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 3000);
         client.Connect(serverEndPoint);
+        
+        Startup.PrintWelcomeMessageClient();
 
-        var message = "";
-        while (message is not "exit")
+        var leave = false;
+        while (!leave)
         {
-            Console.WriteLine("Send a message:");
-            message = Console.ReadLine();
+            Menu.PrintOptions();
+            var res = Menu.ChooseOption();
 
-            if (message!.Length == 0)
+            if (res is null)
+            {
+                leave = true;
                 continue;
+            }
 
+            var message = KOI.Stringify(res);
             var messageLength = ConvertStringToBytes(message).Length;
             
             SendMessage(ConvertIntToBytes(messageLength), client);

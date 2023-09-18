@@ -3,10 +3,9 @@ using System.Collections;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
-//using CoreBusiness;
 
 
-namespace Common;
+namespace Common.Protocol;
 public class KOI {
     private const string SplitToken = "#";
     private const string ListSuffix = "_List";
