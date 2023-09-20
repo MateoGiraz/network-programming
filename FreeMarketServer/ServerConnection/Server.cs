@@ -8,7 +8,7 @@ namespace ServerConnection;
 
 public class Server
 {
-    public void Listen(int port = 3000)
+    public void Listen(int port = Protocol.ServerPort)
     {
         var serverSocket = new Socket(
             AddressFamily.InterNetwork,
@@ -16,7 +16,7 @@ public class Server
             ProtocolType.Tcp
         );
 
-        var localEndpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
+        var localEndpoint = new IPEndPoint(IPAddress.Parse(Protocol.LocalHostIp), port);
         serverSocket.Bind(localEndpoint);
 
         Console.WriteLine("Listening for connections");
