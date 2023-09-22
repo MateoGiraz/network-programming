@@ -3,9 +3,9 @@ using Common.DTO;
 using Common.Helpers;
 using Common.Protocol;
 
-namespace free_market_client.OptionHandler.ConcreteHandlers;
+namespace free_market_client.Request.ConcreteRequest;
 
-public class UserCreationHandler : HandlerTemplate
+public class UserCreationRequest : RequestTemplate
 {
     internal override void ConcreteHandle(Socket socket)
     {

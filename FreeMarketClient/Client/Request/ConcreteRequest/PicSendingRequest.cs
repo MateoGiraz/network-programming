@@ -1,9 +1,9 @@
 using System.Net.Sockets;
 using Common.Helpers;
 
-namespace free_market_client.OptionHandler.ConcreteHandlers;
+namespace free_market_client.Request.ConcreteRequest;
 
-public class PicSendingHandler : HandlerTemplate
+public class PicSendingRequest : RequestTemplate
 {
     internal override void ConcreteHandle(Socket socket)
     {

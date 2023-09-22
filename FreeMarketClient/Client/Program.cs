@@ -4,6 +4,7 @@ using System.Text;
 using Common;
 using Common.Helpers;
 using Common.Protocol;
+using free_market_client.Request;
 using Microsoft.CSharp.RuntimeBinder;
 
 namespace free_market_client;
@@ -14,7 +15,7 @@ public static class Program
     {
 
         var socket = SocketManager.Create();
-        var optionHandler = new OptionHandler.OptionHandler(socket);
+        var optionHandler = new OptionHandler(socket);
 
         Startup.PrintWelcomeMessageClient();
 

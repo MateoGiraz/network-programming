@@ -2,9 +2,9 @@ using System.Net.Sockets;
 using System.Reflection.Metadata;
 using Common.Helpers;
 
-namespace free_market_client.OptionHandler;
+namespace free_market_client.Request;
 
-public abstract class HandlerTemplate
+public abstract class RequestTemplate
 {
     internal void Handle(Socket socket, int option)
     {

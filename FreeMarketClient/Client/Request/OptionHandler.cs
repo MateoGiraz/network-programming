@@ -2,25 +2,25 @@
 using Common.DTO;
 using Common.Helpers;
 using Common.Protocol;
-using free_market_client.OptionHandler.ConcreteHandlers;
+using free_market_client.Request.ConcreteRequest;
 
-namespace free_market_client.OptionHandler
+namespace free_market_client.Request
 {
     internal class OptionHandler
     {
         private readonly Socket _socket;
         
         //esto deberia estar aca?
-        private PicSendingHandler _picSendingHandler;
-        private UserCreationHandler _userCreationHandler;
+        private PicSendingRequest _picSendingRequest;
+        private UserCreationRequest _userCreationRequest;
 
         public OptionHandler(Socket socket)
         {
             _socket = socket;
 
             //hacer una factory o algo asi?
-            _picSendingHandler = new PicSendingHandler();
-            _userCreationHandler = new UserCreationHandler();
+            _picSendingRequest = new PicSendingRequest();
+            _userCreationRequest = new UserCreationRequest();
         }
 
         public void Handle(int option)
@@ -28,10 +28,10 @@ namespace free_market_client.OptionHandler
            switch (option)
             {
                 case 1:
-                    _userCreationHandler.Handle(_socket, option);
+                    _userCreationRequest.Handle(_socket, option);
                     break;
                 case 2:
-                    _picSendingHandler.Handle(_socket, option);
+                    _picSendingRequest.Handle(_socket, option);
                     break;
                 default:
                     break;
