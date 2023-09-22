@@ -11,11 +11,15 @@ public class KOI {
     private const string ListSuffix = "_List";
     private const string UnderScore = "_";
 
-    public static string Stringify(object? obj) {
-
+    public static string Stringify(object? obj, string name = "") {
+         
         var type = obj!.GetType();
         var props = type.GetProperties().ToList();
-        var result = type.Name + SplitToken;
+
+        if (name == "")
+            name = type.Name;
+            
+        var result = name + SplitToken;
 
         foreach (var prop in props)
         {
@@ -38,7 +42,7 @@ public class KOI {
                 continue;
             }
 
-            result += SplitToken + Stringify(val);
+            result += SplitToken + Stringify(val, prop.Name);
         }
 
         return result[..^2];
