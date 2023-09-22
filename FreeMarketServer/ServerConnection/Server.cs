@@ -3,24 +3,15 @@ using System.Net.Sockets;
 using System.Text;
 using Common;
 using Common.Protocol;
+using Common.Helpers;
 
 namespace ServerConnection;
 
 public class Server
 {
-    public void Listen(int port = Protocol.ServerPort)
+    public void Listen(int port = ProtocolStandards.ServerPort)
     {
-        var serverSocket = new Socket(
-            AddressFamily.InterNetwork,
-            SocketType.Stream,
-            ProtocolType.Tcp
-        );
-
-        var localEndpoint = new IPEndPoint(IPAddress.Parse(Protocol.LocalHostIp), port);
-        serverSocket.Bind(localEndpoint);
-
-        Console.WriteLine("Listening for connections");
-        serverSocket.Listen(100);
+        var serverSocket = SocketManager.Create(port);
 
         while (true)
         {
@@ -31,6 +22,7 @@ public class Server
 
     private void HandleConnection(Socket acceptedConnection)
     {
+        var optionHandler = new OptionHandler(acceptedConnection);
         var receivedMessage = "";
         Console.WriteLine($"Connected to client: {acceptedConnection.RemoteEndPoint}");
 
@@ -38,19 +30,13 @@ public class Server
         {
             try
             {
-                var (bytesRead, messageLength) =
-                    NetworkHelper.ReceiveIntData(Protocol.SizeMessageDefinedLength, acceptedConnection);
+                var (bytesRead, cmd) =
+                        NetworkHelper.ReceiveIntData(ProtocolStandards.SizeMessageDefinedLength, acceptedConnection); //TODO: change to cmd len
 
                 if (bytesRead == 0)
                     break;
 
-                (bytesRead, receivedMessage) = NetworkHelper.ReceiveStringData(messageLength, acceptedConnection);
-
-                if (bytesRead == 0)
-                    break;
-
-                Console.WriteLine($"Received data from {acceptedConnection.RemoteEndPoint} is {receivedMessage}");
-                KOI.PrintEncoded(receivedMessage);
+                optionHandler.Handle(cmd);
             }
             catch (Exception ex)
             {

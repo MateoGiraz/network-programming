@@ -2,6 +2,7 @@
 using System.Net.Sockets;
 using System.Text;
 using Common;
+using Common.Helpers;
 using Common.Protocol;
 using Microsoft.CSharp.RuntimeBinder;
 
@@ -11,39 +12,25 @@ public static class Program
 {
     public static void Main()
     {
-        Socket client = new(
-            AddressFamily.InterNetwork,
-            SocketType.Stream,
-            ProtocolType.Tcp);
-        
-        var localEndpoint = new IPEndPoint(IPAddress.Parse(Protocol.LocalHostIp), Protocol.ClientPort);
-        client.Bind(localEndpoint);
-        
-        var serverEndPoint = new IPEndPoint(IPAddress.Parse(Protocol.LocalHostIp), Protocol.ServerPort);
-        client.Connect(serverEndPoint);
-        
+
+        var socket = SocketManager.Create();
+        var optionHandler = new OptionHandler(socket);
+
         Startup.PrintWelcomeMessageClient();
 
-        var leave = false;
-        while (!leave)
+        var res = -1;
+
+        while (res == -1)
         {
             Menu.PrintOptions();
-            var res = Menu.ChooseOption();
-
-            if (res is null)
-            {
-                leave = true;
-                continue;
-            }
-            
-            var message = KOI.Stringify(res);
-            var messageLength = NetworkHelper.ConvertStringToBytes(message).Length;
-
-            NetworkHelper.SendMessage(NetworkHelper.ConvertIntToBytes(messageLength), client);
-            NetworkHelper.SendMessage(NetworkHelper.ConvertStringToBytes(message), client);
+            res = Menu.ChooseOption();
         }
-        client.Shutdown(SocketShutdown.Both);
-        client.Close();
+
+        optionHandler.Handle(res);
+        
+        socket.Shutdown(SocketShutdown.Both);
+        socket.Close();
     }
+
 
 }
