@@ -30,6 +30,8 @@ public class Server
         {
             try
             {
+                //TODO: Receive REQ/RES
+                
                 var (bytesRead, cmd) =
                         NetworkHelper.ReceiveIntData(ProtocolStandards.SizeMessageDefinedLength, acceptedConnection); //TODO: change to cmd len
 
