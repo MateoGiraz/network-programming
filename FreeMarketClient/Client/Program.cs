@@ -14,7 +14,7 @@ public static class Program
     {
 
         var socket = SocketManager.Create();
-        var optionHandler = new OptionHandler(socket);
+        var optionHandler = new OptionHandler.OptionHandler(socket);
 
         Startup.PrintWelcomeMessageClient();
 
