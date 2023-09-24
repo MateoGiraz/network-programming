@@ -28,13 +28,18 @@ public class ProductCreationRequest : RequestTemplate
             Description = description,
             Price = price,
             Stock = stock,
-            
         };
-
+        
         var productData = KOI.Stringify(productDTO);
         var messageLength = ByteHelper.ConvertStringToBytes(productData).Length;
 
         SendLength(socket, messageLength);
         SendData(socket, productData);
+
+        Console.WriteLine("Type File Path");
+        var path = Console.ReadLine();
+
+        var fileTransferHelper = new FileTransferHelper();
+        fileTransferHelper.SendFile(socket, path);
     }
 }
