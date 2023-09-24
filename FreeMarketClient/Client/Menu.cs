@@ -10,12 +10,13 @@ public class Menu
         Console.Clear();
         Console.WriteLine("Welcome to the Terminal Menu");
         Console.WriteLine("1. Register User");
+        Console.WriteLine("2");
         Console.WriteLine("2. Send Pic");
+        Console.WriteLine("3. Create Product");
         Console.WriteLine("_. Exit");
 
         Console.Write("Please select an option: ");
     }
-
     public static int ChooseOption()
     {
         var userInput = Console.ReadLine();
@@ -27,5 +28,4 @@ public class Menu
 
         return -1;
     }
-
 }

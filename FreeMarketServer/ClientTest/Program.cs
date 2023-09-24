@@ -3,7 +3,6 @@ using System.ComponentModel.Design;
 using CoreBusiness;
 using BusinessLogic;
 using Common.Protocol;
-using ServerConnection;
 
 /* *** DISCLAIMER ***
  Solo existe la relacion con CoreBusiness para testear. Cuando esto funcione no necesitamos

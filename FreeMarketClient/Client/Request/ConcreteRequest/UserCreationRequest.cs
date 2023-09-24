@@ -26,5 +26,31 @@ public class UserCreationRequest : RequestTemplate
 
         SendLength(socket, messageLength);
         SendData(socket, userData);
+
+        // Ahora, espera y recibe la respuesta del servidor
+        var (bytesRead, responseLength) =
+            NetworkHelper.ReceiveIntData(ProtocolStandards.SizeMessageDefinedLength, socket);
+
+        if (bytesRead == 0)
+            return;
+
+        (bytesRead, var userString) = NetworkHelper.ReceiveStringData(responseLength, socket);
+
+        if (bytesRead == 0)
+            return;
+
+        var userMap = KOI.Parse(userString);
+
+        var responseDTO = new UserDTO()
+        {
+            UserName = userMap["UserName"].ToString(),
+            Password = userMap["Password"].ToString()
+        };
+        if (bytesRead > 0)
+        {
+
+            Console.WriteLine("Server response: " + responseDTO.UserName);
+            Console.WriteLine("Server message: " + responseDTO.Password);
+        }
     }
 }

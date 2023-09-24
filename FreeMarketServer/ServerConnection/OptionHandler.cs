@@ -26,6 +26,9 @@ internal class OptionHandler
             case 2:
                 PicReceivingHandler.Handle(_socket);
                 break;
+            case 3:
+                ProductCreationHandler.Handle(_socket);
+                break;
             default:
                 break;
         }
