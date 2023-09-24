@@ -31,10 +31,49 @@ namespace free_market_client.Request
                     _userCreationRequest.Handle(_socket, option);
                     break;
                 case 2:
-                    _picSendingRequest.Handle(_socket, option);
+                    //_picSendingRequest.Handle(_socket, option);
+                    OptionsLoggedIn("Pepe");
+                    break;
+                case 3:
                     break;
                 default:
+                    Console.WriteLine("That's not a valid option");
+                    Thread.Sleep(1500);
                     break;
+            }
+        }
+
+        private void OptionsLoggedIn(string username)
+        {
+            var res = -1;
+            while (res != 6)
+            {
+                Menu.PrintOptionsLoggedIn(username);
+                res = Menu.ChooseOption();
+                HandleLogIn(res);
+            }
+        }
+
+        private void HandleLogIn(int option)
+        {
+            switch (option)
+            {
+                case 1:
+                    Console.WriteLine("Son Feas Cosas");
+                    Thread.Sleep(1500);
+                    break;
+                case 2:
+                    Console.WriteLine("que Cojones");
+                    Thread.Sleep(1500);
+                    break;
+                case 6:
+                    Console.WriteLine("Or");
+                    break;
+                default:
+                    Console.WriteLine("That's not a valid Option");
+                    Thread.Sleep(1500);
+                    break;
+                
             }
         }
     }
