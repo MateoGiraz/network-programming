@@ -24,29 +24,33 @@ public class ProductCreationHandler
             return;
 
         var productMap = KOI.Parse(productString);
-
+        
+        var fileTransferHelper = new FileTransferHelper();
+        var imgPath = fileTransferHelper.ReceiveFile(socket);
+        
         var productDTO = new ProductDTO()
         {
             Name = productMap["Name"].ToString(),
             Description = productMap["Description"].ToString(),
             Price = productMap["Price"].ToString(),
             Stock = productMap["Stock"].ToString(),
-            
+            ImageRoute = imgPath
         };
         
-        Product productToBeCreated = new Product()
+        var productToBeCreated = new Product()
         {
             Name = productDTO.Name,
             Description = productDTO.Description,
+            ImageRoute = productDTO.ImageRoute,
             Price = int.Parse(productDTO.Price),
-            Stock = int.Parse(productDTO.Stock),
+            Stock = int.Parse(productDTO.Stock)
         };
 
         Console.WriteLine("Received Product: " + productDTO.Name);
         Console.WriteLine("Received Description: " + productDTO.Description);
         
-        ProductController _productController = new ProductController(); 
-        _productController.AddProduct(productToBeCreated);
+        var productController = new ProductController(); 
+        productController.AddProduct(productToBeCreated);
         
         Console.WriteLine("Product to be Created: " + productToBeCreated.Name);
         Console.WriteLine("Product Description: " + productToBeCreated.Description);
