@@ -12,17 +12,23 @@ namespace free_market_client.Request
         
         //esto deberia estar aca?
         private ProductCreationRequest _productCreationRequest;
-        private PicSendingRequest _picSendingRequest;
         private UserCreationRequest _userCreationRequest;
+        private ProductRatingRequest _productRatingRequest;
+        private ProductEditionRequest _productEditionRequest;
+        private ProductDeletionRequest _productDeletionRequest;
+        private ProductPurchaseRequest _productPurchaseRequest;
 
         public OptionHandler(Socket socket)
         {
             _socket = socket;
 
             //hacer una factory o algo asi?
-            _picSendingRequest = new PicSendingRequest();
             _userCreationRequest = new UserCreationRequest();
             _productCreationRequest = new ProductCreationRequest();
+            _productRatingRequest = new ProductRatingRequest();
+            _productEditionRequest = new ProductEditionRequest();
+            _productDeletionRequest = new ProductDeletionRequest();
+            _productPurchaseRequest = new ProductPurchaseRequest();
         }
 
         public void Handle(int option)
@@ -34,7 +40,7 @@ namespace free_market_client.Request
                     break;
                 case 2:
                     //_picSendingRequest.Handle(_socket, option);
-                    OptionsLoggedIn("Pepe");
+                    OptionsLoggedIn("mategz");
                     break;
                 case 3:
                     break;
@@ -48,7 +54,7 @@ namespace free_market_client.Request
         private void OptionsLoggedIn(string username)
         {
             var res = -1;
-            while (res != 6)
+            while (res != 8)
             {
                 Menu.PrintOptionsLoggedIn(username);
                 res = Menu.ChooseOption();
@@ -61,18 +67,35 @@ namespace free_market_client.Request
             switch (option)
             {
                 case 1:
-                    Console.WriteLine("Son Feas Cosas");
-                    Thread.Sleep(1500);
+                    Console.WriteLine("Purchase a Product");
+                    _productPurchaseRequest.Handle(_socket, option);
                     break;
                 case 2:
-                    Console.WriteLine("que Cojones");
-                    Thread.Sleep(1500);
-                    break;
-                case 6:
-                    Console.WriteLine("Or");
+                    Console.WriteLine("Create Product");
+                    _productCreationRequest.Handle(_socket, option);
                     break;
                 case 3:
-                    _productCreationRequest.Handle(_socket,option);
+                    Console.WriteLine("Modify Product");
+                    _productEditionRequest.Handle(_socket, option);
+                    break;
+                case 4:
+                    Console.WriteLine("Drop Product");
+                    _productDeletionRequest.Handle(_socket, option);
+                    break;
+                case 5:
+                    //TODO
+                    Console.WriteLine("Get Products");
+                    break;
+                case 6:
+                    Console.WriteLine("Consult for a Product by Name");                    
+                    _productRatingRequest.Handle(_socket, option);
+                    break;
+                case 7:
+                    Console.WriteLine("Rate a Product");
+                    _productRatingRequest.Handle(_socket, option);
+                    break;
+                case 8:
+                    Console.WriteLine("Log out");
                     break;
                 default:
                     Console.WriteLine("That's not a valid Option");

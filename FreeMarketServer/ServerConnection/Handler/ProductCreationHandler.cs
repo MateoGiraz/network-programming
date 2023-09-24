@@ -28,7 +28,7 @@ public class ProductCreationHandler
         var fileTransferHelper = new FileTransferHelper();
         var imgPath = fileTransferHelper.ReceiveFile(socket);
         
-        var productDTO = new ProductDTO()
+        var productDto = new ProductDTO()
         {
             Name = productMap["Name"].ToString(),
             Description = productMap["Description"].ToString(),
@@ -39,15 +39,15 @@ public class ProductCreationHandler
         
         var productToBeCreated = new Product()
         {
-            Name = productDTO.Name,
-            Description = productDTO.Description,
-            ImageRoute = productDTO.ImageRoute,
-            Price = int.Parse(productDTO.Price),
-            Stock = int.Parse(productDTO.Stock)
+            Name = productDto.Name,
+            Description = productDto.Description,
+            ImageRoute = productDto.ImageRoute,
+            Price = int.Parse(productDto.Price),
+            Stock = int.Parse(productDto.Stock)
         };
 
-        Console.WriteLine("Received Product: " + productDTO.Name);
-        Console.WriteLine("Received Description: " + productDTO.Description);
+        Console.WriteLine("Received Product: " + productDto.Name);
+        Console.WriteLine("Received Description: " + productDto.Description);
         
         var productController = new ProductController(); 
         productController.AddProduct(productToBeCreated);

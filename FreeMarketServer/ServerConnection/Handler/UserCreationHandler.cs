@@ -29,6 +29,7 @@ public class UserCreationHandler
             UserName = userMap["UserName"].ToString(),
             Password = userMap["Password"].ToString()
         };
+        
         OwnerController oc = new OwnerController();
         String response=oc.LogIn(userDTO.UserName, userDTO.Password);
         
@@ -46,10 +47,10 @@ public class UserCreationHandler
 
 
         List<Owner> owners = oc.GetOwners();
-                 foreach (var owner in owners)
-                 {
-                     Console.WriteLine("Usuario:" + owner.UserName);
-                 }
+        foreach (var owner in owners)
+        {
+            Console.WriteLine("Usuario:" + owner.UserName);
+        }
 
 
         Console.WriteLine("Received Username: " + userDTO.UserName);

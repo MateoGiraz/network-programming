@@ -10,7 +10,6 @@
     <ItemGroup>
       <ProjectReference Include="..\BusinessLogic\BusinessLogic.csproj" />
       <ProjectReference Include="..\CoreBusiness\CoreBusiness.csproj" />
-      <ProjectReference Include="..\Factory\Factory.csproj" />
       <ProjectReference Include="..\MemoryRepository\MemoryRepository.csproj" />
       <ProjectReference Include="..\ServerConnection\ServerConnection.csproj" />
     </ItemGroup>

@@ -45,7 +45,12 @@ namespace Common.Helpers
 
         private long SendFileInfo(Socket socket, string filePath)
         {
+            //elegir donde se guardan xd
+            string myPicturesPath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
             string fileName = Path.GetFileName(filePath);
+            
+            filePath = Path.Combine(myPicturesPath, fileName);
+            
             byte[] fileNameBytes = ByteHelper.ConvertStringToBytes(fileName);
 
             int fileNameLength = fileNameBytes.Length;

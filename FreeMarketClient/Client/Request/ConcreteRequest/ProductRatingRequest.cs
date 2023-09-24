@@ -13,9 +13,27 @@ public class ProductRatingRequest : RequestTemplate
         Console.WriteLine("Type Product Name");
         var name = Console.ReadLine();
 
+        Console.WriteLine("Add Rating Score");
+        var score = Console.ReadLine();
+        
+        Console.WriteLine("Add Rating Comment");
+        var comment = Console.ReadLine();
+
+        var ratingDto = new RatingDTO()
+        {
+            Comment = comment,
+            Score = score,
+        };
+        
+        var ratings = new List<RatingDTO>()
+        {
+            ratingDto
+        };
+
         var productDTO = new ProductDTO()
         {
             Name = name,
+            Ratings = ratings
         };
 
         var productData = KOI.Stringify(productDTO);

@@ -25,13 +25,29 @@ public class PurchaseRatingHandler
 
         var productMap = KOI.Parse(productString);
 
-        String productName = productMap["Name"].ToString();
-        ProductController pc = new ProductController();
-        Product purchasedProduct = pc.GetProduct(productName);
-        pc.BuyProduct(purchasedProduct,1);
+        var productName = productMap["Name"].ToString();
+        var ratingList = KOI.GetObjectMapList(productMap["Ratings"]);
+        var newRating = ratingList[0];
         
+        var pc = new ProductController();
+        var toUpdateProduct = pc.GetProduct(productName);
 
-        Console.WriteLine("Received Product: " + productName);
+        var updatedProduct = new Product()
+        {
+            Name = toUpdateProduct.Name,
+            Description = toUpdateProduct.Description,
+            Owner = toUpdateProduct.Owner,
+            Price = toUpdateProduct.Price,
+            ImageRoute = toUpdateProduct.ImageRoute,
+            Ratings = toUpdateProduct.Ratings,
+        };
+
+        var score = int.Parse(newRating["Score"]);
+        var comment = newRating["Comment"];
         
+        updatedProduct.AddRating(score, comment);
+        
+        pc.UpdateProduct(toUpdateProduct.Name, toUpdateProduct.Owner, updatedProduct);
+        Console.WriteLine("Product Rating: " + updatedProduct.Ratings);
     }
 }

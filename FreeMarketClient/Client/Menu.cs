@@ -35,11 +35,13 @@ public class Menu
         Console.Clear();
         Console.WriteLine($"Welcome back {username}");
         Console.WriteLine("1. Purchase a Product");
-        Console.WriteLine("2. Modified a Product");
-        Console.WriteLine("3. Drop off a Product");
-        Console.WriteLine("4. Search for a Product");
-        Console.WriteLine("5. Consult for a Product by Name");
-        Console.WriteLine("6. Log out");
+        Console.WriteLine("2. Create a Product");
+        Console.WriteLine("3. Modified a Product");
+        Console.WriteLine("4. Drop off a Product");
+        Console.WriteLine("5. Get Products");
+        Console.WriteLine("6. Consult for a Product by Name");
+        Console.WriteLine("7. Rate a Product");
+        Console.WriteLine("8. Log out");
 
         Console.Write("Please select an option : ");
     }

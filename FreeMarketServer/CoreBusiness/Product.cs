@@ -15,6 +15,8 @@ public class Product
 
      public void AddRating(int score, string comment)
      {
+          Ratings ??= new List<Rating>();
+          
           var toAddRating = new Rating()
           {
                Score = score,
