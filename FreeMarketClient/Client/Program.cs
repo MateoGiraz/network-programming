@@ -21,13 +21,14 @@ public static class Program
 
         var res = -1;
 
-        while (res == -1)
+        while (res != 9)
         {
             Menu.PrintOptions();
             res = Menu.ChooseOption();
+            optionHandler.Handle(res);
         }
 
-        optionHandler.Handle(res);
+        
         
         socket.Shutdown(SocketShutdown.Both);
         socket.Close();

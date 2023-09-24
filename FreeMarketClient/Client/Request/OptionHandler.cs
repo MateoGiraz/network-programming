@@ -33,7 +33,11 @@ namespace free_market_client.Request
                 case 2:
                     _picSendingRequest.Handle(_socket, option);
                     break;
+                case 9: 
+                    break;
                 default:
+                    Console.WriteLine("That's not a valid option");
+                    Thread.Sleep(1500);
                     break;
             }
         }
