@@ -23,22 +23,23 @@ namespace Common.Helpers
             catch (SocketException ex)
             {
                 HandleSocketException(ex);
+                throw;
             }
         }
 
-        public void ReceiveFile(Socket socket)
+        public string ReceiveFile(Socket socket)
         {
             try
             {
                 var (fileName, fileSize) = ReceiveFileInfo(socket);
-                Console.WriteLine("fileName:" + fileName);
-                ReceiveFileData(socket, fileName, fileSize);
-
-                Console.WriteLine("Finished receiving file");
+                var path = ReceiveFileData(socket, fileName, fileSize);
+                
+                return path;
             }
             catch (SocketException ex)
             {
                 HandleSocketException(ex);
+                throw;
             }
         }
 
@@ -88,12 +89,11 @@ namespace Common.Helpers
             }
         }
 
-        private void ReceiveFileData(Socket socket, string fileName, int fileSize)
+        private string ReceiveFileData(Socket socket, string fileName, int fileSize)
         {
-
-            string myPicturesPath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
-            string filePath = Path.Combine(myPicturesPath, fileName);
-
+            const string relativeFolderPath = "Images";
+            var folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativeFolderPath);
+            var filePath = Path.Combine(folderPath, fileName);
 
             var fileStreamHelper = new FileStreamHelper();
             long offset = 0;
@@ -110,6 +110,8 @@ namespace Common.Helpers
                 offset += partSize;
                 currentPart++;
             }
+
+            return filePath;
         }
 
         private void HandleSocketException(SocketException ex)
