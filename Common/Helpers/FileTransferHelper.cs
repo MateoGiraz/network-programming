@@ -91,10 +91,9 @@ namespace Common.Helpers
 
         private string ReceiveFileData(Socket socket, string fileName, int fileSize)
         {
-
-            string myPicturesPath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
-            string filePath = Path.Combine(myPicturesPath, fileName);
-
+            const string relativeFolderPath = "Images";
+            var folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativeFolderPath);
+            var filePath = Path.Combine(folderPath, fileName);
 
             var fileStreamHelper = new FileStreamHelper();
             long offset = 0;
