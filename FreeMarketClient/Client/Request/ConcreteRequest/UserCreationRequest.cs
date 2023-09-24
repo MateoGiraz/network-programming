@@ -48,7 +48,6 @@ public class UserCreationRequest : RequestTemplate
         };
         if (bytesRead > 0)
         {
-
             Console.WriteLine("Server response: " + responseDTO.UserName);
             Console.WriteLine("Server message: " + responseDTO.Password);
         }
