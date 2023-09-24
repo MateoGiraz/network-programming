@@ -27,6 +27,7 @@ public class UserCreationHandler
             UserName = userMap["UserName"].ToString(),
             Password = userMap["Password"].ToString()
         };
+        
 
         Console.WriteLine("Received Username: " + userDTO.UserName);
         Console.WriteLine("Received Password: " + userDTO.Password);

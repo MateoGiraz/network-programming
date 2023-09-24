@@ -20,15 +20,12 @@ public static class Program
         Startup.PrintWelcomeMessageClient();
 
         var res = -1;
-
-        while (res != 9)
+        while (res != 3)
         {
             Menu.PrintOptions();
             res = Menu.ChooseOption();
             optionHandler.Handle(res);
         }
-
-        
         
         socket.Shutdown(SocketShutdown.Both);
         socket.Close();
