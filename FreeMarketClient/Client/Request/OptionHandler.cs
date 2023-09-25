@@ -20,6 +20,7 @@ namespace free_market_client.Request
         private ProductEditionRequest _productEditionRequest;
         private ProductDeletionRequest _productDeletionRequest;
         private ProductPurchaseRequest _productPurchaseRequest;
+        private GetProductsRequest _getProductsRequest;
 
         public OptionHandler(Socket socket)
         {
@@ -33,6 +34,8 @@ namespace free_market_client.Request
             _productEditionRequest = new ProductEditionRequest();
             _productDeletionRequest = new ProductDeletionRequest();
             _productPurchaseRequest = new ProductPurchaseRequest();
+            _getProductsRequest = new GetProductsRequest();
+
         }
 
         public void Handle(int option)
@@ -90,6 +93,7 @@ namespace free_market_client.Request
                     break;
                 case 5:
                     //TODO
+                    _getProductsRequest.Handle(_socket, option + 2, userName);
                     Console.WriteLine("Get Products");
                     break;
                 case 6:

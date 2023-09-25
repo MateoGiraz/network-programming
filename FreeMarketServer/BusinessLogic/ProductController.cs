@@ -77,5 +77,10 @@ namespace BusinessLogic
                 Console.WriteLine("You must be the owner of this product (" + name + ") to be able to update it.");
             }
         }
+
+        public List<string> GetProductsNames()
+        {
+            return _productRepository.GetProductsNames();
+        }
     }
 }

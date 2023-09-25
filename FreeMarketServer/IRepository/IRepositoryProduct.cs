@@ -7,4 +7,5 @@ public interface IRepositoryProduct
     public void RemoveProduct(Product product);
     public Product GetProduct(String name);
     public List<Product> GetProducts();
+    public List<string> GetProductsNames();
 }

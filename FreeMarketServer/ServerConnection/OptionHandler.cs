@@ -14,6 +14,7 @@ internal class OptionHandler
     private readonly ProductEditionHandler _productEditionHandler;
     private readonly ProductRatingHandler _productRatingHandler;
     private readonly ProductPurchaseHandler _productPurchaseHandler;
+    private readonly GetProductsHandler _getProductsHandler;
 
 
     public OptionHandler(Socket socket)
@@ -27,6 +28,7 @@ internal class OptionHandler
         _productEditionHandler = new ProductEditionHandler();
         _productRatingHandler = new ProductRatingHandler();
         _productPurchaseHandler = new ProductPurchaseHandler();
+        _getProductsHandler = new GetProductsHandler();
     }
 
     public void Handle(int option)
@@ -52,7 +54,7 @@ internal class OptionHandler
                 _productDeletionHandler.Handle(_socket);
                 break;
             case 7:
-                //get prods
+                _getProductsHandler.Handle(_socket);
                 break;
             case 8:
                 //get a prod

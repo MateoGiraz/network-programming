@@ -8,7 +8,7 @@ namespace free_market_client.Request.ConcreteRequest.Product;
 public abstract class ProductRequest : RequestTemplate
 {
     internal ProductDTO? ProductDto;
-    internal ResponseDTO? ResponseDto;
+    
 
     protected abstract void HandleConcreteProductOperation();
     internal override void ConcreteHandle(Socket socket, string? userName)
@@ -39,31 +39,4 @@ public abstract class ProductRequest : RequestTemplate
         GetServerResponse(socket);
     }
     
-    private void GetServerResponse(Socket socket)
-    {
-        var (bytesRead, responseLength) =
-            NetworkHelper.ReceiveIntData(ProtocolStandards.SizeMessageDefinedLength, socket);
-
-        if (bytesRead == 0)
-            return;
-
-        (bytesRead, var responseString) = NetworkHelper.ReceiveStringData(responseLength, socket);
-
-        if (bytesRead == 0)
-            return;
-
-        var responseMap = KOI.Parse(responseString);
-        var statusCodeValue = responseMap["StatusCode"] as string;
-        var messageValue = responseMap["Message"] as string;
-        
-        ResponseDto = new ResponseDTO()
-        {
-            StatusCode = int.Parse(statusCodeValue ?? "500"),
-            Message = messageValue ?? "Internal Server Error"
-        };
-
-        Console.Clear();
-        Console.WriteLine(ResponseDto.Message);
-        Thread.Sleep(1500);
-    }
 }
