@@ -26,7 +26,8 @@ public abstract class ProductHandler
 
         if (bytesRead == 0)
             return;
-
+        
+        Console.WriteLine(productString);
         ProductMap = KOI.Parse(productString);
         var userMap = KOI.GetObjectMap(ProductMap["Owner"]);
 

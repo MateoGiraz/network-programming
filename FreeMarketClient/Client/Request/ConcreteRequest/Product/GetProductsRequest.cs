@@ -7,14 +7,8 @@ namespace free_market_client.Request.ConcreteRequest.Product;
 
 public class GetProductsRequest : RequestTemplate
 {
-    internal ProductNameListDTO _productNameListDto;
-    internal Dictionary<string, object> listOfNamesMap;
-
     internal override void ConcreteHandle(Socket socket, string? userName)
     {
-        Console.Clear();
-        Console.WriteLine("This is the List of product: ");
-        
         var (bytesRead, messageLength) =
             NetworkHelper.ReceiveIntData(ProtocolStandards.SizeMessageDefinedLength, socket);
 
@@ -26,14 +20,21 @@ public class GetProductsRequest : RequestTemplate
         if (bytesRead == 0)
             return;
 
-        listOfNamesMap = KOI.Parse(productsString);
+        var listOfNamesMap = KOI.Parse(productsString);
+        var names = KOI.GetObjectMapList(listOfNamesMap["ProductNames"]);
+        
+        Console.Clear();
+        Console.WriteLine("System products: ");
 
-        var names = KOI.GetObjectMapList(listOfNamesMap!["productsNames"]);
-
-        for (int i = 0; i < names.Count; i++)
+        var index = 0;
+        for (; index < names.Count; index++)
         {
-            Console.WriteLine(i + ". " + names[i]);
+            var prod = names[index];
+            Console.WriteLine($"{index + 1}. {prod["Name"]}: {prod["Stock"]} units left for ${prod["Price"]}.");
         }
+
+        Console.WriteLine("Enter key to go back...");
+        Console.ReadLine();
     }
 
 }

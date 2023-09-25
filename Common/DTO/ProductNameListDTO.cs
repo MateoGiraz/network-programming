@@ -1,6 +1,7 @@
 namespace Common.DTO;
 
-public class ProductNameListDTO
+public class ProductNameListDto
 {
-    public List<string> productsNames { get; set; }
+    public string Filter { get; set; }
+    public List<ProductDTO> ProductNames { get; set; }
 }
