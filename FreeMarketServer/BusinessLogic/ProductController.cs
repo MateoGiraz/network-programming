@@ -17,7 +17,7 @@ namespace BusinessLogic
             _productRepository.AddProduct(product);
         }
 
-        public void RemoveProduct(Product product)
+        public void RemoveProduct(Product product, Owner owner)
         {
             var products = _productRepository.GetProducts();
 
@@ -28,6 +28,10 @@ namespace BusinessLogic
                 throw new NullReferenceException("Product was not found");
             }
             
+            if (!deleteProduct.Owner.Equals(owner))
+            {
+                throw new ArgumentException("User cannot delete a product they do not own");
+            }
             _productRepository.RemoveProduct(product);
         }
 
@@ -51,7 +55,7 @@ namespace BusinessLogic
 
             if (product.Stock == boughtProducts)
             {
-                RemoveProduct(product);
+                RemoveProduct(product, product.Owner);
                 return;
             }
 
