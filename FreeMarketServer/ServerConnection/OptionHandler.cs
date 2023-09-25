@@ -3,6 +3,7 @@ using Common.Helpers;
 using Common.Protocol;
 using System.Net.Sockets;
 using ServerConnection.Handler;
+using ServerConnection.Handler.User;
 
 
 namespace ServerConnection;
@@ -24,7 +25,7 @@ internal class OptionHandler
                 UserCreationHandler.Handle(_socket);
                 break;
             case 2:
-                UserCreationHandler.Handle(_socket);
+                UserLogInHandler.Handle(_socket);
                 break;
             case 3:
                 ProductCreationHandler.Handle(_socket);

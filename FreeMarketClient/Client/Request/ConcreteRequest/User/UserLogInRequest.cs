@@ -3,11 +3,11 @@ using Common.DTO;
 using Common.Helpers;
 using Common.Protocol;
 
-namespace free_market_client.Request.ConcreteRequest;
+namespace free_market_client.Request.ConcreteRequest.User;
 
-public class UserCreationRequest : RequestTemplate
+public class UserLogInRequest : RequestTemplate
 {
-    public string LogInUserDto = null;
+    public UserDTO? LogInUserDto;
     
     internal override void ConcreteHandle(Socket socket)
     {
@@ -17,13 +17,13 @@ public class UserCreationRequest : RequestTemplate
         Console.WriteLine("Type Password");
         var password = Console.ReadLine();
         
-        var userDTO = new UserDTO()
+        var userDto = new UserDTO()
         {
             UserName = user,
             Password = password
         };
 
-        var userData = KOI.Stringify(userDTO);
+        var userData = KOI.Stringify(userDto);
         var messageLength = ByteHelper.ConvertStringToBytes(userData).Length;
         
         SendLength(socket, messageLength);
@@ -36,32 +36,32 @@ public class UserCreationRequest : RequestTemplate
         if (bytesRead == 0)
             return;
 
-        (bytesRead, var userString) = NetworkHelper.ReceiveStringData(responseLength, socket);
+        (bytesRead, var responseString) = NetworkHelper.ReceiveStringData(responseLength, socket);
 
         if (bytesRead == 0)
             return;
 
-        var userMap = KOI.Parse(userString);
+        var responseMap = KOI.Parse(responseString);
 
-        var responseDTO = new ResponseDTO()
+        var responseDto = new ResponseDTO()
         {
-            StatusCode = int.Parse(userMap["StatusCode"].ToString()),
-            Message = userMap["Message"].ToString()
+            StatusCode = int.Parse(responseMap["StatusCode"].ToString()),
+            Message = responseMap["Message"].ToString()
         };
+
+        Console.Clear();
+        Console.WriteLine(responseDto.Message);
+        Thread.Sleep(1500);
+
+        if (responseDto.StatusCode != 200)
+            return;
         
+        LogInUserDto = userDto;
         
-        
-        
-        
-        if (responseDTO.StatusCode == 201)
-        { 
-            
-            LogInUserDto = responseDTO.Message;
-            if (bytesRead > 0)
-            {
-                Console.WriteLine("Server response: " + responseDTO.StatusCode);
-                Console.WriteLine("Server message: " + responseDTO.Message);
-            }
+        if (bytesRead > 0)
+        {
+            Console.WriteLine("Server response: " + responseDto.StatusCode);
+            Console.WriteLine("Server message: " + responseDto.Message);
         }
     }
 

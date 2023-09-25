@@ -11,52 +11,39 @@ namespace BusinessLogic
         // Accedemos a la instancia Singleton directamente
         private readonly IRepositoryOwner _ownerRepository = OwnerRepository.Instance;
 
-        public string LogIn(string username, string password)
+        public void LogIn(string username, string password)
         {
-            string res = "";
             try
             {
-                if (_ownerRepository.Exists(username))
-                {
-                    Authenticator authenticator = new();
-                    Owner foundOwner = GetOwner(username);
-                    Authenticator.AuthenticateLogIn(foundOwner, password);
-                    return "Welcome back, " + username;
-                }
-                else
-                {
-                    SignUp(username, password);
-                    res=("Welcome, " + username);
-                    return res;
-                }
+                if (!_ownerRepository.Exists(username)) 
+                    throw new AuthenticatorException("User does not exists");
+                
+                var foundOwner = GetOwner(username);
+                Authenticator.AuthenticateLogIn(foundOwner, password);
             }
             catch (AuthenticatorException ex)
             {
-                return ex.Message;
+                throw new AuthenticatorException(ex.Message);
             }
+
         }
 
-        private void SignUp(string username, string password)
+        public void SignUp(string username, string password)
         {
-            if (IsStringValid(username) && IsStringValid(password))
+            if (!IsStringValid(username) || !IsStringValid(password))
+                throw new AuthenticatorException("UserName & Password must not include hashtag symbol");
+            
+            var newOwner = new Owner()
             {
-                Owner newOwner = new Owner()
-                {
-                    UserName = username,
-                    Password = password
-                };
-                _ownerRepository.AddOwner(newOwner);
-            }
-            else
-            {
-                // SendMessageOfError
-            }
+                UserName = username,
+                Password = password
+            };
+            _ownerRepository.AddOwner(newOwner);
         }
 
         private bool IsStringValid(string username)
         {
-            if (username.Contains("#")) return false;
-            return true;
+            return !username.Contains('#');
         }
 
         public void AddOwner(Owner owner)

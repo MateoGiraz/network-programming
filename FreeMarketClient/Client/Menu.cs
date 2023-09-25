@@ -28,8 +28,6 @@ public class Menu
         return -1;
     }
 
-
-
     public static void PrintOptionsLoggedIn(string username)
     {
         Console.Clear();
@@ -45,6 +43,4 @@ public class Menu
 
         Console.Write("Please select an option : ");
     }
-
-
 }

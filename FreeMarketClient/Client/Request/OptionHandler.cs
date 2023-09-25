@@ -3,6 +3,7 @@ using Common.DTO;
 using Common.Helpers;
 using Common.Protocol;
 using free_market_client.Request.ConcreteRequest;
+using free_market_client.Request.ConcreteRequest.User;
 
 namespace free_market_client.Request
 {
@@ -13,6 +14,7 @@ namespace free_market_client.Request
         //esto deberia estar aca?
         private ProductCreationRequest _productCreationRequest;
         private UserCreationRequest _userCreationRequest;
+        private UserLogInRequest _userLogInRequest;
         private ProductRatingRequest _productRatingRequest;
         private ProductEditionRequest _productEditionRequest;
         private ProductDeletionRequest _productDeletionRequest;
@@ -24,6 +26,7 @@ namespace free_market_client.Request
 
             //hacer una factory o algo asi?
             _userCreationRequest = new UserCreationRequest();
+            _userLogInRequest = new UserLogInRequest();
             _productCreationRequest = new ProductCreationRequest();
             _productRatingRequest = new ProductRatingRequest();
             _productEditionRequest = new ProductEditionRequest();
@@ -39,14 +42,11 @@ namespace free_market_client.Request
                     _userCreationRequest.Handle(_socket, option);
                     break;
                 case 2:
-                    //_picSendingRequest.Handle(_socket, option);
-                    while (_userCreationRequest.LogInUserDto is null)
+                    _userLogInRequest.Handle(_socket, option);
+                    if (_userLogInRequest.LogInUserDto is not null)
                     {
-                        _userCreationRequest.Handle(_socket, option);
-                        Console.WriteLine("The credentials were not valid, please try");
-                        Thread.Sleep(1000);
+                        OptionsLoggedIn(_userLogInRequest.LogInUserDto);
                     }
-                    OptionsLoggedIn(_userCreationRequest.LogInUserDto);
                     break;
                 case 3:
                     break;
@@ -57,12 +57,13 @@ namespace free_market_client.Request
             }
         }
 
-        private void OptionsLoggedIn(string username)
+        private void OptionsLoggedIn(UserDTO username)
         {
+            Console.WriteLine($"Logged in as {username}");
             var res = -1;
             while (res != 8)
             {
-                Menu.PrintOptionsLoggedIn(username);
+                Menu.PrintOptionsLoggedIn(username.UserName);
                 res = Menu.ChooseOption();
                 HandleLogIn(res);
             }
@@ -102,7 +103,7 @@ namespace free_market_client.Request
                     break;
                 case 8:
                     Console.WriteLine("Log out");
-                    _userCreationRequest.LogInUserDto = null;
+                    _userLogInRequest.LogInUserDto = null;
                     break;
                 default:
                     Console.WriteLine("That's not a valid Option");
