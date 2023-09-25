@@ -7,51 +7,17 @@ using Common.Protocol;
 
 namespace ServerConnection.Handler.User;
 
-public class UserLogInHandler
+public class UserLogInHandler : UserHandler
 {
-    internal static void Handle(Socket socket)
+    protected override void HandleUserSpecificOperation()
     {
-        var (bytesRead, messageLength) =
-            NetworkHelper.ReceiveIntData(ProtocolStandards.SizeMessageDefinedLength, socket);
-
-        if (bytesRead == 0)
-            return;
-
-        (bytesRead, var userString) = NetworkHelper.ReceiveStringData(messageLength, socket);
-
-        if (bytesRead == 0)
-            return;
-
-        var userMap = KOI.Parse(userString);
-
-        var userDto = new UserDTO()
-        {
-            UserName = userMap["UserName"].ToString(),
-            Password = userMap["Password"].ToString()
-        };
-
-        var responseDto = new ResponseDTO();
         var oc = new OwnerController();
-        
-        try
-        {
-            oc.LogIn(userDto.UserName, userDto.Password);
-            responseDto.StatusCode = 200;
-            responseDto.Message = $"Welcome back, {userDto.UserName}";
-        }
-        catch (AuthenticatorException ex)
-        {
-            Console.WriteLine(ex.Message);
-            
-            responseDto.StatusCode = 400;
-            responseDto.Message = ex.Message;
-        };
 
-        var responseData = KOI.Stringify(responseDto);
-        var responseMessageLength = ByteHelper.ConvertStringToBytes(responseData).Length;
+        if (UserDto == null || ResponseDto == null) 
+            return;
         
-        NetworkHelper.SendMessage(ByteHelper.ConvertIntToBytes(responseMessageLength), socket);
-        NetworkHelper.SendMessage(ByteHelper.ConvertStringToBytes(responseData), socket);
+        oc.LogIn(UserDto.UserName, UserDto.Password);
+        ResponseDto.StatusCode = 200;
+        ResponseDto.Message = $"Welcome back, {UserDto.UserName}";
     }
-
 }
