@@ -5,29 +5,36 @@ using Common.Protocol;
 
 namespace free_market_client.Request.ConcreteRequest.User;
 
-public class UserCreationRequest : RequestTemplate
+public class UserRequest : RequestTemplate
 {
+    internal UserDTO? UserDto;
+    internal ResponseDTO? ResponseDto;
+    
     internal override void ConcreteHandle(Socket socket)
     {
         Console.WriteLine("Type Username");
-        var user = Console.ReadLine();
+        var user = GetInputData();
         
         Console.WriteLine("Type Password");
-        var password = Console.ReadLine();
+        var password = GetInputData();
         
-        var userDto = new UserDTO()
+        UserDto = new UserDTO()
         {
             UserName = user,
             Password = password
         };
 
-        var userData = KOI.Stringify(userDto);
+        var userData = KOI.Stringify(UserDto);
         var messageLength = ByteHelper.ConvertStringToBytes(userData).Length;
         
         SendLength(socket, messageLength);
         SendData(socket, userData);
         
-        // Ahora, espera y recibe la respuesta del servidor
+        GetServerResponse(socket);
+    }
+
+    private void GetServerResponse(Socket socket)
+    {
         var (bytesRead, responseLength) =
             NetworkHelper.ReceiveIntData(ProtocolStandards.SizeMessageDefinedLength, socket);
 
@@ -40,25 +47,17 @@ public class UserCreationRequest : RequestTemplate
             return;
 
         var responseMap = KOI.Parse(responseString);
-
-        var responseDto = new ResponseDTO()
+        var statusCodeValue = responseMap["StatusCode"] as string;
+        var messageValue = responseMap["Message"] as string;
+        
+        ResponseDto = new ResponseDTO()
         {
-            StatusCode = int.Parse(responseMap["StatusCode"].ToString()),
-            Message = responseMap["Message"].ToString()
+            StatusCode = int.Parse(statusCodeValue ?? "500"),
+            Message = messageValue ?? "Internal Server Error"
         };
 
         Console.Clear();
-        Console.WriteLine(responseDto.Message);
+        Console.WriteLine(ResponseDto.Message);
         Thread.Sleep(1500);
-        
-        if (responseDto.StatusCode != 200)
-            return;
-        
-        if (bytesRead > 0)
-        {
-            Console.WriteLine("Server response: " + responseDto.StatusCode);
-            Console.WriteLine("Server message: " + responseDto.Message);
-        }
     }
-
 }

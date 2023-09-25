@@ -32,4 +32,15 @@ public abstract class RequestTemplate
         NetworkHelper.SendMessage(ByteHelper.ConvertIntToBytes(res), socket);
     }
 
+    internal string GetInputData()
+    {
+        var ret = "";
+        while (ret == "" || ret.Contains('#'))
+        {
+            ret = Console.ReadLine();
+        }
+
+        return ret;
+    }
+
 }

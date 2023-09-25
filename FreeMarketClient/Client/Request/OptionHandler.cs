@@ -13,7 +13,7 @@ namespace free_market_client.Request
         
         //esto deberia estar aca?
         private ProductCreationRequest _productCreationRequest;
-        private UserCreationRequest _userCreationRequest;
+        private UserRequest _userRequest;
         private UserLogInRequest _userLogInRequest;
         private ProductRatingRequest _productRatingRequest;
         private ProductEditionRequest _productEditionRequest;
@@ -25,7 +25,7 @@ namespace free_market_client.Request
             _socket = socket;
 
             //hacer una factory o algo asi?
-            _userCreationRequest = new UserCreationRequest();
+            _userRequest = new UserRequest();
             _userLogInRequest = new UserLogInRequest();
             _productCreationRequest = new ProductCreationRequest();
             _productRatingRequest = new ProductRatingRequest();
@@ -39,7 +39,7 @@ namespace free_market_client.Request
            switch (option)
             {
                 case 1:
-                    _userCreationRequest.Handle(_socket, option);
+                    _userRequest.Handle(_socket, option);
                     break;
                 case 2:
                     _userLogInRequest.Handle(_socket, option);
