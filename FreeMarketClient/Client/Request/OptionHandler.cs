@@ -40,13 +40,13 @@ namespace free_market_client.Request
                     break;
                 case 2:
                     //_picSendingRequest.Handle(_socket, option);
-                    while (_userCreationRequest.LogInUserDto.UserName.Equals("NotValid"))
+                    while (_userCreationRequest.LogInUserDto is null)
                     {
                         _userCreationRequest.Handle(_socket, option);
                         Console.WriteLine("The credentials were not valid, please try");
-                        
+                        Thread.Sleep(1000);
                     }
-                    OptionsLoggedIn(_userCreationRequest.LogInUserDto.UserName);
+                    OptionsLoggedIn(_userCreationRequest.LogInUserDto);
                     break;
                 case 3:
                     break;
@@ -102,7 +102,7 @@ namespace free_market_client.Request
                     break;
                 case 8:
                     Console.WriteLine("Log out");
-                    _userCreationRequest.LogInUserDto.UserName = "NotValid";
+                    _userCreationRequest.LogInUserDto = null;
                     break;
                 default:
                     Console.WriteLine("That's not a valid Option");

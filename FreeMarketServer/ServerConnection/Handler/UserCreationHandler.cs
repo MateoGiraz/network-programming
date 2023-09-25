@@ -59,13 +59,13 @@ public class UserCreationHandler
         //Acá le responde el server al cliente.
         //De momento estoy usando el UserDTO porque no le se a enviar Strings asi nomás
         //Capaz habría que hacer un ResponseDTO para las respuestas
-        var responseDTO = new UserDTO()
+        var  responseDto= new ResponseDTO()
         {
-            UserName = userDTO.UserName,
-            Password = response
+             StatusCode = 201,
+             Message = userDTO.UserName  
         };
 
-        var responseData = KOI.Stringify(responseDTO);
+        var responseData = KOI.Stringify(responseDto);
         var responseMessageLength = ByteHelper.ConvertStringToBytes(responseData).Length;
         
         NetworkHelper.SendMessage(ByteHelper.ConvertIntToBytes(responseMessageLength), socket);

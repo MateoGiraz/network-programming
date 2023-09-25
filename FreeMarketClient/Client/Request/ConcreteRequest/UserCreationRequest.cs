@@ -7,11 +7,7 @@ namespace free_market_client.Request.ConcreteRequest;
 
 public class UserCreationRequest : RequestTemplate
 {
-    public UserDTO LogInUserDto =new UserDTO()
-    {
-        UserName = "NotValid",
-        Password = "14"
-    } ;
+    public string LogInUserDto = null;
     
     internal override void ConcreteHandle(Socket socket)
     {
@@ -47,19 +43,24 @@ public class UserCreationRequest : RequestTemplate
 
         var userMap = KOI.Parse(userString);
 
-        var responseDTO = new UserDTO()
+        var responseDTO = new ResponseDTO()
         {
-            UserName = userMap["UserName"].ToString(),
-            Password = userMap["Password"].ToString()
+            StatusCode = int.Parse(userMap["StatusCode"].ToString()),
+            Message = userMap["Message"].ToString()
         };
-
-        if (!responseDTO.Password.Equals("Invalid credentials, please try again."))
-        {
-            LogInUserDto = responseDTO;
+        
+        
+        
+        
+        
+        if (responseDTO.StatusCode == 201)
+        { 
+            
+            LogInUserDto = responseDTO.Message;
             if (bytesRead > 0)
             {
-                Console.WriteLine("Server response: " + responseDTO.UserName);
-                Console.WriteLine("Server message: " + responseDTO.Password);
+                Console.WriteLine("Server response: " + responseDTO.StatusCode);
+                Console.WriteLine("Server message: " + responseDTO.Message);
             }
         }
     }
