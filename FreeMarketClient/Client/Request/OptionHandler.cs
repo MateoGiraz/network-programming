@@ -3,6 +3,7 @@ using Common.DTO;
 using Common.Helpers;
 using Common.Protocol;
 using free_market_client.Request.ConcreteRequest;
+using free_market_client.Request.ConcreteRequest.Product;
 using free_market_client.Request.ConcreteRequest.User;
 
 namespace free_market_client.Request
@@ -39,16 +40,14 @@ namespace free_market_client.Request
            switch (option)
             {
                 case 1:
-                    _userRequest.Handle(_socket, option);
+                    _userRequest.Handle(_socket, option, null);
                     break;
                 case 2:
-                    _userLogInRequest.Handle(_socket, option);
+                    _userLogInRequest.Handle(_socket, option, null);
                     if (_userLogInRequest.LogInUserDto is not null)
                     {
                         OptionsLoggedIn(_userLogInRequest.LogInUserDto);
                     }
-                    break;
-                case 3:
                     break;
                 default:
                     Console.WriteLine("That's not a valid option");
@@ -65,29 +64,29 @@ namespace free_market_client.Request
             {
                 Menu.PrintOptionsLoggedIn(username.UserName);
                 res = Menu.ChooseOption();
-                HandleLogIn(res);
+                HandleLogIn(res, username.UserName);
             }
         }
 
-        private void HandleLogIn(int option)
+        private void HandleLogIn(int option, string userName)
         {
             switch (option)
             {
                 case 1:
                     Console.WriteLine("Purchase a Product");
-                    _productPurchaseRequest.Handle(_socket, option);
+                    _productPurchaseRequest.Handle(_socket, option + 2, userName);
                     break;
                 case 2:
                     Console.WriteLine("Create Product");
-                    _productCreationRequest.Handle(_socket, option);
+                    _productCreationRequest.Handle(_socket, option + 2, userName);
                     break;
                 case 3:
                     Console.WriteLine("Modify Product");
-                    _productEditionRequest.Handle(_socket, option);
+                    _productEditionRequest.Handle(_socket, option + 2, userName);
                     break;
                 case 4:
                     Console.WriteLine("Drop Product");
-                    _productDeletionRequest.Handle(_socket, option);
+                    _productDeletionRequest.Handle(_socket, option + 2, userName);
                     break;
                 case 5:
                     //TODO
@@ -95,11 +94,11 @@ namespace free_market_client.Request
                     break;
                 case 6:
                     Console.WriteLine("Consult for a Product by Name");                    
-                    _productRatingRequest.Handle(_socket, option);
+                    //_productRatingRequest.Handle(_socket, option + 2, userName);
                     break;
                 case 7:
                     Console.WriteLine("Rate a Product");
-                    _productRatingRequest.Handle(_socket, option);
+                    _productRatingRequest.Handle(_socket, option + 2, userName);
                     break;
                 case 8:
                     Console.WriteLine("Log out");

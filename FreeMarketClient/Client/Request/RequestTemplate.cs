@@ -6,16 +6,16 @@ namespace free_market_client.Request;
 
 public abstract class RequestTemplate
 {
-    internal void Handle(Socket socket, int option)
+    internal void Handle(Socket socket, int option, string? userName)
     {
         //SEND REQ
         
         SendCmd(socket, option);
         
-        ConcreteHandle(socket);
+        ConcreteHandle(socket, userName);
     }
     
-    internal abstract void ConcreteHandle(Socket socket);
+    internal abstract void ConcreteHandle(Socket socket, string? userName);
     
     internal void SendData(Socket socket, string userData)
     {

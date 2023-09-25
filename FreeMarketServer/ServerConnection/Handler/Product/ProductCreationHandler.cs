@@ -9,7 +9,6 @@ namespace ServerConnection.Handler;
 
 public class ProductCreationHandler
 {
-    //Quizás puede ser genérico
     internal static void Handle(Socket socket)
     {
         var (bytesRead, messageLength) =
@@ -19,31 +18,38 @@ public class ProductCreationHandler
             return;
 
         (bytesRead, var productString) = NetworkHelper.ReceiveStringData(messageLength, socket);
-
+        Console.WriteLine(productString);
         if (bytesRead == 0)
             return;
-
-        var productMap = KOI.Parse(productString);
         
-        var fileTransferHelper = new FileTransferHelper();
-        var imgPath = fileTransferHelper.ReceiveFile(socket);
+        var productMap = KOI.Parse(productString);
+    
+        Console.WriteLine( productMap["Name"] );
+        var userMap = KOI.GetObjectMap(productMap["Owner"]);
+        var userDto = new UserDTO()
+        {
+            UserName = userMap["UserName"]
+        };
         
         var productDto = new ProductDTO()
         {
-            Name = productMap["Name"].ToString(),
-            Description = productMap["Description"].ToString(),
-            Price = productMap["Price"].ToString(),
-            Stock = productMap["Stock"].ToString(),
-            ImageRoute = imgPath
+            Name = productMap["Name"] as string,
+            Description = productMap["Description"] as string,
+            Price = productMap["Price"] as string,
+            Stock = productMap["Stock"] as string,
+            Owner = userDto
         };
         
         var productToBeCreated = new Product()
         {
             Name = productDto.Name,
             Description = productDto.Description,
-            ImageRoute = productDto.ImageRoute,
             Price = int.Parse(productDto.Price),
-            Stock = int.Parse(productDto.Stock)
+            Stock = int.Parse(productDto.Stock),
+            Owner = new Owner()
+            {
+                UserName = userDto.UserName
+            }
         };
 
         Console.WriteLine("Received Product: " + productDto.Name);
@@ -54,6 +60,14 @@ public class ProductCreationHandler
         
         Console.WriteLine("Product to be Created: " + productToBeCreated.Name);
         Console.WriteLine("Product Description: " + productToBeCreated.Description);
-        
+
+        var products = productController.GetProducts();
+
+        Console.WriteLine("Products in system: ");
+        foreach (var prod in products)
+        {
+            Console.WriteLine("prod: " + prod.Name + " of: " + prod.Owner.UserName);
+        }
+
     }
 }

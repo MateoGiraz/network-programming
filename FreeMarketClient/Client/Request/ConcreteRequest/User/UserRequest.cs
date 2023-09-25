@@ -10,7 +10,7 @@ public class UserRequest : RequestTemplate
     internal UserDTO? UserDto;
     internal ResponseDTO? ResponseDto;
     
-    internal override void ConcreteHandle(Socket socket)
+    internal override void ConcreteHandle(Socket socket, string? userName)
     {
         Console.WriteLine("Type Username");
         var user = GetInputData();

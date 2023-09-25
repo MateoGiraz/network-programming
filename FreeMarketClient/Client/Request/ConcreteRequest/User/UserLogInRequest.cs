@@ -7,9 +7,9 @@ public class UserLogInRequest : UserRequest
 {
     public UserDTO? LogInUserDto;
     
-    internal override void ConcreteHandle(Socket socket)
+    internal override void ConcreteHandle(Socket socket, string? userName)
     {
-        base.ConcreteHandle(socket);
+        base.ConcreteHandle(socket, userName);
         if(UserDto != null && ResponseDto is { StatusCode: 200 })
             LogInUserDto = UserDto;
     }
