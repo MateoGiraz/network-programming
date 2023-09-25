@@ -9,6 +9,22 @@ public class GetProductsRequest : RequestTemplate
 {
     internal override void ConcreteHandle(Socket socket, string? userName)
     {
+        Console.Clear();
+        Console.WriteLine("Type Product Filer (Enter for no filter)");
+        
+        var filter = Console.ReadLine();
+        filter = string.IsNullOrWhiteSpace(filter) ? "none" : filter;
+
+        var messageLength = ByteHelper.ConvertStringToBytes(filter).Length;
+
+        SendLength(socket, messageLength);
+        SendData(socket, filter);
+        
+        GetResponse(socket);
+    }
+
+    private void GetResponse(Socket socket)
+    {
         var (bytesRead, messageLength) =
             NetworkHelper.ReceiveIntData(ProtocolStandards.SizeMessageDefinedLength, socket);
 
