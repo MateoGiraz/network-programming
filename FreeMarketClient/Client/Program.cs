@@ -26,7 +26,6 @@ public static class Program
             res = Menu.ChooseOption();
             optionHandler.Handle(res);
         }
-        
         socket.Shutdown(SocketShutdown.Both);
         socket.Close();
     }

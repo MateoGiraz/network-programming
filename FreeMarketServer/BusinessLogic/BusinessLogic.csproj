@@ -9,8 +9,8 @@
 
     <ItemGroup>
       <ProjectReference Include="..\CoreBusiness\CoreBusiness.csproj" />
-      <ProjectReference Include="..\Factory\Factory.csproj" />
       <ProjectReference Include="..\IRepository\IRepository.csproj" />
+      <ProjectReference Include="..\MemoryRepository\MemoryRepository.csproj" />
     </ItemGroup>
 
 

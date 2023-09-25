@@ -42,9 +42,9 @@ public class KOI {
                 continue;
             }
 
-            result += SplitToken + Stringify(val, prop.Name);
+            result += SplitToken + Stringify(val, prop.Name) + SplitToken + SplitToken;
         }
-
+        
         return result[..^2];
     }
 

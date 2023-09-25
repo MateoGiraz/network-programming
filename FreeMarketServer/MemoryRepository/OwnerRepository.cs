@@ -1,41 +1,50 @@
 ﻿using CoreBusiness;
 using IRepository;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace MemoryRepository;
-
-public class OwnerRepository : IRepositoryOwner
+namespace MemoryRepository
 {
-    private readonly List<Owner> _owners = new ();
-    
-    public void AddOwner(Owner owner)
+    public class OwnerRepository : IRepositoryOwner
     {
-        _owners.Add(owner);
-    }
+        private static readonly Lazy<OwnerRepository> _instance = new Lazy<OwnerRepository>(() => new OwnerRepository());
 
-    public void RemoveOwner(Owner owner)
-    {
-        _owners.Remove(owner);
-    }
+        public static OwnerRepository Instance => _instance.Value;
 
-    public Owner GetOwner(string name)
-    {
+        private readonly List<Owner> _owners = new List<Owner>();
 
+        private OwnerRepository() { }  // Constructor privado
+
+        public void AddOwner(Owner owner)
+        {
+            _owners.Add(owner);
+        }
+
+        public void RemoveOwner(Owner owner)
+        {
+            _owners.Remove(owner);
+        }
+
+        public Owner GetOwner(string name)
+        {
             var foundOwner = _owners.FirstOrDefault(owner => owner.UserName.Equals(name));
             if (foundOwner is null)
             {
                 throw new MemoryRepositoryException("Product was not found.");
             }
             return foundOwner;
-    }
+        }
 
-    public List<Owner> GetOwners()
-    {
-        return _owners;
-    }
+        public List<Owner> GetOwners()
+        {
+            return _owners;
+        }
 
-    public bool Exists(string username)
-    {
-        return (_owners.FirstOrDefault(owner => owner.UserName.Equals(username))!=null);
+        public bool Exists(string username)
+        {
+            return (_owners.FirstOrDefault(owner => owner.UserName.Equals(username)) != null);
+        }
     }
 }
+
 

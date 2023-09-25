@@ -20,4 +20,19 @@
 
 
 
+    <ItemGroup>
+      <ProjectReference Include="..\BusinessLogic\BusinessLogic.csproj" />
+      <ProjectReference Include="..\CoreBusiness\CoreBusiness.csproj" />
+    </ItemGroup>
+
+
+
+
+
+
+
+
+
+
+
 </Project>

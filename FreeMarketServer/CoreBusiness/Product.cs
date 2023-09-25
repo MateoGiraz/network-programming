@@ -11,10 +11,12 @@ public class Product
      public int Price { get; set; }
      public List<Rating> Ratings { get; set; }
      public Owner Owner { get; set; }
-     public byte[] ImageData { get; set; }
+     public string ImageRoute { get; set; }
 
      public void AddRating(int score, string comment)
      {
+          Ratings ??= new List<Rating>();
+          
           var toAddRating = new Rating()
           {
                Score = score,
@@ -34,19 +36,6 @@ public class Product
           else {
                Product p = (Product) obj;
                return (Name == p.Name);
-          }
-     }
-     public void SetImage(string imagePath)
-     {
-          ImageData = File.ReadAllBytes(imagePath);
-     }
-
-// Method to get image
-     public Image GetImage()
-     {
-          using (var ms = new MemoryStream(ImageData))
-          {
-               return Image.FromStream(ms);
           }
      }
 }
