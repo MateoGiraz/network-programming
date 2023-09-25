@@ -29,7 +29,7 @@ public class UserCreationHandler
             UserName = userMap["UserName"].ToString(),
             Password = userMap["Password"].ToString()
         };
-        
+        Thread.Sleep(1000);
         OwnerController oc = new OwnerController();
         String response=oc.LogIn(userDTO.UserName, userDTO.Password);
         

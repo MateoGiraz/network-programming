@@ -24,7 +24,7 @@ internal class OptionHandler
                 UserCreationHandler.Handle(_socket);
                 break;
             case 2:
-                PicReceivingHandler.Handle(_socket);
+                UserCreationHandler.Handle(_socket);
                 break;
             case 3:
                 ProductCreationHandler.Handle(_socket);

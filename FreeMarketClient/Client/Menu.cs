@@ -10,7 +10,7 @@ public class Menu
         Console.Clear();
         Console.WriteLine("Welcome to the Terminal Menu");
         Console.WriteLine("1. Register User");
-        Console.WriteLine("2. (Ahora Sendea Pics)Log in");
+        Console.WriteLine("2. Log in");
         Console.WriteLine("3. Exit");
 
         Console.Write("Please select an option : ");
