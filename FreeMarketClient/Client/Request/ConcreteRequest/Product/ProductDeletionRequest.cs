@@ -3,4 +3,6 @@
 public class ProductDeletionRequest : ProductRequest
 {
     protected override void HandleConcreteProductOperation() {}
+
+    protected override void HandleImageSending() {}
 }

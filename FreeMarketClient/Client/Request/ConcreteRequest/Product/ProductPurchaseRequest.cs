@@ -3,4 +3,6 @@
     public class ProductPurchaseRequest : ProductRequest
     {
         protected override void HandleConcreteProductOperation() {}
+        protected override void HandleImageSending() {}
+
     }

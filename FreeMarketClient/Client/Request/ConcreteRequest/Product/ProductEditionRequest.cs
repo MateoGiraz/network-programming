@@ -16,4 +16,5 @@ public class ProductEditionRequest : ProductRequest
         var stock = GetInputData();
         ProductDto.Stock = stock;    
     }
+    protected override void HandleImageSending() {}
 }

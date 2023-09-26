@@ -38,6 +38,7 @@ public class GetProductHandler
             productDto.Description = product.Description;
             productDto.Stock = product.Stock.ToString();
             productDto.Price = product.Price.ToString();
+            productDto.ImageRoute = product.ImageRoute;
             productDto.Ratings = product.Ratings.Select(r =>
                 new RatingDTO()
                     {
