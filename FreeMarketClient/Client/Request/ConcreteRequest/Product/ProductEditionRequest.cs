@@ -15,5 +15,9 @@ public class ProductEditionRequest : ProductRequest
         Console.WriteLine("Type Stock");
         var stock = GetInputData();
         ProductDto.Stock = stock;    
+        
+        Console.WriteLine("Type new Image Path");
+        var path = GetInputData();
+        ProductDto.ImageRoute = path;    
     }
 }

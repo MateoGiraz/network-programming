@@ -67,7 +67,6 @@ namespace BusinessLogic
             Product oldProduct = GetProduct(name);
             if (oldProduct.Owner.Equals(editor))
             {
-                newProduct.Stock = oldProduct.Stock;
                 _productRepository.RemoveProduct(oldProduct);
                 _productRepository.AddProduct(newProduct);
                 Console.WriteLine("Product " + newProduct.Name + " has been successfully updated");
