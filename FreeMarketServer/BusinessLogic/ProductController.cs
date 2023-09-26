@@ -4,6 +4,7 @@ using MemoryRepository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace BusinessLogic
 {
@@ -23,6 +24,16 @@ namespace BusinessLogic
 
             var deleteProduct = products.FirstOrDefault(toCheckProduct => toCheckProduct.Equals(product));
             
+            var type = deleteProduct.GetType();
+
+            foreach (var property in type.GetProperties())
+            {
+                var propertyName = property.Name;
+                var propertyValue = property.GetValue(deleteProduct);
+
+                Console.WriteLine($"{propertyName}: {propertyValue}");
+            }
+
             if (deleteProduct is null)
             {
                 throw new NullReferenceException("Product was not found");
@@ -32,6 +43,22 @@ namespace BusinessLogic
             {
                 throw new ArgumentException("User cannot delete a product they do not own");
             }
+
+            var filePath = deleteProduct.ImageRoute;
+
+            if (File.Exists(filePath))
+            {
+                try
+                {
+                    File.Delete(filePath);
+                    Console.WriteLine("File deleted successfully.");
+                }
+                catch (IOException e)
+                {
+                    Console.WriteLine("An error occurred: " + e.Message);
+                }
+            }
+
             _productRepository.RemoveProduct(product);
         }
 
