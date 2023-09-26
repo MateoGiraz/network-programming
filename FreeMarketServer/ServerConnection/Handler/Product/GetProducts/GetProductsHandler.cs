@@ -28,7 +28,7 @@ public class GetProductsHandler
     {
         var pc = new ProductController();
         
-        var productsDto = pc.GetProducts()
+        var productsDto =  pc.GetProducts()
             .Where(p => p.Name.ToLower().Contains(filter.ToLower()) || filter == "none")
             .Select(product => 
                 new ProductDTO(){
