@@ -12,8 +12,16 @@
       <Reference Include="Common">
         <HintPath>..\..\Common\bin\Debug\net6.0\Common.dll</HintPath>
       </Reference>
+    </ItemGroup>
 
+    <ItemGroup>
+        <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
+    </ItemGroup>
 
+    <ItemGroup>
+        <None Update="App.config">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 
