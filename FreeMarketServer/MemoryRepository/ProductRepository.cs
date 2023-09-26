@@ -44,5 +44,15 @@ namespace MemoryRepository
         {
             return _products;
         }
+
+        public List<string> GetProductsNames()
+        {
+            List<string> ret = new List<string>();
+            foreach (var product in _products)
+            {
+                ret.Add(product.Name);
+            }
+            return ret;
+        }
     }
 }

@@ -12,6 +12,7 @@ public class UserRequest : RequestTemplate
     
     internal override void ConcreteHandle(Socket socket, string? userName)
     {
+        Console.Clear();
         Console.WriteLine("Type Username");
         var user = GetInputData();
         

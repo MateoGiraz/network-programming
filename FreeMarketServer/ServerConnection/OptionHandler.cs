@@ -1,5 +1,6 @@
 ﻿using System.Net.Sockets;
 using ServerConnection.Handler.Product.ConcreteProductHandler;
+using ServerConnection.Handler.Product.GetProducts;
 using ServerConnection.Handler.User;
 
 namespace ServerConnection;
@@ -14,6 +15,8 @@ internal class OptionHandler
     private readonly ProductEditionHandler _productEditionHandler;
     private readonly ProductRatingHandler _productRatingHandler;
     private readonly ProductPurchaseHandler _productPurchaseHandler;
+    private readonly GetProductsHandler _getProductsHandler;
+    private readonly GetProductHandler _getProductHandler;
 
 
     public OptionHandler(Socket socket)
@@ -27,6 +30,8 @@ internal class OptionHandler
         _productEditionHandler = new ProductEditionHandler();
         _productRatingHandler = new ProductRatingHandler();
         _productPurchaseHandler = new ProductPurchaseHandler();
+        _getProductsHandler = new GetProductsHandler();
+        _getProductHandler = new GetProductHandler();
     }
 
     public void Handle(int option)
@@ -52,10 +57,10 @@ internal class OptionHandler
                 _productDeletionHandler.Handle(_socket);
                 break;
             case 7:
-                //get prods
+                _getProductsHandler.Handle(_socket);
                 break;
             case 8:
-                //get a prod
+                _getProductHandler.Handle(_socket);
                 break;
             case 9:
                 _productRatingHandler.Handle(_socket);

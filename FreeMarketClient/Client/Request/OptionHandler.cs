@@ -20,6 +20,8 @@ namespace free_market_client.Request
         private ProductEditionRequest _productEditionRequest;
         private ProductDeletionRequest _productDeletionRequest;
         private ProductPurchaseRequest _productPurchaseRequest;
+        private GetProductsRequest _getProductsRequest;
+        private GetProductRequest _getProductRequest;
 
         public OptionHandler(Socket socket)
         {
@@ -33,6 +35,9 @@ namespace free_market_client.Request
             _productEditionRequest = new ProductEditionRequest();
             _productDeletionRequest = new ProductDeletionRequest();
             _productPurchaseRequest = new ProductPurchaseRequest();
+            _getProductsRequest = new GetProductsRequest();
+            _getProductRequest = new GetProductRequest();
+            
         }
 
         public void Handle(int option)
@@ -89,12 +94,12 @@ namespace free_market_client.Request
                     _productDeletionRequest.Handle(_socket, option + 2, userName);
                     break;
                 case 5:
-                    //TODO
                     Console.WriteLine("Get Products");
+                    _getProductsRequest.Handle(_socket, option + 2, userName);
                     break;
                 case 6:
-                    Console.WriteLine("Consult for a Product by Name");                    
-                    //_productRatingRequest.Handle(_socket, option + 2, userName);
+                    Console.WriteLine("Get a Product by Name");                    
+                    _getProductRequest.Handle(_socket, option + 2, userName);
                     break;
                 case 7:
                     Console.WriteLine("Rate a Product");

@@ -12,7 +12,8 @@ public class KOI {
     private const string UnderScore = "_";
 
     public static string Stringify(object? obj, string name = "") {
-         
+        Console.WriteLine("in");
+
         var type = obj!.GetType();
         var props = type.GetProperties().ToList();
 
@@ -20,6 +21,7 @@ public class KOI {
             name = type.Name;
             
         var result = name + SplitToken;
+        Console.WriteLine(result);
 
         foreach (var prop in props)
         {
