@@ -4,7 +4,7 @@ using Common.Helpers;
 using Common.Protocol;
 using System.Net.Sockets;
 
-namespace ServerConnection.Handler.Product.ConcreteProductHandler;
+namespace ServerConnection.Handler.Product.GetProducts;
 
 public class GetProductsHandler
 {
