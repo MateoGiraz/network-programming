@@ -23,11 +23,6 @@
         <ProjectReference Include="..\CoreBusiness\CoreBusiness.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-        <None Update="App.config">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-    </ItemGroup>
 
 </Project>
 
