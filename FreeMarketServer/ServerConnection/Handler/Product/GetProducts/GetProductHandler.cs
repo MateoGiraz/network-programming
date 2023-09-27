@@ -17,16 +17,21 @@ public class GetProductHandler
         if (bytesRead == 0)
             return;
 
-        (bytesRead, var name) = NetworkHelper.ReceiveStringData(messageLength, socket);
+        (bytesRead, var getRequest) = NetworkHelper.ReceiveStringData(messageLength, socket);
 
         if (bytesRead == 0)
             return;
 
-        SendResponse(socket, name);
+        SendResponse(socket, getRequest);
     }
 
-    private static void SendResponse(Socket socket, string name)
+    private static void SendResponse(Socket socket, string getRequest)
     {
+        var requestMap = KOI.Parse(getRequest);
+
+        var name = requestMap["Name"].ToString();
+        var getImage = requestMap["GetImage"].ToString();
+        
         var pc = new ProductController();
         var productDto = new ProductDTO();
         
@@ -36,6 +41,7 @@ public class GetProductHandler
             
             productDto.Name = product.Name;
             productDto.Description = product.Description;
+            productDto.ImageRoute = product.ImageRoute;
             productDto.Stock = product.Stock.ToString();
             productDto.Price = product.Price.ToString();
             productDto.ImageRoute = product.ImageRoute;
@@ -58,5 +64,23 @@ public class GetProductHandler
 
         NetworkHelper.SendMessage(ByteHelper.ConvertIntToBytes(messageLength), socket);
         NetworkHelper.SendMessage(ByteHelper.ConvertStringToBytes(productsData), socket);
+        
+        
+        var shouldSendImage = getImage.ToLower().Equals("y");
+
+        if (shouldSendImage)
+        {
+            try
+            {
+                var fileTransferHelper = new FileTransferHelper();
+                fileTransferHelper.SendFile(socket, productDto.ImageRoute);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            
+        }
+
     }
 }
