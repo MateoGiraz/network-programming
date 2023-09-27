@@ -35,7 +35,7 @@ public class Menu
         Console.WriteLine("1. Purchase a Product");
         Console.WriteLine("2. Create a Product");
         Console.WriteLine("3. Modify a Product");
-        Console.WriteLine("4. Drop off a Product");
+        Console.WriteLine("4. Remove a Product");
         Console.WriteLine("5. Get Products");
         Console.WriteLine("6. Consult for a Product by Name");
         Console.WriteLine("7. Rate a Product");
