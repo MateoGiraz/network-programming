@@ -15,6 +15,11 @@ namespace BusinessLogic
 
         public void AddProduct(Product product)
         {
+            var productIsDefined = _productRepository.GetProducts().Select(p => p.Name).Contains(product.Name);
+            if (productIsDefined)
+            {
+                throw new BusinessLogicException("A product with this name already exists");
+            }
             _productRepository.AddProduct(product);
         }
 

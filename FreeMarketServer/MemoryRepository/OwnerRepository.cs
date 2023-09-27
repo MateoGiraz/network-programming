@@ -55,7 +55,7 @@ namespace MemoryRepository
                 var foundOwner = _owners.FirstOrDefault(owner => owner.UserName.Equals(name));
                 if (foundOwner is null)
                 {
-                    throw new MemoryRepositoryException("Product was not found.");
+                    throw new MemoryRepositoryException("Owner was not found.");
                 }
                 return foundOwner;
             }
