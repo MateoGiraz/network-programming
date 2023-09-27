@@ -7,52 +7,63 @@ namespace MemoryRepository
 {
     public class ProductRepository : IRepositoryProduct
     {
-        // Creación de una instancia Lazy para el Singleton
         private static readonly Lazy<ProductRepository> _instance = new Lazy<ProductRepository>(() => new ProductRepository());
-        
-        // Proporcionar un acceso público a esta instancia a través de una propiedad estática
+
         public static ProductRepository Instance => _instance.Value;
 
         private readonly List<Product> _products = new List<Product>();
 
-        // Hacer el constructor privado para evitar que otros códigos creen instancias de la clase
+        // Objeto de bloqueo
+        private readonly object _lockObject = new object();
+
         private ProductRepository() { }
 
         public void AddProduct(Product product)
         {
-            _products.Add(product);
+            lock (_lockObject)
+            {
+                _products.Add(product);
+            }
         }
 
         public void RemoveProduct(Product product)
         {
-            _products.Remove(product);
+            lock (_lockObject)
+            {
+                _products.Remove(product);
+            }
         }
 
         public Product GetProduct(string name)
         {
-            var foundProduct = _products.FirstOrDefault(product => product.Name.Equals(name));
-
-            if (foundProduct is null)
+            lock (_lockObject)
             {
-                throw new MemoryRepositoryException("Product was not found.");
-            }
+                var foundProduct = _products.FirstOrDefault(product => product.Name.Equals(name));
+                
+                if (foundProduct is null)
+                {
+                    throw new MemoryRepositoryException("Product was not found.");
+                }
 
-            return foundProduct;
+                return foundProduct;
+            }
         }
 
         public List<Product> GetProducts()
         {
-            return _products;
+            lock (_lockObject)
+            {
+                // Es una buena práctica retornar una copia de la lista para evitar problemas de concurrencia externos
+                return _products.ToList();
+            }
         }
 
         public List<string> GetProductsNames()
         {
-            List<string> ret = new List<string>();
-            foreach (var product in _products)
+            lock (_lockObject)
             {
-                ret.Add(product.Name);
+                return _products.Select(product => product.Name).ToList();
             }
-            return ret;
         }
     }
 }
