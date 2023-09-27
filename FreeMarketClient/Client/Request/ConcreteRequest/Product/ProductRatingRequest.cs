@@ -25,4 +25,5 @@ public class ProductRatingRequest : ProductRequest
 
         ProductDto!.Ratings = ratings;
     }
+    protected override void HandleImageSending() {}
 }

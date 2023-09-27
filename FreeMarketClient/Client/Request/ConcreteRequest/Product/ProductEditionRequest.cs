@@ -20,4 +20,5 @@ public class ProductEditionRequest : ProductRequest
         var path = GetInputData();
         ProductDto.ImageRoute = path;    
     }
+    protected override void HandleImageSending() {}
 }

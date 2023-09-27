@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using Common;
+using Microsoft.VisualBasic.FileIO;
 
 namespace Common.Helpers
 {
@@ -45,11 +46,7 @@ namespace Common.Helpers
 
         private long SendFileInfo(Socket socket, string filePath)
         {
-            //elegir donde se guardan xd
-            string myPicturesPath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
-            string fileName = Path.GetFileName(filePath);
-            
-            filePath = Path.Combine(myPicturesPath, fileName);
+            var fileName = Path.GetFileName(filePath);
             
             byte[] fileNameBytes = ByteHelper.ConvertStringToBytes(fileName);
 
@@ -96,9 +93,16 @@ namespace Common.Helpers
 
         private string ReceiveFileData(Socket socket, string fileName, int fileSize)
         {
-            const string relativeFolderPath = "Images";
-            var folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativeFolderPath);
-            var filePath = Path.Combine(folderPath, fileName);
+            var projectDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            const string relativeDirectory = "Images";
+            var directoryPath = Path.Combine(projectDirectory, relativeDirectory);
+            
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+            
+            var filePath = Path.Combine(directoryPath, fileName);
 
             var fileStreamHelper = new FileStreamHelper();
             long offset = 0;

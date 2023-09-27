@@ -11,18 +11,21 @@ public abstract class ProductHandler
     internal ResponseDTO? ResponseDto;
     internal UserDTO? UserDto;
     internal Dictionary<string, object>? ProductMap;
+    internal Socket Socket;
     
     protected abstract void HandleProductSpecificOperation();
 
     internal void Handle(Socket socket)
     {
+        Socket = socket;
+        
         var (bytesRead, messageLength) =
-            NetworkHelper.ReceiveIntData(ProtocolStandards.SizeMessageDefinedLength, socket);
+            NetworkHelper.ReceiveIntData(ProtocolStandards.SizeMessageDefinedLength, Socket);
 
         if (bytesRead == 0)
             return;
 
-        (bytesRead, var productString) = NetworkHelper.ReceiveStringData(messageLength, socket);
+        (bytesRead, var productString) = NetworkHelper.ReceiveStringData(messageLength, Socket);
 
         if (bytesRead == 0)
             return;
@@ -59,8 +62,8 @@ public abstract class ProductHandler
         var responseData = KOI.Stringify(ResponseDto);
         var responseMessageLength = ByteHelper.ConvertStringToBytes(responseData).Length;
 
-        NetworkHelper.SendMessage(ByteHelper.ConvertIntToBytes(responseMessageLength), socket);
-        NetworkHelper.SendMessage(ByteHelper.ConvertStringToBytes(responseData), socket);
+        NetworkHelper.SendMessage(ByteHelper.ConvertIntToBytes(responseMessageLength), Socket);
+        NetworkHelper.SendMessage(ByteHelper.ConvertStringToBytes(responseData), Socket);
 
     }
 }
