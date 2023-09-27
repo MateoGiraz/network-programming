@@ -5,22 +5,38 @@ using System.Linq;
 
 namespace MemoryRepository
 {
-    public class ProductRepository : IRepositoryProduct
+    public sealed class ProductRepository : IRepositoryProduct
     {
-        private static readonly Lazy<ProductRepository> _instance = new Lazy<ProductRepository>(() => new ProductRepository());
-
-        public static ProductRepository Instance => _instance.Value;
-
+        private static ProductRepository _instance;
+        private static readonly object _instanceLock = new object();
         private readonly List<Product> _products = new List<Product>();
 
-        // Objeto de bloqueo
-        private readonly object _lockObject = new object();
+        // Objeto de bloqueo para operaciones
+        private readonly object _operationLock = new object();
 
-        private ProductRepository() { }
+        private ProductRepository() { }  // Constructor privado
+
+        public static ProductRepository Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    lock (_instanceLock)
+                    {
+                        if (_instance == null)
+                        {
+                            _instance = new ProductRepository();
+                        }
+                    }
+                }
+                return _instance;
+            }
+        }
 
         public void AddProduct(Product product)
         {
-            lock (_lockObject)
+            lock (_operationLock)
             {
                 _products.Add(product);
             }
@@ -28,7 +44,7 @@ namespace MemoryRepository
 
         public void RemoveProduct(Product product)
         {
-            lock (_lockObject)
+            lock (_operationLock)
             {
                 _products.Remove(product);
             }
@@ -36,10 +52,10 @@ namespace MemoryRepository
 
         public Product GetProduct(string name)
         {
-            lock (_lockObject)
+            lock (_operationLock)
             {
                 var foundProduct = _products.FirstOrDefault(product => product.Name.Equals(name));
-                
+
                 if (foundProduct is null)
                 {
                     throw new MemoryRepositoryException("Product was not found.");
@@ -51,19 +67,19 @@ namespace MemoryRepository
 
         public List<Product> GetProducts()
         {
-            lock (_lockObject)
+            lock (_operationLock)
             {
-                // Es una buena práctica retornar una copia de la lista para evitar problemas de concurrencia externos
-                return _products.ToList();
+                return new List<Product>(_products);  // Devolvemos una copia para evitar problemas de concurrencia externos
             }
         }
 
         public List<string> GetProductsNames()
         {
-            lock (_lockObject)
+            lock (_operationLock)
             {
                 return _products.Select(product => product.Name).ToList();
             }
         }
     }
 }
+
