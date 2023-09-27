@@ -1,4 +1,5 @@
 using System.Net.Sockets;
+using Common.DTO;
 using Common.Helpers;
 using Common.Protocol;
 
@@ -6,17 +7,31 @@ namespace free_market_client.Request.ConcreteRequest.Product;
 
 public class GetProductRequest : RequestTemplate
 {
+    private bool _getImage = false;
     internal override void ConcreteHandle(Socket socket, string? userName)
     {
         Console.Clear();
         Console.WriteLine("Type Product Name");
 
         var name = GetInputData();
+        
+        Console.WriteLine($"Download {name}'s image? (Y/N)");
+        var response = GetInputData();
 
-        var messageLength = ByteHelper.ConvertStringToBytes(name).Length;
+        _getImage = response.ToLower().Equals("y");
+
+        var productGetRequest = new ProductGetRequest()
+        {
+            Name = name,
+            GetImage = _getImage ? "y" : "n",
+        };
+
+        var request = KOI.Stringify(productGetRequest);
+        
+        var messageLength = ByteHelper.ConvertStringToBytes(request).Length;
 
         SendLength(socket, messageLength);
-        SendData(socket, name);
+        SendData(socket, request);
 
         GetResponse(socket);
     }
@@ -34,7 +49,18 @@ public class GetProductRequest : RequestTemplate
         if (bytesRead == 0)
             return;
 
-        var prod = KOI.Parse(productString);
+        Dictionary<string, object> prod;
+        
+        try
+        {
+            prod = KOI.Parse(productString);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Product was not found");
+            Thread.Sleep(1500);
+            return;
+        }
         
         var ratings = prod.TryGetValue("Ratings", out var value) ? KOI.GetObjectMapList(value) : null;
 
@@ -53,7 +79,15 @@ public class GetProductRequest : RequestTemplate
                 Console.WriteLine($"{index + 1}. Comment: {rating["Comment"]}, Score: {rating["Score"]}.");
             }
         }
-      
+
+        if (_getImage)
+        {
+            var fileTransferHelper = new FileTransferHelper();
+            var path = fileTransferHelper.ReceiveFile(socket);
+            
+            Console.WriteLine($"Downloaded image at path: {path}");
+        }
+
         Console.WriteLine("Enter key to go back...");
         Console.ReadLine();
 
