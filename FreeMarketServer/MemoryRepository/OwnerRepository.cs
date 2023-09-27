@@ -5,46 +5,79 @@ using System.Linq;
 
 namespace MemoryRepository
 {
-    public class OwnerRepository : IRepositoryOwner
+    public sealed class OwnerRepository : IRepositoryOwner
     {
-        private static readonly Lazy<OwnerRepository> _instance = new Lazy<OwnerRepository>(() => new OwnerRepository());
-
-        public static OwnerRepository Instance => _instance.Value;
-
+        private static OwnerRepository _instance;
+        private static readonly object _instanceLock = new object();
+        private readonly object _operationLock = new object();  // Bloqueo para operaciones
         private readonly List<Owner> _owners = new List<Owner>();
 
         private OwnerRepository() { }  // Constructor privado
 
+        public static OwnerRepository Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    lock (_instanceLock)
+                    {
+                        if (_instance == null)
+                        {
+                            _instance = new OwnerRepository();
+                        }
+                    }
+                }
+                return _instance;
+            }
+        }
+
         public void AddOwner(Owner owner)
         {
-            _owners.Add(owner);
+            lock (_operationLock)
+            {
+                _owners.Add(owner);
+            }
         }
 
         public void RemoveOwner(Owner owner)
         {
-            _owners.Remove(owner);
+            lock (_operationLock)
+            {
+                _owners.Remove(owner);
+            }
         }
 
         public Owner GetOwner(string name)
         {
-            var foundOwner = _owners.FirstOrDefault(owner => owner.UserName.Equals(name));
-            if (foundOwner is null)
+            lock (_operationLock)
             {
-                throw new MemoryRepositoryException("Product was not found.");
+                var foundOwner = _owners.FirstOrDefault(owner => owner.UserName.Equals(name));
+                if (foundOwner is null)
+                {
+                    throw new MemoryRepositoryException("Product was not found.");
+                }
+                return foundOwner;
             }
-            return foundOwner;
         }
 
         public List<Owner> GetOwners()
         {
-            return _owners;
+            lock (_operationLock)
+            {
+                return new List<Owner>(_owners);  // Devolvemos una copia para que no se pueda modificar la lista original desde fuera
+            }
         }
 
         public bool Exists(string username)
         {
-            return (_owners.FirstOrDefault(owner => owner.UserName.Equals(username)) != null);
+            lock (_operationLock)
+            {
+                return _owners.Any(owner => owner.UserName.Equals(username));
+            }
         }
     }
 }
+
 
 

@@ -5,54 +5,81 @@ using System.Linq;
 
 namespace MemoryRepository
 {
-    public class ProductRepository : IRepositoryProduct
+    public sealed class ProductRepository : IRepositoryProduct
     {
-        // Creación de una instancia Lazy para el Singleton
-        private static readonly Lazy<ProductRepository> _instance = new Lazy<ProductRepository>(() => new ProductRepository());
-        
-        // Proporcionar un acceso público a esta instancia a través de una propiedad estática
-        public static ProductRepository Instance => _instance.Value;
-
+        private static ProductRepository _instance;
+        private static readonly object _instanceLock = new object();
         private readonly List<Product> _products = new List<Product>();
 
-        // Hacer el constructor privado para evitar que otros códigos creen instancias de la clase
-        private ProductRepository() { }
+        // Objeto de bloqueo para operaciones
+        private readonly object _operationLock = new object();
+
+        private ProductRepository() { }  // Constructor privado
+
+        public static ProductRepository Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    lock (_instanceLock)
+                    {
+                        if (_instance == null)
+                        {
+                            _instance = new ProductRepository();
+                        }
+                    }
+                }
+                return _instance;
+            }
+        }
 
         public void AddProduct(Product product)
         {
-            _products.Add(product);
+            lock (_operationLock)
+            {
+                _products.Add(product);
+            }
         }
 
         public void RemoveProduct(Product product)
         {
-            _products.Remove(product);
+            lock (_operationLock)
+            {
+                _products.Remove(product);
+            }
         }
 
         public Product GetProduct(string name)
         {
-            var foundProduct = _products.FirstOrDefault(product => product.Name.Equals(name));
-
-            if (foundProduct is null)
+            lock (_operationLock)
             {
-                throw new MemoryRepositoryException("Product was not found.");
-            }
+                var foundProduct = _products.FirstOrDefault(product => product.Name.Equals(name));
 
-            return foundProduct;
+                if (foundProduct is null)
+                {
+                    throw new MemoryRepositoryException("Product was not found.");
+                }
+
+                return foundProduct;
+            }
         }
 
         public List<Product> GetProducts()
         {
-            return _products;
+            lock (_operationLock)
+            {
+                return new List<Product>(_products);  // Devolvemos una copia para evitar problemas de concurrencia externos
+            }
         }
 
         public List<string> GetProductsNames()
         {
-            List<string> ret = new List<string>();
-            foreach (var product in _products)
+            lock (_operationLock)
             {
-                ret.Add(product.Name);
+                return _products.Select(product => product.Name).ToList();
             }
-            return ret;
         }
     }
 }
+
