@@ -33,6 +33,9 @@ namespace BusinessLogic
             if (!IsStringValid(username) || !IsStringValid(password))
                 throw new AuthenticatorException("UserName & Password must not include hashtag symbol");
             
+            if (_ownerRepository.Exists(username)) 
+                throw new AuthenticatorException("User is already registered");
+
             var newOwner = new Owner()
             {
                 UserName = username,
