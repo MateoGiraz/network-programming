@@ -7,6 +7,7 @@ using Common.DTO;
 namespace free_market_client.Request
 {
     public abstract class RequestTemplate
+
     {
         internal ResponseDTO? ResponseDto;
 

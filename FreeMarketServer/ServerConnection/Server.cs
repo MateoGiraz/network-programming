@@ -69,6 +69,7 @@ namespace ServerConnection
 
             while (receivedMessage is not "exit" && _isRunning)
             {
+
                 try
                 {
                     var (bytesRead, cmd) = NetworkHelper.ReceiveIntData(ProtocolStandards.SizeMessageDefinedLength, acceptedConnection);
