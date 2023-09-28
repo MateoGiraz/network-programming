@@ -18,8 +18,7 @@ public abstract class ProductRequest : RequestTemplate
         Socket = socket;
         
         Console.Clear();
-        Console.WriteLine("Type Product Name");
-        var name = GetInputData();
+        var name = InputHelper.GetValidInput("Type Product Name");
 
         var userDto = new UserDTO()
         {

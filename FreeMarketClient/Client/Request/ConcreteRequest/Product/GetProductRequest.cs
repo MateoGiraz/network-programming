@@ -11,9 +11,8 @@ public class GetProductRequest : RequestTemplate
     internal override void ConcreteHandle(Socket socket, string? userName)
     {
         Console.Clear();
-        Console.WriteLine("Type Product Name");
+        var name = InputHelper.GetValidInput("Type Product Name");
 
-        var name = GetInputData();
         
         Console.WriteLine($"Download {name}'s image? (Y/N)");
         var response = GetInputData();
