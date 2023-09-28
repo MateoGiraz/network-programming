@@ -5,7 +5,7 @@ namespace Common.Helpers
 {
     public class FileStreamHelper
     {
-        public byte[] Read(string path, long offset, int length) // leer una parte de un archivo
+        public byte[] Read(string path, long offset, int length) 
         {
             var data = new byte[length];
 

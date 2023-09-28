@@ -8,7 +8,7 @@ public static class InputHelper
         do
         {
             Console.WriteLine(promptMessage);
-            input = Console.ReadLine()?.Trim(); // Trim para eliminar espacios al principio y al final.
+            input = Console.ReadLine()?.Trim();
 
             if (string.IsNullOrWhiteSpace(input))
             {
@@ -17,7 +17,7 @@ public static class InputHelper
             else if (input.Contains('#'))
             {
                 Console.WriteLine("Input cannot contain the '#' character. Please try again.");
-                input = string.Empty; // Resetear el input para que entre en el bucle de nuevo.
+                input = string.Empty; 
             }
         } while (string.IsNullOrWhiteSpace(input) || input.Contains('#'));
         return input;
@@ -29,11 +29,11 @@ public static class InputHelper
             do
             {
                 Console.WriteLine(promptMessage);
-                input = Console.ReadLine()?.Trim(); // Trim para eliminar espacios al principio y al final.
+                input = Console.ReadLine()?.Trim(); 
                 if (input.Contains('#'))
                 {
                     Console.WriteLine("Input cannot contain the '#' character. Please try again.");
-                    input = string.Empty; // Resetear el input para que entre en el bucle de nuevo.
+                    input = string.Empty; 
                 }
             } while (input.Contains('#'));
             return input;
@@ -57,12 +57,57 @@ public static class InputHelper
             else if (input.Contains('#'))
             {
                 Console.WriteLine("Input cannot contain the '#' character. Please try again.");
-                input = string.Empty; // Resetear el input para que entre en el bucle de nuevo.
+                input = string.Empty; 
             }
         } while (!regex.IsMatch(input) || input.Contains('#'));
         return input;
     }
     
+    public static string GetValidRatingInput(string promptMessage)
+    {
+        string input;
+        var regex = new Regex(@"^[0-5]$"); 
+        do
+        {
+            Console.WriteLine(promptMessage);
+            input = Console.ReadLine()?.Trim();
+
+            if (!regex.IsMatch(input))
+            {
+                Console.WriteLine("Please enter a valid number between 0 and 5.");
+            }
+            else if (input.Contains('#'))
+            {
+                Console.WriteLine("Input cannot contain the '#' character. Please try again.");
+                input = string.Empty; 
+            }
+        } while (!regex.IsMatch(input) || input.Contains('#'));
+        return input;
+    }
+    
+    public static string GetValidStock(string promptMessage)
+    {
+        string input;
+        var regex = new Regex(@"^[1-9]\d*$");
+
+        do
+        {
+            Console.WriteLine(promptMessage);
+            input = Console.ReadLine()?.Trim();
+
+            if (input == "0" || !regex.IsMatch(input))
+            {
+                Console.WriteLine("Please enter a valid positive number that is not 0.");
+            }
+            else if (input.Contains('#'))
+            {
+                Console.WriteLine("Input cannot contain the '#' character. Please try again.");
+                input = string.Empty; 
+            }
+        } while (input == "0"  || !regex.IsMatch(input) || input.Contains('#'));
+
+        return input;
+    }
     
 }
 

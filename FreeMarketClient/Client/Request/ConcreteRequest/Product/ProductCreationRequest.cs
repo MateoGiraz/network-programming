@@ -13,7 +13,7 @@ public class ProductCreationRequest : ProductRequest
         
         ProductDto.Price = InputHelper.GetValidPositiveNumberInput("Type Price");
         
-        ProductDto.Stock = InputHelper.GetValidPositiveNumberInput("Type Stock");
+        ProductDto.Stock = InputHelper.GetValidStock("Type Stock");
         
         filePath = InputHelper.GetValidInput("Type new Image Path");
     }
