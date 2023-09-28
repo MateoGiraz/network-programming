@@ -11,8 +11,6 @@ public abstract class RequestTemplate
     internal ResponseDTO? ResponseDto;
     internal void Handle(Socket socket, int option, string? userName)
     {
-        //SEND REQ
-        
         SendCmd(socket, option);
         
         ConcreteHandle(socket, userName);
