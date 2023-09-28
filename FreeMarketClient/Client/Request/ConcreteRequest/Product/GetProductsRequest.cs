@@ -19,8 +19,9 @@ public class GetProductsRequest : RequestTemplate
 
         SendLength(socket, messageLength);
         SendData(socket, filter);
-        
-        GetResponse(socket);
+
+            GetResponse(socket);
+
     }
 
     private void GetResponse(Socket socket)
@@ -30,8 +31,13 @@ public class GetProductsRequest : RequestTemplate
             var (bytesRead, messageLength) =
                 NetworkHelper.ReceiveIntData(ProtocolStandards.SizeMessageDefinedLength, socket);
 
-            if (bytesRead == 0)
+            if (bytesRead == 0 || messageLength == 0)
+            {
+                Console.Clear();
+                Console.WriteLine("No products available");
+                Thread.Sleep(1500);
                 return;
+            }
 
             (bytesRead, var productsString) = NetworkHelper.ReceiveStringData(messageLength, socket);
 

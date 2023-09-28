@@ -45,10 +45,18 @@ public class GetProductsHandler
             ProductNames = productsDto
         };
 
-        var productsData = KOI.Stringify(listNameDto);
-        var messageLength = ByteHelper.ConvertStringToBytes(productsData).Length;
+        try
+        {
+            var productsData = KOI.Stringify(listNameDto);
+            var messageLength = ByteHelper.ConvertStringToBytes(productsData).Length;
 
-        NetworkHelper.SendMessage(ByteHelper.ConvertIntToBytes(messageLength), socket);
-        NetworkHelper.SendMessage(ByteHelper.ConvertStringToBytes(productsData), socket);
+            NetworkHelper.SendMessage(ByteHelper.ConvertIntToBytes(messageLength), socket);
+            NetworkHelper.SendMessage(ByteHelper.ConvertStringToBytes(productsData), socket);
+        }
+        catch (ArgumentOutOfRangeException e)
+        {
+            NetworkHelper.SendMessage(ByteHelper.ConvertIntToBytes(0), socket);
+        }
+
     }
 }
