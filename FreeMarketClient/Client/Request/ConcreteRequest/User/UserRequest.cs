@@ -13,11 +13,9 @@ public class UserRequest : RequestTemplate
     internal override void ConcreteHandle(Socket socket, string? userName)
     {
         Console.Clear();
-        Console.WriteLine("Type Username");
-        var user = GetInputData();
-        
-        Console.WriteLine("Type Password");
-        var password = GetInputData();
+        var user = InputHelper.GetValidInput("Type Username");
+        var password = InputHelper.GetValidInput("Type Password");
+
         
         UserDto = new UserDTO()
         {

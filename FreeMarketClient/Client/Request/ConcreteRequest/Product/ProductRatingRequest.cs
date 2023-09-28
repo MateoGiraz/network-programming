@@ -6,12 +6,9 @@ public class ProductRatingRequest : ProductRequest
 {
     protected override void HandleConcreteProductOperation()
     {
-        Console.WriteLine("Add Rating Score");
-        var score = GetInputData();
-        
-        Console.WriteLine("Add Rating Comment");
-        var comment = GetInputData();
 
+        var score = InputHelper.GetInputWithoutHash("Add Rating Score");
+        var comment = InputHelper.GetInputWithoutHash("Add Rating Comment");
         var ratingDto = new RatingDTO()
         {
             Comment = comment,

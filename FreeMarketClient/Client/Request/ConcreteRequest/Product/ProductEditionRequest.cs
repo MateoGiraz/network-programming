@@ -4,21 +4,13 @@ public class ProductEditionRequest : ProductRequest
 {
     protected override void HandleConcreteProductOperation()
     {
-        Console.WriteLine($"Add {ProductDto!.Name}'s Description");
-        var description = GetInputData();
-        ProductDto.Description = description;
-
-        Console.WriteLine("Type Price");
-        var price = GetInputData();
-        ProductDto.Price = price;
+        ProductDto.Description = InputHelper.GetInputWithoutHash($"Add {ProductDto!.Name}'s Description");
         
-        Console.WriteLine("Type Stock");
-        var stock = GetInputData();
-        ProductDto.Stock = stock;    
+        ProductDto.Price = InputHelper.GetValidPositiveNumberInput("Type Price");
         
-        Console.WriteLine("Type new Image Path");
-        var path = GetInputData();
-        ProductDto.ImageRoute = path;    
+        ProductDto.Stock = InputHelper.GetValidPositiveNumberInput("Type Stock");
+        
+        ProductDto.ImageRoute = InputHelper.GetValidInput("Type new Image Path");  
     }
     protected override void HandleImageSending() {}
 }
