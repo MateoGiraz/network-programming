@@ -37,58 +37,68 @@ public class GetProductRequest : RequestTemplate
 
     private void GetResponse(Socket socket)
     {
-        var (bytesRead, messageLength) =
-            NetworkHelper.ReceiveIntData(ProtocolStandards.SizeMessageDefinedLength, socket);
-
-        if (bytesRead == 0)
-            return;
-
-        (bytesRead, var productString) = NetworkHelper.ReceiveStringData(messageLength, socket);
-
-        if (bytesRead == 0)
-            return;
-
-        Dictionary<string, object> prod;
-        
         try
         {
-            prod = KOI.Parse(productString);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("Product was not found");
-            Thread.Sleep(1500);
-            return;
-        }
-        
-        var ratings = prod.TryGetValue("Ratings", out var value) ? KOI.GetObjectMapList(value) : null;
+            var (bytesRead, messageLength) =
+                NetworkHelper.ReceiveIntData(ProtocolStandards.SizeMessageDefinedLength, socket);
 
-        Console.Clear();
-        Console.WriteLine($"{prod["Name"]}.");
-        Console.WriteLine($"{prod["Stock"]} units left for ${prod["Price"]}");
-        Console.WriteLine($"{prod["Description"]}.");
+            if (bytesRead == 0)
+                return;
 
-        if (ratings != null)
-        {
-            Console.WriteLine("Ratings");
-            var index = 0;
-            for (; index < ratings.Count; index++)
+            (bytesRead, var productString) = NetworkHelper.ReceiveStringData(messageLength, socket);
+
+            if (bytesRead == 0)
+                return;
+
+            Dictionary<string, object> prod;
+
+            try
             {
-                var rating = ratings[index];
-                Console.WriteLine($"{index + 1}. Comment: {rating["Comment"]}, Score: {rating["Score"]}.");
+                prod = KOI.Parse(productString);
             }
-        }
+            catch (Exception e)
+            {
+                Console.WriteLine("Product was not found");
+                Thread.Sleep(1500);
+                return;
+            }
 
-        if (_getImage)
+
+
+            var ratings = prod.TryGetValue("Ratings", out var value) ? KOI.GetObjectMapList(value) : null;
+
+            Console.Clear();
+            Console.WriteLine($"{prod["Name"]}.");
+            Console.WriteLine($"{prod["Stock"]} units left for ${prod["Price"]}");
+            Console.WriteLine($"{prod["Description"]}.");
+
+            if (ratings != null)
+            {
+                Console.WriteLine("Ratings");
+                var index = 0;
+                for (; index < ratings.Count; index++)
+                {
+                    var rating = ratings[index];
+                    Console.WriteLine($"{index + 1}. Comment: {rating["Comment"]}, Score: {rating["Score"]}.");
+                }
+            }
+
+            if (_getImage)
+            {
+                var fileTransferHelper = new FileTransferHelper();
+                var path = fileTransferHelper.ReceiveFile(socket);
+
+                Console.WriteLine($"Downloaded image at path: {path}");
+            }
+
+            Console.WriteLine("Enter key to go back...");
+            Console.ReadLine();
+
+        }
+        catch (NetworkHelper.ServerDisconnectedException ex)
         {
-            var fileTransferHelper = new FileTransferHelper();
-            var path = fileTransferHelper.ReceiveFile(socket);
-            
-            Console.WriteLine($"Downloaded image at path: {path}");
+            Console.WriteLine(ex.Message);
+            Environment.Exit(0);
         }
-
-        Console.WriteLine("Enter key to go back...");
-        Console.ReadLine();
-
     }
 }

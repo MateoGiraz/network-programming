@@ -11,6 +11,7 @@ namespace free_market_client;
 
 public static class Program
 {
+    private const int exitOption = 3;
     public static void Main()
     {
 
@@ -20,7 +21,7 @@ public static class Program
         Startup.PrintWelcomeMessageClient();
 
         var res = -1;
-        while (res != 3)
+        while (res != exitOption)
         {
             Menu.PrintOptions();
             res = Menu.ChooseOption();

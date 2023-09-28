@@ -8,7 +8,7 @@ public static class InputHelper
         do
         {
             Console.WriteLine(promptMessage);
-            input = Console.ReadLine()?.Trim(); // Trim para eliminar espacios al principio y al final.
+            input = Console.ReadLine()?.Trim();
 
             if (string.IsNullOrWhiteSpace(input))
             {
@@ -17,7 +17,7 @@ public static class InputHelper
             else if (input.Contains('#'))
             {
                 Console.WriteLine("Input cannot contain the '#' character. Please try again.");
-                input = string.Empty; // Resetear el input para que entre en el bucle de nuevo.
+                input = string.Empty; 
             }
         } while (string.IsNullOrWhiteSpace(input) || input.Contains('#'));
         return input;
@@ -29,11 +29,11 @@ public static class InputHelper
             do
             {
                 Console.WriteLine(promptMessage);
-                input = Console.ReadLine()?.Trim(); // Trim para eliminar espacios al principio y al final.
+                input = Console.ReadLine()?.Trim(); 
                 if (input.Contains('#'))
                 {
                     Console.WriteLine("Input cannot contain the '#' character. Please try again.");
-                    input = string.Empty; // Resetear el input para que entre en el bucle de nuevo.
+                    input = string.Empty; 
                 }
             } while (input.Contains('#'));
             return input;
@@ -57,7 +57,7 @@ public static class InputHelper
             else if (input.Contains('#'))
             {
                 Console.WriteLine("Input cannot contain the '#' character. Please try again.");
-                input = string.Empty; // Resetear el input para que entre en el bucle de nuevo.
+                input = string.Empty; 
             }
         } while (!regex.IsMatch(input) || input.Contains('#'));
         return input;

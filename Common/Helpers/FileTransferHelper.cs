@@ -65,7 +65,7 @@ namespace Common.Helpers
 
         private (string, int) ReceiveFileInfo(Socket socket)
         {
-
+            
             var (_, fileNameLength) = NetworkHelper.ReceiveIntData(ProtocolStandards.SizeMessageDefinedLength, socket);
             var (_, fileName) = NetworkHelper.ReceiveStringData(fileNameLength, socket);
             var (_, fileSize) = NetworkHelper.ReceiveIntData(ProtocolStandards.FileDefinedLength, socket);

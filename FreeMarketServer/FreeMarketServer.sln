@@ -10,7 +10,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRepository", "IRepository\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerConnection", "ServerConnection\ServerConnection.csproj", "{60FE63E1-64B7-4D0F-889A-D76D56D2720C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerTest", "ServerTest\ServerTest.csproj", "{2D36DA9E-8151-4DF1-BF55-77ED4266ACF7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerStartup", "ServerStartup\ServerStartup.csproj", "{2D36DA9E-8151-4DF1-BF55-77ED4266ACF7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

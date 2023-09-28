@@ -11,8 +11,7 @@ namespace free_market_client.Request
     internal class OptionHandler
     {
         private readonly Socket _socket;
-        
-        //esto deberia estar aca?
+        private const int logOutOption = 8; 
         private ProductCreationRequest _productCreationRequest;
         private UserRequest _userRequest;
         private UserLogInRequest _userLogInRequest;
@@ -26,8 +25,7 @@ namespace free_market_client.Request
         public OptionHandler(Socket socket)
         {
             _socket = socket;
-
-            //hacer una factory o algo asi?
+            
             _userRequest = new UserRequest();
             _userLogInRequest = new UserLogInRequest();
             _productCreationRequest = new ProductCreationRequest();
@@ -65,7 +63,7 @@ namespace free_market_client.Request
         {
             Console.WriteLine($"Logged in as {username}");
             var res = -1;
-            while (res != 8)
+            while (res != logOutOption)
             {
                 Menu.PrintOptionsLoggedIn(username.UserName);
                 res = Menu.ChooseOption();

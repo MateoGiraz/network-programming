@@ -45,13 +45,7 @@ public class GetProductsHandler
             ProductNames = productsDto
         };
 
-        foreach (var prod in listNameDto.ProductNames)
-        {
-            Console.WriteLine(prod.Name);
-        }
-
         var productsData = KOI.Stringify(listNameDto);
-        Console.WriteLine(productsData);
         var messageLength = ByteHelper.ConvertStringToBytes(productsData).Length;
 
         NetworkHelper.SendMessage(ByteHelper.ConvertIntToBytes(messageLength), socket);
