@@ -7,7 +7,7 @@ public class ProductRatingRequest : ProductRequest
     protected override void HandleConcreteProductOperation()
     {
 
-        var score = InputHelper.GetInputWithoutHash("Add Rating Score");
+        var score = InputHelper.GetValidRatingInput("Add Rating Score");
         var comment = InputHelper.GetInputWithoutHash("Add Rating Comment");
         var ratingDto = new RatingDTO()
         {

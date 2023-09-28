@@ -63,6 +63,26 @@ public static class InputHelper
         return input;
     }
     
-    
+    public static string GetValidRatingInput(string promptMessage)
+    {
+        string input;
+        var regex = new Regex(@"^[0-5]$"); 
+        do
+        {
+            Console.WriteLine(promptMessage);
+            input = Console.ReadLine()?.Trim();
+
+            if (!regex.IsMatch(input))
+            {
+                Console.WriteLine("Please enter a valid number between 0 and 5.");
+            }
+            else if (input.Contains('#'))
+            {
+                Console.WriteLine("Input cannot contain the '#' character. Please try again.");
+                input = string.Empty; 
+            }
+        } while (!regex.IsMatch(input) || input.Contains('#'));
+        return input;
+    }
 }
 
