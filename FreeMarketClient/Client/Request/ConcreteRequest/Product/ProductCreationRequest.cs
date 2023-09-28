@@ -15,7 +15,7 @@ public class ProductCreationRequest : ProductRequest
         
         ProductDto.Stock = InputHelper.GetValidPositiveNumberInput("Type Stock");
         
-        ProductDto.ImageRoute = InputHelper.GetValidInput("Type new Image Path");
+        filePath = InputHelper.GetValidInput("Type new Image Path");
     }
 
     protected override void HandleImageSending()
