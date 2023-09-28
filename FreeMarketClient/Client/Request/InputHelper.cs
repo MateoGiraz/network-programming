@@ -84,5 +84,30 @@ public static class InputHelper
         } while (!regex.IsMatch(input) || input.Contains('#'));
         return input;
     }
+    
+    public static string GetValidStock(string promptMessage)
+    {
+        string input;
+        var regex = new Regex(@"^[1-9]\d*$");
+
+        do
+        {
+            Console.WriteLine(promptMessage);
+            input = Console.ReadLine()?.Trim();
+
+            if (input == "0" || !regex.IsMatch(input))
+            {
+                Console.WriteLine("Please enter a valid positive number that is not 0.");
+            }
+            else if (input.Contains('#'))
+            {
+                Console.WriteLine("Input cannot contain the '#' character. Please try again.");
+                input = string.Empty; 
+            }
+        } while (input == "0"  || !regex.IsMatch(input) || input.Contains('#'));
+
+        return input;
+    }
+    
 }
 
