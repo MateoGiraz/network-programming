@@ -1,0 +1,253 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "ServerStartup/1.0.0": {
+        "dependencies": {
+          "BusinessLogic": "1.0.0",
+          "CoreBusiness": "1.0.0",
+          "MemoryRepository": "1.0.0",
+          "ServerConnection": "1.0.0",
+          "Common": "1.0.0.0"
+        },
+        "runtime": {
+          "ServerStartup.dll": {}
+        }
+      },
+      "Microsoft.Win32.SystemEvents/8.0.0-preview.7.23375.6": {
+        "runtime": {
+          "lib/net6.0/Microsoft.Win32.SystemEvents.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.23.37506"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/net6.0/Microsoft.Win32.SystemEvents.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.23.37506"
+          }
+        }
+      },
+      "System.Configuration.ConfigurationManager/6.0.0": {
+        "dependencies": {
+          "System.Security.Cryptography.ProtectedData": "6.0.0",
+          "System.Security.Permissions": "6.0.0"
+        },
+        "runtime": {
+          "lib/net6.0/System.Configuration.ConfigurationManager.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.21.52210"
+          }
+        }
+      },
+      "System.Drawing.Common/8.0.0-preview.7.23375.5": {
+        "dependencies": {
+          "Microsoft.Win32.SystemEvents": "8.0.0-preview.7.23375.6"
+        },
+        "runtime": {
+          "lib/net6.0/System.Drawing.Common.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.23.37505"
+          }
+        }
+      },
+      "System.Security.AccessControl/6.0.0": {},
+      "System.Security.Cryptography.ProtectedData/6.0.0": {
+        "runtime": {
+          "lib/net6.0/System.Security.Cryptography.ProtectedData.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.21.52210"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/net6.0/System.Security.Cryptography.ProtectedData.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.21.52210"
+          }
+        }
+      },
+      "System.Security.Permissions/6.0.0": {
+        "dependencies": {
+          "System.Security.AccessControl": "6.0.0",
+          "System.Windows.Extensions": "6.0.0"
+        },
+        "runtime": {
+          "lib/net6.0/System.Security.Permissions.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.21.52210"
+          }
+        }
+      },
+      "System.Windows.Extensions/6.0.0": {
+        "dependencies": {
+          "System.Drawing.Common": "8.0.0-preview.7.23375.5"
+        },
+        "runtime": {
+          "lib/net6.0/System.Windows.Extensions.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.21.52210"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/net6.0/System.Windows.Extensions.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.21.52210"
+          }
+        }
+      },
+      "BusinessLogic/1.0.0": {
+        "dependencies": {
+          "CoreBusiness": "1.0.0",
+          "IRepository": "1.0.0",
+          "MemoryRepository": "1.0.0",
+          "System.Drawing.Common": "8.0.0-preview.7.23375.5"
+        },
+        "runtime": {
+          "BusinessLogic.dll": {}
+        }
+      },
+      "CoreBusiness/1.0.0": {
+        "dependencies": {
+          "System.Drawing.Common": "8.0.0-preview.7.23375.5"
+        },
+        "runtime": {
+          "CoreBusiness.dll": {}
+        }
+      },
+      "IRepository/1.0.0": {
+        "dependencies": {
+          "CoreBusiness": "1.0.0",
+          "System.Drawing.Common": "8.0.0-preview.7.23375.5"
+        },
+        "runtime": {
+          "IRepository.dll": {}
+        }
+      },
+      "MemoryRepository/1.0.0": {
+        "dependencies": {
+          "CoreBusiness": "1.0.0",
+          "IRepository": "1.0.0",
+          "System.Drawing.Common": "8.0.0-preview.7.23375.5"
+        },
+        "runtime": {
+          "MemoryRepository.dll": {}
+        }
+      },
+      "ServerConnection/1.0.0": {
+        "dependencies": {
+          "BusinessLogic": "1.0.0",
+          "CoreBusiness": "1.0.0",
+          "System.Configuration.ConfigurationManager": "6.0.0",
+          "System.Drawing.Common": "8.0.0-preview.7.23375.5"
+        },
+        "runtime": {
+          "ServerConnection.dll": {}
+        }
+      },
+      "Common/1.0.0.0": {
+        "runtime": {
+          "Common.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "ServerStartup/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.Win32.SystemEvents/8.0.0-preview.7.23375.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-tYKg/5MecDn8SsIx/cqyjre2gEpbrgdritb0cF0lsbC+c4o+nPvWWPfGLoT5g3t1L0dtner8+8fxlx+VjrxINg==",
+      "path": "microsoft.win32.systemevents/8.0.0-preview.7.23375.6",
+      "hashPath": "microsoft.win32.systemevents.8.0.0-preview.7.23375.6.nupkg.sha512"
+    },
+    "System.Configuration.ConfigurationManager/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-7T+m0kDSlIPTHIkPMIu6m6tV6qsMqJpvQWW2jIc2qi7sn40qxFo0q+7mEQAhMPXZHMKnWrnv47ntGlM/ejvw3g==",
+      "path": "system.configuration.configurationmanager/6.0.0",
+      "hashPath": "system.configuration.configurationmanager.6.0.0.nupkg.sha512"
+    },
+    "System.Drawing.Common/8.0.0-preview.7.23375.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-IECr9UTQzBsP89YAez28/Jc+U/o1KTeBGk6VPDXrRNH6uo2POJKHhM1rweZIfakduU4M6FWIidEUNf34wbZMRQ==",
+      "path": "system.drawing.common/8.0.0-preview.7.23375.5",
+      "hashPath": "system.drawing.common.8.0.0-preview.7.23375.5.nupkg.sha512"
+    },
+    "System.Security.AccessControl/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-AUADIc0LIEQe7MzC+I0cl0rAT8RrTAKFHl53yHjEUzNVIaUlhFY11vc2ebiVJzVBuOzun6F7FBA+8KAbGTTedQ==",
+      "path": "system.security.accesscontrol/6.0.0",
+      "hashPath": "system.security.accesscontrol.6.0.0.nupkg.sha512"
+    },
+    "System.Security.Cryptography.ProtectedData/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rp1gMNEZpvx9vP0JW0oHLxlf8oSiQgtno77Y4PLUBjSiDYoD77Y8uXHr1Ea5XG4/pIKhqAdxZ8v8OTUtqo9PeQ==",
+      "path": "system.security.cryptography.protecteddata/6.0.0",
+      "hashPath": "system.security.cryptography.protecteddata.6.0.0.nupkg.sha512"
+    },
+    "System.Security.Permissions/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-T/uuc7AklkDoxmcJ7LGkyX1CcSviZuLCa4jg3PekfJ7SU0niF0IVTXwUiNVP9DSpzou2PpxJ+eNY2IfDM90ZCg==",
+      "path": "system.security.permissions/6.0.0",
+      "hashPath": "system.security.permissions.6.0.0.nupkg.sha512"
+    },
+    "System.Windows.Extensions/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-IXoJOXIqc39AIe+CIR7koBtRGMiCt/LPM3lI+PELtDIy9XdyeSrwXFdWV9dzJ2Awl0paLWUaknLxFQ5HpHZUog==",
+      "path": "system.windows.extensions/6.0.0",
+      "hashPath": "system.windows.extensions.6.0.0.nupkg.sha512"
+    },
+    "BusinessLogic/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CoreBusiness/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "IRepository/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MemoryRepository/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ServerConnection/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Common/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
