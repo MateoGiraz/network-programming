@@ -1,6 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Common.Helpers
 {
@@ -11,81 +13,59 @@ namespace Common.Helpers
             public ServerDisconnectedException(string message) : base(message) { }
         }
 
-        public static void SendMessage(byte[] message, Socket client)
+        public static async Task SendMessageAsync(byte[] message, NetworkStream stream)
         {
             try
             {
                 var size = message.Length;
-                var offset = 0;
-                while (offset < size)
-                {
-                    var bytesSent = client.Send(message, offset, size - offset, SocketFlags.None);
-                    if (bytesSent == 0)
-                    {
-                        throw new ServerDisconnectedException("Server has disconnected while sending.");
-                    }
-                    offset += bytesSent;
-                }
+                await stream.WriteAsync(message, 0, size);
             }
-            catch (ServerDisconnectedException)
+            catch (Exception e) when (e is SocketException or ServerDisconnectedException)
             {
-                Console.WriteLine("Error: Server has Shutdown.");
-                client.Close();
+                Console.WriteLine("Error: Server has disconnected while sending.");
+                stream.Close();
                 throw;
-            }
-            catch (SocketException ex)
-            {
-                Console.WriteLine("Error: Server has Shutdown.");
-                client.Close();
-                throw new ServerDisconnectedException("Error: Server has Shutdown.");
             }
         }
 
-        public static (int, byte[]) ReceiveData(int length, Socket socket)
+        public static async Task<(int, byte[])> ReceiveDataAsync(int length, NetworkStream stream)
         {
             try
             {
                 var receiveData = new byte[length];
                 var size = receiveData.Length;
                 var offset = 0;
-                var bytesRead = 0;
 
                 while (offset < size)
                 {
-                    bytesRead = socket.Receive(receiveData, offset, size - offset, SocketFlags.None);
-                    if (bytesRead == 0)
-                    {
-                        throw new ServerDisconnectedException("Server has disconnected while receiving.");
-                    }
-                    offset += bytesRead;
+                    offset += await stream.ReadAsync(receiveData, offset, size - offset);
                 }
 
-                return (bytesRead, receiveData);
+                return (offset, receiveData);
             }
-            catch (ServerDisconnectedException ex)
+            catch (ServerDisconnectedException)
             {
-                Console.WriteLine(ex.Message);
-                socket.Close();
-                return (0, new byte[0]);
+                Console.WriteLine("Error: Server has disconnected while receiving.");
+                stream.Close();
+                return (0, Array.Empty<byte>());
             }
             catch (ObjectDisposedException)
             {
                 Console.WriteLine("Error: Attempted communication with a closed socket.");
-                return (0, new byte[0]);
+                return (0, Array.Empty<byte>());
             }
         }
 
-        public static (int, string) ReceiveStringData(int length, Socket socket)
+        public static async Task<(int, string)> ReceiveStringDataAsync(int length, NetworkStream stream)
         {
-            var (bytesRead, stringReceivedData) = ReceiveData(length, socket);
-            return (bytesRead, ByteHelper.ConvertBytesToString(stringReceivedData));
+            var (bytesRead, data) = await ReceiveDataAsync(length, stream);
+            return (bytesRead, Encoding.UTF8.GetString(data));
         }
 
-        public static (int, int) ReceiveIntData(int length, Socket socket)
+        public static async Task<(int, int)> ReceiveIntDataAsync(int length, NetworkStream stream)
         {
-            var (bytesRead, intReceivedData) = ReceiveData(length, socket);
-            return (bytesRead, ByteHelper.ConvertBytesToInt(intReceivedData));
+            var (bytesRead, data) = await ReceiveDataAsync(length, stream);
+            return (bytesRead, BitConverter.ToInt32(data, 0));
         }
     }
 }
-
