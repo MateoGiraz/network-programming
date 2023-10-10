@@ -6,14 +6,14 @@ namespace ServerConnection.Handler.Product.ConcreteProductHandler;
 
 public class ProductCreationHandler : ProductHandler
 {
-    protected override void HandleProductSpecificOperation()
+    protected override async Task HandleProductSpecificOperationAsync()
     {
         ProductDto!.Description = ProductMap["Description"] as string;
         ProductDto.Price = ProductMap["Price"] as string;
         ProductDto.Stock = ProductMap["Stock"] as string;
 
         var fileTransferHelper = new FileTransferHelper();
-        var path = fileTransferHelper.ReceiveFile(base.Socket);
+        var path = await fileTransferHelper.ReceiveFileAsync(base.stream);
         ProductDto.ImageRoute = path;
 
         var productToBeCreated = new CoreBusiness.Product()

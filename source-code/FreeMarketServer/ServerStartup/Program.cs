@@ -1,22 +1,18 @@
 ﻿using ServerConnection;
 using Common;
-using BusinessLogic;
-using CoreBusiness;
-using MemoryRepository;
-using System.Threading;
 
 class Program
 {
     static Server server = new Server();
 
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         Startup.PrintWelcomeMessageServer();
         Console.WriteLine("For shutting down all connections, please enter 'shutdown'.");
         
         new Thread(MonitorUserInput).Start();
         
-        server.Listen(3000);
+        await server.ListenAsync(3000);
     }
 
     static void MonitorUserInput()

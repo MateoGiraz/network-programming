@@ -8,23 +8,23 @@ namespace ServerConnection.Handler.Product.GetProducts;
 
 public class GetProductsHandler
 {
-    public void Handle(Socket socket)
+    public async Task HandleAsync(NetworkStream stream)
     {
-        var (bytesRead, messageLength) =
-            NetworkHelper.ReceiveIntData(ProtocolStandards.SizeMessageDefinedLength, socket);
+        var (bytesRead, messageLength) = await
+            NetworkHelper.ReceiveIntDataAsync(ProtocolStandards.SizeMessageDefinedLength, stream);
 
         if (bytesRead == 0)
             return;
 
-        (bytesRead, var filter) = NetworkHelper.ReceiveStringData(messageLength, socket);
+        (bytesRead, var filter) = await NetworkHelper.ReceiveStringDataAsync(messageLength, stream);
 
         if (bytesRead == 0)
             return;
         
-        SendResponse(socket, filter);
+        SendResponse(stream, filter);
     }
 
-    private static void SendResponse(Socket socket, string filter)
+    private static void SendResponse(NetworkStream stream, string filter)
     {
         var pc = new ProductController();
         
@@ -50,12 +50,12 @@ public class GetProductsHandler
             var productsData = KOI.Stringify(listNameDto);
             var messageLength = ByteHelper.ConvertStringToBytes(productsData).Length;
 
-            NetworkHelper.SendMessage(ByteHelper.ConvertIntToBytes(messageLength), socket);
-            NetworkHelper.SendMessage(ByteHelper.ConvertStringToBytes(productsData), socket);
+            NetworkHelper.SendMessageAsync(ByteHelper.ConvertIntToBytes(messageLength), stream);
+            NetworkHelper.SendMessageAsync(ByteHelper.ConvertStringToBytes(productsData), stream);
         }
         catch (ArgumentOutOfRangeException e)
         {
-            NetworkHelper.SendMessage(ByteHelper.ConvertIntToBytes(0), socket);
+            NetworkHelper.SendMessageAsync(ByteHelper.ConvertIntToBytes(0), stream);
         }
 
     }

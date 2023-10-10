@@ -9,23 +9,23 @@ namespace ServerConnection.Handler.Product.GetProducts;
 
 public class GetProductHandler
 {
-    public void Handle(Socket socket)
+    public async Task HandleAsync(NetworkStream stream)
     {
-        var (bytesRead, messageLength) =
-            NetworkHelper.ReceiveIntData(ProtocolStandards.SizeMessageDefinedLength, socket);
+        var (bytesRead, messageLength) = await
+            NetworkHelper.ReceiveIntDataAsync(ProtocolStandards.SizeMessageDefinedLength, stream);
 
         if (bytesRead == 0)
             return;
 
-        (bytesRead, var getRequest) = NetworkHelper.ReceiveStringData(messageLength, socket);
+        (bytesRead, var getRequest) = await NetworkHelper.ReceiveStringDataAsync(messageLength, stream);
 
         if (bytesRead == 0)
             return;
 
-        SendResponse(socket, getRequest);
+        SendResponse(stream, getRequest);
     }
 
-    private static void SendResponse(Socket socket, string getRequest)
+    private static void SendResponse(NetworkStream stream, string getRequest)
     {
         var requestMap = KOI.Parse(getRequest);
 
@@ -62,8 +62,8 @@ public class GetProductHandler
         var productsData = KOI.Stringify(productDto);
         var messageLength = ByteHelper.ConvertStringToBytes(productsData).Length;
 
-        NetworkHelper.SendMessage(ByteHelper.ConvertIntToBytes(messageLength), socket);
-        NetworkHelper.SendMessage(ByteHelper.ConvertStringToBytes(productsData), socket);
+        NetworkHelper.SendMessageAsync(ByteHelper.ConvertIntToBytes(messageLength), stream);
+        NetworkHelper.SendMessageAsync(ByteHelper.ConvertStringToBytes(productsData), stream);
         
         
         var shouldSendImage = getImage.ToLower().Equals("y");
@@ -73,7 +73,7 @@ public class GetProductHandler
             try
             {
                 var fileTransferHelper = new FileTransferHelper();
-                fileTransferHelper.SendFile(socket, productDto.ImageRoute);
+                fileTransferHelper.SendFileAsync(productDto.ImageRoute, stream);
             }
             catch (Exception e)
             {

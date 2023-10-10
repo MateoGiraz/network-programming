@@ -5,7 +5,7 @@ namespace ServerConnection.Handler.Product.ConcreteProductHandler;
 
 public class ProductDeletionHandler : ProductHandler
 {
-    protected override void HandleProductSpecificOperation()
+    protected override async Task HandleProductSpecificOperationAsync()
     {
         var toBeDeletedProduct = new CoreBusiness.Product()
         {

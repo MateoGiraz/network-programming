@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 using Common;
 using Common.Config;
 using Common.Protocol;
@@ -12,24 +13,26 @@ namespace ServerConnection
 {
     public class Server
     {
-        private readonly List<Socket> _activeConnections = new List<Socket>();
-        private Socket _serverSocket;
+        private readonly List<TcpClient> _activeConnections = new List<TcpClient>();
+        private TcpListener _serverListener;
         private bool _isRunning = true;
 
-        public void Listen(int port = ProtocolStandards.ServerPort)
+        public async Task ListenAsync(int port = ProtocolStandards.ServerPort)
         {
-            _serverSocket = SocketManager.Create(port);
+            _serverListener = ConnectionManager.Create(port);
 
             while (_isRunning)
             {
                 try
                 {
-                    var acceptedConnection = _serverSocket.Accept();
+                    var acceptedConnection = await _serverListener.AcceptTcpClientAsync();
+
                     lock (_activeConnections)
                     {
                         _activeConnections.Add(acceptedConnection);
                     }
-                    new Thread(() => HandleConnection(acceptedConnection)).Start();
+
+                    var _ = Task.Run(async () => await HandleConnectionAsync(acceptedConnection));
                 }
                 catch (SocketException ex)
                 {
@@ -48,7 +51,7 @@ namespace ServerConnection
         public void Stop()
         {
             _isRunning = false;
-            
+
             lock (_activeConnections)
             {
                 foreach (var connection in _activeConnections)
@@ -57,27 +60,27 @@ namespace ServerConnection
                 }
                 _activeConnections.Clear();
             }
-            
-            _serverSocket?.Close();
+
+            _serverListener?.Stop();
         }
 
-        private void HandleConnection(Socket acceptedConnection)
+        private async Task HandleConnectionAsync(TcpClient acceptedConnection)
         {
-            var optionHandler = new OptionHandler(acceptedConnection);
+            var stream = acceptedConnection.GetStream();
+            var optionHandler = new OptionHandler(stream);
             var receivedMessage = "";
-            Console.WriteLine($"Connected to client: {acceptedConnection.RemoteEndPoint}");
+            Console.WriteLine($"Connected to client: {(IPEndPoint)acceptedConnection.Client.RemoteEndPoint}");
 
-            while (receivedMessage is not "exit" && _isRunning)
+            while (receivedMessage != "exit" && _isRunning)
             {
-
                 try
                 {
-                    var (bytesRead, cmd) = NetworkHelper.ReceiveIntData(ProtocolStandards.SizeMessageDefinedLength, acceptedConnection);
+                    var (bytesRead, cmd) = await NetworkHelper.ReceiveIntDataAsync(ProtocolStandards.SizeMessageDefinedLength, stream);
 
                     if (bytesRead == 0)
                         break;
 
-                    optionHandler.Handle(cmd);
+                    await optionHandler.HandleAsync(cmd);
                 }
                 catch (Exception ex)
                 {
@@ -94,5 +97,3 @@ namespace ServerConnection
         }
     }
 }
-
-    

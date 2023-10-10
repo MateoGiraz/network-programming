@@ -10,25 +10,24 @@ using Common.Config;
 
 namespace ServerConnection;
 
-internal static class SocketManager
+internal static class ConnectionManager
 {
-    internal static Socket Create(int port)
+    internal static TcpListener Create(int port)
     {
         ISettingsManager settingsManager = new SettingsManager();
-        var serverSocket = new Socket(
-        AddressFamily.InterNetwork,
-        SocketType.Stream,
-        ProtocolType.Tcp
-        );
+
+        var serverIpAddress = IPAddress.Parse(settingsManager.Get(ServerConfig.ServerIpConfigKey));
+        var serverPort = int.Parse(settingsManager.Get(ServerConfig.ServerPortConfigKey));
+
+        var localEndpoint = new IPEndPoint(serverIpAddress, serverPort);
+        var serverTcpClient = new TcpListener(localEndpoint);
+
         Console.WriteLine($"IP Address: {settingsManager.Get(ServerConfig.ServerIpConfigKey)}");
         Console.WriteLine($"Port: {settingsManager.Get(ServerConfig.ServerPortConfigKey)}");
 
-        var localEndpoint = new IPEndPoint(IPAddress.Parse(settingsManager.Get(ServerConfig.ServerIpConfigKey)), int.Parse(settingsManager.Get(ServerConfig.ServerPortConfigKey)));
-        serverSocket.Bind(localEndpoint);
-
         Console.WriteLine("Listening for connections");
-        serverSocket.Listen(100);
+        serverTcpClient.Start(100);
 
-        return serverSocket;
+        return serverTcpClient;
     }
 }

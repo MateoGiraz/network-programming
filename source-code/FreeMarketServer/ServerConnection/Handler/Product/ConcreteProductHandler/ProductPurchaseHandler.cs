@@ -4,7 +4,7 @@ namespace ServerConnection.Handler.Product.ConcreteProductHandler;
 
 public class ProductPurchaseHandler : ProductHandler
 {
-    protected override void HandleProductSpecificOperation()
+    protected override async Task HandleProductSpecificOperationAsync()
     {
         var productController = new ProductController();
         var purchasedProduct = productController.GetProduct(ProductDto!.Name);

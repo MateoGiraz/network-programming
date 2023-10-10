@@ -1,18 +1,29 @@
 using BusinessLogic;
 
-namespace ServerConnection.Handler.User;
-
-public class UserCreationHandler : UserHandler
+namespace ServerConnection.Handler.User
 {
-    protected override void HandleUserSpecificOperation()
+    public class UserCreationHandler : UserHandler
     {
-        var oc = new OwnerController();
+        protected override async Task HandleUserSpecificOperationAsync()
+        {
+            var oc = new OwnerController();
 
-        if (UserDto == null || ResponseDto == null) 
-            return;
-        
-        oc.SignUp(UserDto.UserName, UserDto.Password);
-        ResponseDto.StatusCode = 200;
-        ResponseDto.Message = $"Registered {UserDto.UserName}";
+            if (UserDto == null || ResponseDto == null)
+                return;
+
+            try
+            {
+                oc.SignUp(UserDto.UserName, UserDto.Password);
+                ResponseDto.StatusCode = 200;
+                ResponseDto.Message = $"Registered {UserDto.UserName}";
+            }
+            catch (AuthenticatorException ex)
+            {
+                Console.WriteLine(ex.Message);
+
+                ResponseDto.StatusCode = 400;
+                ResponseDto.Message = ex.Message;
+            }
+        }
     }
 }

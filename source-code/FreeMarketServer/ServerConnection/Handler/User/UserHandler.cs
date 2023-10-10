@@ -1,57 +1,60 @@
+using System;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using BusinessLogic;
 using Common.DTO;
 using Common.Helpers;
 using Common.Protocol;
 
-namespace ServerConnection.Handler.User;
-
-public abstract class UserHandler
+namespace ServerConnection.Handler.User
 {
-    internal UserDTO? UserDto;
-    internal ResponseDTO? ResponseDto;
-    
-    protected abstract void HandleUserSpecificOperation();
-    
-    internal void Handle(Socket socket)
+    public abstract class UserHandler
     {
-        var (bytesRead, messageLength) =
-            NetworkHelper.ReceiveIntData(ProtocolStandards.SizeMessageDefinedLength, socket);
+        internal UserDTO? UserDto;
+        internal ResponseDTO? ResponseDto;
 
-        if (bytesRead == 0)
-            return;
+        protected abstract Task HandleUserSpecificOperationAsync();
 
-        (bytesRead, var userString) = NetworkHelper.ReceiveStringData(messageLength, socket);
-
-        if (bytesRead == 0)
-            return;
-
-        var userMap = KOI.Parse(userString);
-
-        UserDto = new UserDTO()
+        internal async Task HandleAsync(NetworkStream stream)
         {
-            UserName = userMap["UserName"] as string,
-            Password = userMap["Password"] as string
-        };
+            try
+            {
+                var (bytesRead, messageLength) =
+                    await NetworkHelper.ReceiveIntDataAsync(ProtocolStandards.SizeMessageDefinedLength, stream);
 
-        ResponseDto = new ResponseDTO();
+                if (bytesRead == 0)
+                    return;
 
-        try
-        {
-            HandleUserSpecificOperation();
+                (bytesRead, var userString) = await NetworkHelper.ReceiveStringDataAsync(messageLength, stream);
+
+                if (bytesRead == 0)
+                    return;
+
+                var userMap = KOI.Parse(userString);
+
+                UserDto = new UserDTO()
+                {
+                    UserName = userMap["UserName"] as string,
+                    Password = userMap["Password"] as string
+                };
+
+                ResponseDto = new ResponseDTO();
+
+                await HandleUserSpecificOperationAsync();
+            }
+            catch (AuthenticatorException ex)
+            {
+                Console.WriteLine(ex.Message);
+
+                ResponseDto.StatusCode = 400;
+                ResponseDto.Message = ex.Message;
+            }
+
+            var responseData = KOI.Stringify(ResponseDto);
+            var responseMessageLength = ByteHelper.ConvertStringToBytes(responseData).Length;
+
+            await NetworkHelper.SendMessageAsync(ByteHelper.ConvertIntToBytes(responseMessageLength), stream);
+            await NetworkHelper.SendMessageAsync(ByteHelper.ConvertStringToBytes(responseData), stream);
         }
-        catch (AuthenticatorException ex)
-        {
-            Console.WriteLine(ex.Message);
-
-            ResponseDto.StatusCode = 400;
-            ResponseDto.Message = ex.Message;
-        }
-        
-        var responseData = KOI.Stringify(ResponseDto);
-        var responseMessageLength = ByteHelper.ConvertStringToBytes(responseData).Length;
-
-        NetworkHelper.SendMessage(ByteHelper.ConvertIntToBytes(responseMessageLength), socket);
-        NetworkHelper.SendMessage(ByteHelper.ConvertStringToBytes(responseData), socket);
     }
 }

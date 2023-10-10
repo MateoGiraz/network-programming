@@ -7,7 +7,7 @@ namespace ServerConnection;
 
 internal class OptionHandler
 {
-    private readonly Socket _socket;
+    private readonly NetworkStream _stream;
     private readonly UserCreationHandler _userCreationHandler;
     private readonly UserLogInHandler _userLogInHandler;
     private readonly ProductCreationHandler _productCreationHandler;
@@ -19,9 +19,9 @@ internal class OptionHandler
     private readonly GetProductHandler _getProductHandler;
 
 
-    public OptionHandler(Socket socket)
+    public OptionHandler(NetworkStream stream)
     {
-        _socket = socket;
+        _stream = stream;
         
         _userCreationHandler = new UserCreationHandler();
         _userLogInHandler = new UserLogInHandler();
@@ -34,36 +34,36 @@ internal class OptionHandler
         _getProductHandler = new GetProductHandler();
     }
 
-    public void Handle(int option)
+    public async Task HandleAsync(int option)
     {
         switch (option)
         {
             case 1:
-                _userCreationHandler.Handle(_socket);
+                await _userCreationHandler.HandleAsync(_stream);
                 break;
             case 2:
-                _userLogInHandler.Handle(_socket);
+                await _userLogInHandler.HandleAsync(_stream);
                 break;
             case 3:
-                _productPurchaseHandler.Handle(_socket);
+                await _productPurchaseHandler.HandleAsync(_stream);
                 break;
             case 4:
-                _productCreationHandler.Handle(_socket);
+                await _productCreationHandler.HandleAsync(_stream);
                 break;
             case 5:
-                _productEditionHandler.Handle(_socket);
+                await _productEditionHandler.HandleAsync(_stream);
                 break;
             case 6:
-                _productDeletionHandler.Handle(_socket);
+                await _productDeletionHandler.HandleAsync(_stream);
                 break;
             case 7:
-                _getProductsHandler.Handle(_socket);
+                await _getProductsHandler.HandleAsync(_stream);
                 break;
             case 8:
-                _getProductHandler.Handle(_socket);
+                await _getProductHandler.HandleAsync(_stream);
                 break;
             case 9:
-                _productRatingHandler.Handle(_socket);
+                await _productRatingHandler.HandleAsync(_stream);
                 break;
             default:
                 break;

@@ -5,7 +5,7 @@ namespace ServerConnection.Handler.Product.ConcreteProductHandler;
 
 public class ProductEditionHandler : ProductHandler
 {
-    protected override void HandleProductSpecificOperation()
+    protected override async Task HandleProductSpecificOperationAsync()
     {
         ProductDto!.Description = ProductMap["Description"] as string;
         ProductDto.Price = ProductMap["Price"] as string;

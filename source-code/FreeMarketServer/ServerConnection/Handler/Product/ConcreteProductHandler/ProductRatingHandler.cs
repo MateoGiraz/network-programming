@@ -5,7 +5,7 @@ namespace ServerConnection.Handler.Product.ConcreteProductHandler;
 
 public class ProductRatingHandler : ProductHandler
 {
-    protected override void HandleProductSpecificOperation()
+    protected override async Task HandleProductSpecificOperationAsync()
     {
         var ratingList = KOI.GetObjectMapList(ProductMap!["Ratings"]);
         var newRating = ratingList[0];
