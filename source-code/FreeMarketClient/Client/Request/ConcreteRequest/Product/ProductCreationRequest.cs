@@ -21,6 +21,6 @@ public class ProductCreationRequest : ProductRequest
     protected override void HandleImageSending()
     {
         var fileTransferHelper = new FileTransferHelper();
-        fileTransferHelper.SendFile(base.Socket, filePath);
+        fileTransferHelper.SendFileAsync(filePath, base.Stream);
     }
 }

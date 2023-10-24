@@ -15,8 +15,9 @@ public static class Program
     public static void Main()
     {
 
-        var socket = SocketManager.Create();
-        var optionHandler = new OptionHandler(socket);
+        var tcpClient = SocketManager.Create();
+        var stream = tcpClient.GetStream();
+        var optionHandler = new OptionHandler(stream);
 
         Startup.PrintWelcomeMessageClient();
 
@@ -27,8 +28,7 @@ public static class Program
             res = Menu.ChooseOption();
             optionHandler.Handle(res);
         }
-        socket.Shutdown(SocketShutdown.Both);
-        socket.Close();
+        tcpClient.Close();
     }
 
 

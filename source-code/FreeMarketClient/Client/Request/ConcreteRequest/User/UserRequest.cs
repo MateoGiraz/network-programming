@@ -10,7 +10,7 @@ public class UserRequest : RequestTemplate
     internal UserDTO? UserDto;
     internal ResponseDTO? ResponseDto;
     
-    internal override void ConcreteHandle(Socket socket, string? userName)
+    internal override void ConcreteHandle(NetworkStream stream, string? userName)
     {
         Console.Clear();
         var user = InputHelper.GetValidInput("Type Username");
@@ -26,23 +26,23 @@ public class UserRequest : RequestTemplate
         var userData = KOI.Stringify(UserDto);
         var messageLength = ByteHelper.ConvertStringToBytes(userData).Length;
         
-        SendLength(socket, messageLength);
-        SendData(socket, userData);
+        SendLength(stream, messageLength);
+        SendData(stream, userData);
         
-        GetServerResponse(socket);
+        GetServerResponse(stream);
     }
 
-    private void GetServerResponse(Socket socket)
+    private async Task GetServerResponse(NetworkStream stream)
     {
         try
         {
             var (bytesRead, responseLength) =
-                NetworkHelper.ReceiveIntData(ProtocolStandards.SizeMessageDefinedLength, socket);
+                 await NetworkHelper.ReceiveIntDataAsync(ProtocolStandards.SizeMessageDefinedLength, stream);
 
             if (bytesRead == 0)
                 return;
 
-            (bytesRead, var responseString) = NetworkHelper.ReceiveStringData(responseLength, socket);
+            (bytesRead, var responseString) = await NetworkHelper.ReceiveStringDataAsync(responseLength, stream);
 
             if (bytesRead == 0)
                 return;
@@ -59,7 +59,8 @@ public class UserRequest : RequestTemplate
 
             Console.Clear();
             Console.WriteLine(ResponseDto.Message);
-            Thread.Sleep(1500);
+            await Task.Delay(1500);
+            //Thread.Sleep(1500);
         }
         catch (NetworkHelper.ServerDisconnectedException ex)
         {

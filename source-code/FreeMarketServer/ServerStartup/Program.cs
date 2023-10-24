@@ -10,7 +10,7 @@ class Program
         Startup.PrintWelcomeMessageServer();
         Console.WriteLine("For shutting down all connections, please enter 'shutdown'.");
         
-        new Thread(MonitorUserInput).Start();
+        var _ = Task.Run(async () => MonitorUserInput());
         
         await server.ListenAsync(3000);
     }

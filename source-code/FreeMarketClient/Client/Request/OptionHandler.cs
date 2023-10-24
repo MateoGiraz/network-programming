@@ -10,7 +10,7 @@ namespace free_market_client.Request
 {
     internal class OptionHandler
     {
-        private readonly Socket _socket;
+        private readonly NetworkStream _stream;
         private const int logOutOption = 8; 
         private ProductCreationRequest _productCreationRequest;
         private UserRequest _userRequest;
@@ -22,9 +22,9 @@ namespace free_market_client.Request
         private GetProductsRequest _getProductsRequest;
         private GetProductRequest _getProductRequest;
 
-        public OptionHandler(Socket socket)
+        public OptionHandler(NetworkStream stream)
         {
-            _socket = socket;
+            _stream = stream;
             
             _userRequest = new UserRequest();
             _userLogInRequest = new UserLogInRequest();
@@ -43,10 +43,10 @@ namespace free_market_client.Request
            switch (option)
             {
                 case 1:
-                    _userRequest.Handle(_socket, option, null);
+                    _userRequest.Handle(_stream, option, null);
                     break;
                 case 2:
-                    _userLogInRequest.Handle(_socket, option, null);
+                    _userLogInRequest.Handle(_stream, option, null);
                     if (_userLogInRequest.LogInUserDto is not null)
                     {
                         OptionsLoggedIn(_userLogInRequest.LogInUserDto);
@@ -77,31 +77,31 @@ namespace free_market_client.Request
             {
                 case 1:
                     Console.WriteLine("Purchase a Product");
-                    _productPurchaseRequest.Handle(_socket, option + 2, userName);
+                    _productPurchaseRequest.Handle(_stream, option + 2, userName);
                     break;
                 case 2:
                     Console.WriteLine("Create Product");
-                    _productCreationRequest.Handle(_socket, option + 2, userName);
+                    _productCreationRequest.Handle(_stream, option + 2, userName);
                     break;
                 case 3:
                     Console.WriteLine("Modify Product");
-                    _productEditionRequest.Handle(_socket, option + 2, userName);
+                    _productEditionRequest.Handle(_stream, option + 2, userName);
                     break;
                 case 4:
                     Console.WriteLine("Drop Product");
-                    _productDeletionRequest.Handle(_socket, option + 2, userName);
+                    _productDeletionRequest.Handle(_stream, option + 2, userName);
                     break;
                 case 5:
                     Console.WriteLine("Get Products");
-                    _getProductsRequest.Handle(_socket, option + 2, userName);
+                    _getProductsRequest.Handle(_stream, option + 2, userName);
                     break;
                 case 6:
                     Console.WriteLine("Get a Product by Name");                    
-                    _getProductRequest.Handle(_socket, option + 2, userName);
+                    _getProductRequest.Handle(_stream, option + 2, userName);
                     break;
                 case 7:
                     Console.WriteLine("Rate a Product");
-                    _productRatingRequest.Handle(_socket, option + 2, userName);
+                    _productRatingRequest.Handle(_stream, option + 2, userName);
                     break;
                 case 8:
                     Console.WriteLine("Log out");

@@ -11,13 +11,13 @@ namespace free_market_client.Request
     {
         internal ResponseDTO? ResponseDto;
 
-        internal void Handle(Socket socket, int option, string? userName)
+        internal async Task Handle(NetworkStream stream, int option, string? userName)
         {
             try
             {
-                SendCmd(socket, option);
+                SendCmd(stream, option);
 
-                ConcreteHandle(socket, userName);
+                ConcreteHandle(stream, userName);
             }
             catch (NetworkHelper.ServerDisconnectedException ex)
             {
@@ -26,13 +26,13 @@ namespace free_market_client.Request
             }
         }
 
-        internal abstract void ConcreteHandle(Socket socket, string? userName);
+        internal abstract void ConcreteHandle(NetworkStream stream, string? userName);
 
-        internal void SendData(Socket socket, string userData)
+        internal async Task SendData(NetworkStream stream, string userData)
         {
             try
             {
-                NetworkHelper.SendMessage(ByteHelper.ConvertStringToBytes(userData), socket);
+                NetworkHelper.SendMessageAsync(ByteHelper.ConvertStringToBytes(userData), stream);
             }
             catch (NetworkHelper.ServerDisconnectedException ex)
             {
@@ -41,11 +41,11 @@ namespace free_market_client.Request
             }
         }
 
-        internal void SendLength(Socket socket, int messageLength)
+        internal async Task SendLength(NetworkStream stream, int messageLength)
         {
             try
             {
-                NetworkHelper.SendMessage(ByteHelper.ConvertIntToBytes(messageLength), socket);
+                NetworkHelper.SendMessageAsync(ByteHelper.ConvertIntToBytes(messageLength), stream);
             }
             catch (NetworkHelper.ServerDisconnectedException ex)
             {
@@ -54,11 +54,11 @@ namespace free_market_client.Request
             }
         }
 
-        internal static void SendCmd(Socket socket, int res)
+        internal static async Task SendCmd(NetworkStream stream, int res)
         {
             try
             {
-                NetworkHelper.SendMessage(ByteHelper.ConvertIntToBytes(res), socket);
+                NetworkHelper.SendMessageAsync(ByteHelper.ConvertIntToBytes(res), stream);
             }
             catch (NetworkHelper.ServerDisconnectedException ex)
             {
@@ -67,17 +67,17 @@ namespace free_market_client.Request
             }
         }
 
-        internal void GetServerResponse(Socket socket)
+        internal async Task GetServerResponse(NetworkStream stream)
         {
             try
             {
                 var (bytesRead, responseLength) =
-                    NetworkHelper.ReceiveIntData(ProtocolStandards.SizeMessageDefinedLength, socket);
+                   await NetworkHelper.ReceiveIntDataAsync(ProtocolStandards.SizeMessageDefinedLength, stream);
 
                 if (bytesRead == 0)
                     return;
 
-                (bytesRead, var responseString) = NetworkHelper.ReceiveStringData(responseLength, socket);
+                (bytesRead, var responseString) = await NetworkHelper.ReceiveStringDataAsync(responseLength, stream);
 
                 if (bytesRead == 0)
                     return;

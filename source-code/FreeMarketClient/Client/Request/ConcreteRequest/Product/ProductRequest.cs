@@ -8,14 +8,14 @@ namespace free_market_client.Request.ConcreteRequest.Product;
 public abstract class ProductRequest : RequestTemplate
 {
     internal ProductDTO? ProductDto;
-    internal Socket Socket;
+    internal NetworkStream Stream;
 
     protected abstract void HandleConcreteProductOperation();
     protected abstract void HandleImageSending();
 
-    internal override void ConcreteHandle(Socket socket, string? userName)
+    internal override void ConcreteHandle(NetworkStream stream, string? userName)
     {
-        Socket = socket;
+        Stream = stream;
         
         Console.Clear();
         var name = InputHelper.GetValidInput("Type Product Name");
@@ -36,12 +36,12 @@ public abstract class ProductRequest : RequestTemplate
         var productData = KOI.Stringify(ProductDto);
         var messageLength = ByteHelper.ConvertStringToBytes(productData).Length;
 
-        SendLength(Socket, messageLength);
-        SendData(Socket, productData);
+        SendLength(Stream, messageLength);
+        SendData(Stream, productData);
 
         HandleImageSending();
 
-        GetServerResponse(Socket);
+        GetServerResponse(Stream);
     }
     
 }

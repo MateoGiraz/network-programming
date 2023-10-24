@@ -8,7 +8,7 @@ namespace free_market_client.Request.ConcreteRequest.Product;
 public class GetProductRequest : RequestTemplate
 {
     private bool _getImage = false;
-    internal override void ConcreteHandle(Socket socket, string? userName)
+    internal override void ConcreteHandle(NetworkStream stream, string? userName)
     {
         Console.Clear();
         var name = InputHelper.GetValidInput("Type Product Name");
@@ -29,23 +29,23 @@ public class GetProductRequest : RequestTemplate
         
         var messageLength = ByteHelper.ConvertStringToBytes(request).Length;
 
-        SendLength(socket, messageLength);
-        SendData(socket, request);
+        SendLength(stream, messageLength);
+        SendData(stream, request);
 
-        GetResponse(socket);
+        GetResponse(stream);
     }
 
-    private void GetResponse(Socket socket)
+    private async Task GetResponse(NetworkStream stream)
     {
         try
         {
             var (bytesRead, messageLength) =
-                NetworkHelper.ReceiveIntData(ProtocolStandards.SizeMessageDefinedLength, socket);
+                await NetworkHelper.ReceiveIntDataAsync(ProtocolStandards.SizeMessageDefinedLength, stream);
 
             if (bytesRead == 0)
                 return;
 
-            (bytesRead, var productString) = NetworkHelper.ReceiveStringData(messageLength, socket);
+            (bytesRead, var productString) = await NetworkHelper.ReceiveStringDataAsync(messageLength, stream);
 
             if (bytesRead == 0)
                 return;
@@ -86,7 +86,7 @@ public class GetProductRequest : RequestTemplate
             if (_getImage)
             {
                 var fileTransferHelper = new FileTransferHelper();
-                var path = fileTransferHelper.ReceiveFile(socket);
+                var path = fileTransferHelper.ReceiveFileAsync(stream);
 
                 Console.WriteLine($"Downloaded image at path: {path}");
             }
