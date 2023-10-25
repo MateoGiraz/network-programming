@@ -7,7 +7,7 @@ public class ProductCreationRequest : ProductRequest
 {
     private string filePath;
     
-    protected override async Task HandleConcreteProductOperation()
+    protected override async Task HandleConcreteProductOperationAsync()
     {
         ProductDto.Description = InputHelper.GetInputWithoutHash($"Add {ProductDto!.Name}'s Description");
         
@@ -18,7 +18,7 @@ public class ProductCreationRequest : ProductRequest
         filePath = InputHelper.GetValidInput("Type new Image Path");
     }
 
-    protected override async Task HandleImageSending()
+    protected override async Task HandleImageSendingAsync()
     {
         var fileTransferHelper = new FileTransferHelper();
         await fileTransferHelper.SendFileAsync(filePath, base.Stream);

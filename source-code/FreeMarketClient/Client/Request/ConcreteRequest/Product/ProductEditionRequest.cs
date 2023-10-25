@@ -2,7 +2,7 @@
 
 public class ProductEditionRequest : ProductRequest
 {
-    protected override async Task HandleConcreteProductOperation()
+    protected override async Task HandleConcreteProductOperationAsync()
     {
         ProductDto.Description = InputHelper.GetInputWithoutHash($"Add {ProductDto!.Name}'s Description");
         
@@ -12,5 +12,5 @@ public class ProductEditionRequest : ProductRequest
         
         ProductDto.ImageRoute = InputHelper.GetValidInput("Type new Image Path");  
     }
-    protected override async Task HandleImageSending() {}
+    protected override async Task HandleImageSendingAsync() {}
 }

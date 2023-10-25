@@ -38,18 +38,18 @@ namespace free_market_client.Request
             
         }
 
-        public async Task Handle(int option)
+        public async Task HandleAsync(int option)
         {
            switch (option)
             {
                 case 1:
-                    await _userRequest.Handle(_stream, option, null);
+                    await _userRequest.HandleAsync(_stream, option, null);
                     break;
                 case 2:
-                    await _userLogInRequest.Handle(_stream, option, null);
+                    await _userLogInRequest.HandleAsync(_stream, option, null);
                     if (_userLogInRequest.LogInUserDto is not null)
                     {
-                        await OptionsLoggedIn(_userLogInRequest.LogInUserDto);
+                        await OptionsLoggedInAsync(_userLogInRequest.LogInUserDto);
                     }
                     break;
                 default:
@@ -59,7 +59,7 @@ namespace free_market_client.Request
             }
         }
 
-        private async Task OptionsLoggedIn(UserDTO username)
+        private async Task OptionsLoggedInAsync(UserDTO username)
         {
             Console.WriteLine($"Logged in as {username}");
             var res = -1;
@@ -67,45 +67,45 @@ namespace free_market_client.Request
             {
                 Menu.PrintOptionsLoggedIn(username.UserName);
                 res = Menu.ChooseOption();
-                await HandleLogIn(res, username.UserName);
+                await HandleLogInAsync(res, username.UserName);
             }
         }
 
-        private async Task HandleLogIn(int option, string userName)
+        private async Task HandleLogInAsync(int option, string userName)
         {
             switch (option)
             {
                 case 1:
                     Console.WriteLine("Purchase a Product");
-                    await _productPurchaseRequest.Handle(_stream, option + 2, userName);
+                    await _productPurchaseRequest.HandleAsync(_stream, option + 2, userName);
                     break;
                 case 2:
                     Console.WriteLine("Create Product");
-                    await _productCreationRequest.Handle(_stream, option + 2, userName);
+                    await _productCreationRequest.HandleAsync(_stream, option + 2, userName);
                     break;
                 case 3:
                     Console.WriteLine("Modify Product");
-                    await _productEditionRequest.Handle(_stream, option + 2, userName);
+                    await _productEditionRequest.HandleAsync(_stream, option + 2, userName);
                     break;
                 case 4:
                     Console.WriteLine("Drop Product");
-                    await _productDeletionRequest.Handle(_stream, option + 2, userName);
+                    await _productDeletionRequest.HandleAsync(_stream, option + 2, userName);
                     break;
                 case 5:
                     Console.WriteLine("Get Products");
-                    await _getProductsRequest.Handle(_stream, option + 2, userName);
+                    await _getProductsRequest.HandleAsync(_stream, option + 2, userName);
                     break;
                 case 6:
                     Console.WriteLine("Get a Product by Name");
-                    await_getProductRequest.Handle(_stream, option + 2, userName);
+                    await _getProductRequest.HandleAsync(_stream, option + 2, userName);
                     break;
                 case 7:
                     Console.WriteLine("Rate a Product");
-                    await _productRatingRequest.Handle(_stream, option + 2, userName);
+                    await _productRatingRequest.HandleAsync(_stream, option + 2, userName);
                     break;
                 case 8:
                     Console.WriteLine("Log out");
-                    await _userLogInRequest.LogInUserDto = null;
+                    _userLogInRequest.LogInUserDto = null;
                     break;
                 default:
                     Console.WriteLine("That's not a valid Option");

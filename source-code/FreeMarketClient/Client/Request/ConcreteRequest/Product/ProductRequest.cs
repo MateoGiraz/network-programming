@@ -10,10 +10,10 @@ public abstract class ProductRequest : RequestTemplate
     internal ProductDTO? ProductDto;
     internal NetworkStream Stream;
 
-    protected abstract void HandleConcreteProductOperation();
-    protected abstract void HandleImageSending();
+    protected abstract Task HandleConcreteProductOperationAsync();
+    protected abstract Task HandleImageSendingAsync();
 
-    internal override void ConcreteHandle(NetworkStream stream, string? userName)
+    internal override async Task ConcreteHandleAsync(NetworkStream stream, string? userName)
     {
         Stream = stream;
         
@@ -30,18 +30,18 @@ public abstract class ProductRequest : RequestTemplate
             Name = name,
             Owner = userDto
         };
-        
-        HandleConcreteProductOperation();
+
+        await HandleConcreteProductOperationAsync();
 
         var productData = KOI.Stringify(ProductDto);
         var messageLength = ByteHelper.ConvertStringToBytes(productData).Length;
 
-        SendLength(Stream, messageLength);
-        SendData(Stream, productData);
+        await SendLengthAsync(Stream, messageLength);
+        await SendDataAsync(Stream, productData);
 
-        HandleImageSending();
+        await HandleImageSendingAsync();
 
-        GetServerResponse(Stream);
+        await GetServerResponseAsync(Stream);
     }
     
 }

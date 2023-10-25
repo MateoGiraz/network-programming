@@ -11,7 +11,7 @@ using Common.Config;
 
 namespace free_market_client
 {
-    internal class SocketManager
+    internal class ConnectionManager
     {
         internal static TcpClient Create()
         {

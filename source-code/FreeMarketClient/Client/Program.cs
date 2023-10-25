@@ -54,7 +54,7 @@ public static class Program
             {
                 Menu.PrintOptions();
                 res = Menu.ChooseOption();
-                await optionHandler.Handle(res);
+                await optionHandler.HandleAsync(res);
             }
 
             tcpClient.Close();
