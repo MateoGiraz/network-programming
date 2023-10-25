@@ -12,7 +12,6 @@ namespace free_market_client;
 public static class Program
 {
     private const int exitOption = 3;
-    private const int maxRetries = 5; // Número máximo de intentos de conexión
     private const int retryIntervalMilliseconds = 5000;
     public static void Main()
     {
@@ -65,19 +64,4 @@ public static class Program
             Console.WriteLine("No se pudo establecer la conexión después de varios intentos. Saliendo del programa.");
         }
     }
-        /*
-        var tcpClient = SocketManager.Create();
-        var stream = tcpClient.GetStream();
-        var optionHandler = new OptionHandler(stream);
-
-        Startup.PrintWelcomeMessageClient();
-
-        var res = -1;
-        while (res != exitOption)
-        {
-            Menu.PrintOptions();
-            res = Menu.ChooseOption();
-            optionHandler.Handle(res);
-        }
-        tcpClient.Close();*/
 }
