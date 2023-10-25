@@ -10,7 +10,7 @@ public class UserRequest : RequestTemplate
     internal UserDTO? UserDto;
     internal ResponseDTO? ResponseDto;
     
-    internal override void ConcreteHandle(NetworkStream stream, string? userName)
+    internal override async Task ConcreteHandleAsync(NetworkStream stream, string? userName)
     {
         Console.Clear();
         var user = InputHelper.GetValidInput("Type Username");
@@ -25,14 +25,14 @@ public class UserRequest : RequestTemplate
 
         var userData = KOI.Stringify(UserDto);
         var messageLength = ByteHelper.ConvertStringToBytes(userData).Length;
-        
-        SendLength(stream, messageLength);
-        SendData(stream, userData);
-        
-        GetServerResponse(stream);
+
+        await SendLengthAsync(stream, messageLength);
+        await SendDataAsync(stream, userData);
+
+        await GetServerResponseAsync(stream);
     }
 
-    private async Task GetServerResponse(NetworkStream stream)
+    private async Task GetServerResponseAsync(NetworkStream stream)
     {
         try
         {
@@ -59,8 +59,7 @@ public class UserRequest : RequestTemplate
 
             Console.Clear();
             Console.WriteLine(ResponseDto.Message);
-            await Task.Delay(1500);
-            //Thread.Sleep(1500);
+            Thread.Sleep(1500);
         }
         catch (NetworkHelper.ServerDisconnectedException ex)
         {

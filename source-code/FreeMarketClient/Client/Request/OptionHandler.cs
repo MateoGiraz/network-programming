@@ -38,18 +38,18 @@ namespace free_market_client.Request
             
         }
 
-        public void Handle(int option)
+        public async Task HandleAsync(int option)
         {
            switch (option)
             {
                 case 1:
-                    _userRequest.Handle(_stream, option, null);
+                    await _userRequest.HandleAsync(_stream, option, null);
                     break;
                 case 2:
-                    _userLogInRequest.Handle(_stream, option, null);
+                    await _userLogInRequest.HandleAsync(_stream, option, null);
                     if (_userLogInRequest.LogInUserDto is not null)
                     {
-                        OptionsLoggedIn(_userLogInRequest.LogInUserDto);
+                        await OptionsLoggedInAsync(_userLogInRequest.LogInUserDto);
                     }
                     break;
                 default:
@@ -59,7 +59,7 @@ namespace free_market_client.Request
             }
         }
 
-        private void OptionsLoggedIn(UserDTO username)
+        private async Task OptionsLoggedInAsync(UserDTO username)
         {
             Console.WriteLine($"Logged in as {username}");
             var res = -1;
@@ -67,41 +67,41 @@ namespace free_market_client.Request
             {
                 Menu.PrintOptionsLoggedIn(username.UserName);
                 res = Menu.ChooseOption();
-                HandleLogIn(res, username.UserName);
+                await HandleLogInAsync(res, username.UserName);
             }
         }
 
-        private void HandleLogIn(int option, string userName)
+        private async Task HandleLogInAsync(int option, string userName)
         {
             switch (option)
             {
                 case 1:
                     Console.WriteLine("Purchase a Product");
-                    _productPurchaseRequest.Handle(_stream, option + 2, userName);
+                    await _productPurchaseRequest.HandleAsync(_stream, option + 2, userName);
                     break;
                 case 2:
                     Console.WriteLine("Create Product");
-                    _productCreationRequest.Handle(_stream, option + 2, userName);
+                    await _productCreationRequest.HandleAsync(_stream, option + 2, userName);
                     break;
                 case 3:
                     Console.WriteLine("Modify Product");
-                    _productEditionRequest.Handle(_stream, option + 2, userName);
+                    await _productEditionRequest.HandleAsync(_stream, option + 2, userName);
                     break;
                 case 4:
                     Console.WriteLine("Drop Product");
-                    _productDeletionRequest.Handle(_stream, option + 2, userName);
+                    await _productDeletionRequest.HandleAsync(_stream, option + 2, userName);
                     break;
                 case 5:
                     Console.WriteLine("Get Products");
-                    _getProductsRequest.Handle(_stream, option + 2, userName);
+                    await _getProductsRequest.HandleAsync(_stream, option + 2, userName);
                     break;
                 case 6:
-                    Console.WriteLine("Get a Product by Name");                    
-                    _getProductRequest.Handle(_stream, option + 2, userName);
+                    Console.WriteLine("Get a Product by Name");
+                    await _getProductRequest.HandleAsync(_stream, option + 2, userName);
                     break;
                 case 7:
                     Console.WriteLine("Rate a Product");
-                    _productRatingRequest.Handle(_stream, option + 2, userName);
+                    await _productRatingRequest.HandleAsync(_stream, option + 2, userName);
                     break;
                 case 8:
                     Console.WriteLine("Log out");

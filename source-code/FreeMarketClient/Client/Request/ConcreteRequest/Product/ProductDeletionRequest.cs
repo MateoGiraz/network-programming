@@ -2,7 +2,7 @@
 
 public class ProductDeletionRequest : ProductRequest
 {
-    protected override void HandleConcreteProductOperation() {}
+    protected override async Task HandleConcreteProductOperationAsync() {}
 
-    protected override void HandleImageSending() {}
+    protected override async Task HandleImageSendingAsync() {}
 }

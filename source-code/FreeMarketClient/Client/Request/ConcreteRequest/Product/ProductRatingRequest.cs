@@ -4,7 +4,7 @@ namespace free_market_client.Request.ConcreteRequest.Product;
 
 public class ProductRatingRequest : ProductRequest
 {
-    protected override void HandleConcreteProductOperation()
+    protected override async Task HandleConcreteProductOperationAsync()
     {
 
         var score = InputHelper.GetValidRatingInput("Add Rating Score");
@@ -22,5 +22,5 @@ public class ProductRatingRequest : ProductRequest
 
         ProductDto!.Ratings = ratings;
     }
-    protected override void HandleImageSending() {}
+    protected override async Task HandleImageSendingAsync() {}
 }

@@ -8,7 +8,7 @@ namespace free_market_client.Request.ConcreteRequest.Product;
 public class GetProductRequest : RequestTemplate
 {
     private bool _getImage = false;
-    internal override void ConcreteHandle(NetworkStream stream, string? userName)
+    internal override async Task ConcreteHandleAsync(NetworkStream stream, string? userName)
     {
         Console.Clear();
         var name = InputHelper.GetValidInput("Type Product Name");
@@ -29,13 +29,13 @@ public class GetProductRequest : RequestTemplate
         
         var messageLength = ByteHelper.ConvertStringToBytes(request).Length;
 
-        SendLength(stream, messageLength);
-        SendData(stream, request);
+        await SendLengthAsync(stream, messageLength);
+        await SendDataAsync(stream, request);
 
-        GetResponse(stream);
+        await GetResponseAsync(stream);
     }
 
-    private async Task GetResponse(NetworkStream stream)
+    private async Task GetResponseAsync(NetworkStream stream)
     {
         try
         {
@@ -88,7 +88,7 @@ public class GetProductRequest : RequestTemplate
                 var fileTransferHelper = new FileTransferHelper();
                 var path = fileTransferHelper.ReceiveFileAsync(stream);
 
-                Console.WriteLine($"Downloaded image at path: {path}");
+                Console.WriteLine($"Downloaded image");
             }
 
             Console.WriteLine("Enter key to go back...");

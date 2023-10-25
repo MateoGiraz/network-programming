@@ -23,21 +23,36 @@ public static class InputHelper
         return input;
     }
 
-        public static string GetInputWithoutHash(string promptMessage)
+    public static string GetInputWithoutHash(string promptMessage)
+    {
+        string input;
+        do
         {
-            string input;
-            do
+            Console.WriteLine(promptMessage);
+            input = Console.ReadLine()?.Trim(); 
+            if (input.Contains('#'))
             {
-                Console.WriteLine(promptMessage);
-                input = Console.ReadLine()?.Trim(); 
-                if (input.Contains('#'))
-                {
-                    Console.WriteLine("Input cannot contain the '#' character. Please try again.");
-                    input = string.Empty; 
-                }
-            } while (input.Contains('#'));
-            return input;
-        }
+                Console.WriteLine("Input cannot contain the '#' character. Please try again.");
+                input = string.Empty; 
+            }
+        } while (input.Contains('#'));
+        return input;
+    }
+
+    public static string GetInputExistingFile(string promptMessage)
+    {
+        string input;
+        do
+        {
+            Console.WriteLine(promptMessage);
+            input = Console.ReadLine()?.Trim(); 
+            if (!File.Exists(input))
+            {
+                Console.WriteLine("File was not found. Please check filepath provided");
+            }
+        } while (!File.Exists(input));
+        return input;
+    }
     
 
     

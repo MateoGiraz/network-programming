@@ -1,4 +1,5 @@
 ﻿using BusinessLogic;
+using Common.Helpers;
 using CoreBusiness;
 
 namespace ServerConnection.Handler.Product.ConcreteProductHandler;
@@ -12,12 +13,16 @@ public class ProductEditionHandler : ProductHandler
         ProductDto.Stock = ProductMap["Stock"] as string;
         ProductDto.ImageRoute = ProductMap["ImageRoute"] as string;
 
-        
+        var fileTransferHelper = new FileTransferHelper();
+        var path = await fileTransferHelper.ReceiveFileAsync(base.stream);
+        ProductDto.ImageRoute = path;
+
+
         var productToBeEdited = new CoreBusiness.Product()
         {
             Name = ProductDto.Name,
             Description = ProductDto.Description,
-            ImageRoute = ProductDto.ImageRoute,
+            ImageRoute = path,
             Price = int.Parse(ProductDto.Price),
             Stock = int.Parse(ProductDto.Stock),
             Owner = new Owner()

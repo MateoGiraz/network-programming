@@ -2,7 +2,7 @@
 
     public class ProductPurchaseRequest : ProductRequest
     {
-        protected override void HandleConcreteProductOperation() {}
-        protected override void HandleImageSending() {}
+        protected override async Task HandleConcreteProductOperationAsync() {}
+        protected override async Task HandleImageSendingAsync() {}
 
     }
