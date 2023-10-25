@@ -88,7 +88,7 @@ public class GetProductRequest : RequestTemplate
                 var fileTransferHelper = new FileTransferHelper();
                 var path = fileTransferHelper.ReceiveFileAsync(stream);
 
-                Console.WriteLine($"Downloaded image at path: {path}");
+                Console.WriteLine($"Downloaded image");
             }
 
             Console.WriteLine("Enter key to go back...");
