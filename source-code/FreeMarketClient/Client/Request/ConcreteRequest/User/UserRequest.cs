@@ -10,7 +10,7 @@ public class UserRequest : RequestTemplate
     internal UserDTO? UserDto;
     internal ResponseDTO? ResponseDto;
     
-    internal override void ConcreteHandle(NetworkStream stream, string? userName)
+    internal override async Task ConcreteHandle(NetworkStream stream, string? userName)
     {
         Console.Clear();
         var user = InputHelper.GetValidInput("Type Username");
@@ -25,11 +25,11 @@ public class UserRequest : RequestTemplate
 
         var userData = KOI.Stringify(UserDto);
         var messageLength = ByteHelper.ConvertStringToBytes(userData).Length;
-        
-        SendLength(stream, messageLength);
-        SendData(stream, userData);
-        
-        GetServerResponse(stream);
+
+        await SendLength(stream, messageLength);
+        await SendData(stream, userData);
+
+        await GetServerResponse(stream);
     }
 
     private async Task GetServerResponse(NetworkStream stream)

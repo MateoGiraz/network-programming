@@ -15,9 +15,9 @@ namespace free_market_client.Request
         {
             try
             {
-                SendCmd(stream, option);
+                await SendCmd(stream, option);
 
-                ConcreteHandle(stream, userName);
+                await ConcreteHandle(stream, userName);
             }
             catch (NetworkHelper.ServerDisconnectedException ex)
             {
@@ -26,13 +26,13 @@ namespace free_market_client.Request
             }
         }
 
-        internal abstract void ConcreteHandle(NetworkStream stream, string? userName);
+        internal abstract Task ConcreteHandle(NetworkStream stream, string? userName);
 
         internal async Task SendData(NetworkStream stream, string userData)
         {
             try
             {
-                NetworkHelper.SendMessageAsync(ByteHelper.ConvertStringToBytes(userData), stream);
+                await NetworkHelper.SendMessageAsync(ByteHelper.ConvertStringToBytes(userData), stream);
             }
             catch (NetworkHelper.ServerDisconnectedException ex)
             {
@@ -45,7 +45,7 @@ namespace free_market_client.Request
         {
             try
             {
-                NetworkHelper.SendMessageAsync(ByteHelper.ConvertIntToBytes(messageLength), stream);
+                await NetworkHelper.SendMessageAsync(ByteHelper.ConvertIntToBytes(messageLength), stream);
             }
             catch (NetworkHelper.ServerDisconnectedException ex)
             {
@@ -58,7 +58,7 @@ namespace free_market_client.Request
         {
             try
             {
-                NetworkHelper.SendMessageAsync(ByteHelper.ConvertIntToBytes(res), stream);
+                await NetworkHelper.SendMessageAsync(ByteHelper.ConvertIntToBytes(res), stream);
             }
             catch (NetworkHelper.ServerDisconnectedException ex)
             {

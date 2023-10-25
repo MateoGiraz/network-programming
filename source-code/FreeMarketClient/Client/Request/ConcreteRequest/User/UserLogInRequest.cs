@@ -7,9 +7,9 @@ public class UserLogInRequest : UserRequest
 {
     public UserDTO? LogInUserDto;
     
-    internal override void ConcreteHandle(NetworkStream stream, string? userName)
+    internal override async Task ConcreteHandle(NetworkStream stream, string? userName)
     {
-        base.ConcreteHandle(stream, userName);
+        await base.ConcreteHandle(stream, userName);
         if(UserDto != null && ResponseDto is { StatusCode: 200 })
             LogInUserDto = UserDto;
     }

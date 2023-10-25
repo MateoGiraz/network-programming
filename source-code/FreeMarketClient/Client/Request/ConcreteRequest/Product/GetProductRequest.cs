@@ -8,7 +8,7 @@ namespace free_market_client.Request.ConcreteRequest.Product;
 public class GetProductRequest : RequestTemplate
 {
     private bool _getImage = false;
-    internal override void ConcreteHandle(NetworkStream stream, string? userName)
+    internal override async Task ConcreteHandle(NetworkStream stream, string? userName)
     {
         Console.Clear();
         var name = InputHelper.GetValidInput("Type Product Name");
@@ -29,10 +29,10 @@ public class GetProductRequest : RequestTemplate
         
         var messageLength = ByteHelper.ConvertStringToBytes(request).Length;
 
-        SendLength(stream, messageLength);
-        SendData(stream, request);
+        await SendLength(stream, messageLength);
+        await SendData(stream, request);
 
-        GetResponse(stream);
+        await GetResponse(stream);
     }
 
     private async Task GetResponse(NetworkStream stream)

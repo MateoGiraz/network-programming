@@ -7,7 +7,7 @@ namespace free_market_client.Request.ConcreteRequest.Product;
 
 public class GetProductsRequest : RequestTemplate
 {
-    internal override void ConcreteHandle(NetworkStream stream, string? userName)
+    internal override async Task ConcreteHandle(NetworkStream stream, string? userName)
     {
         Console.Clear();
         Console.WriteLine("Type Product Filer (Enter for no filter)");
@@ -17,10 +17,10 @@ public class GetProductsRequest : RequestTemplate
 
         var messageLength = ByteHelper.ConvertStringToBytes(filter).Length;
 
-        SendLength(stream, messageLength);
-        SendData(stream, filter);
+        await SendLength(stream, messageLength);
+        await SendData(stream, filter);
 
-            GetResponse(stream);
+        await GetResponse(stream);
 
     }
 

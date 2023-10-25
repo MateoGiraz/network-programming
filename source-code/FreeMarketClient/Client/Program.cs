@@ -13,7 +13,7 @@ public static class Program
 {
     private const int exitOption = 3;
     private const int retryIntervalMilliseconds = 5000;
-    public static void Main()
+    public static async Task Main()
     {
         
         TcpClient tcpClient = null;
@@ -22,7 +22,7 @@ public static class Program
         {
             try
             {
-                tcpClient = SocketManager.Create();
+                tcpClient = ConnectionManager.Create();
                 break; 
             }
             catch (SocketException ex)
@@ -54,7 +54,7 @@ public static class Program
             {
                 Menu.PrintOptions();
                 res = Menu.ChooseOption();
-                optionHandler.Handle(res);
+                await optionHandler.Handle(res);
             }
 
             tcpClient.Close();
