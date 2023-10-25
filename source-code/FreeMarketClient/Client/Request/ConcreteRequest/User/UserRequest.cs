@@ -59,8 +59,7 @@ public class UserRequest : RequestTemplate
 
             Console.Clear();
             Console.WriteLine(ResponseDto.Message);
-            await Task.Delay(1500);
-            //Thread.Sleep(1500);
+            Thread.Sleep(1500);
         }
         catch (NetworkHelper.ServerDisconnectedException ex)
         {

@@ -16,11 +16,11 @@ namespace free_market_client
         internal static TcpClient Create()
         {
             
-            ISettingsManager settingsManager = new SettingsManager();
-            TcpClient client = new TcpClient();
+            var settingsManager = new SettingsManager();
+            var client = new TcpClient();
+            
             Console.WriteLine($"IP Address: {IPAddress.Parse(settingsManager.Get("ClientIpAddress"))}");
             Console.WriteLine($"Port: {int.Parse(settingsManager.Get("ClientPort"))}");
-            //var localEndpoint = new IPEndPoint(IPAddress.Parse(settingsManager.Get("ClientIpAddress")), int.Parse(settingsManager.Get("ClientPort")));
 
             var serverEndPoint = new IPEndPoint(IPAddress.Parse(settingsManager.Get("ServerIpAddress")), int.Parse(settingsManager.Get("ServerPort")));
             client.Connect(serverEndPoint);
