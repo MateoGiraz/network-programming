@@ -15,7 +15,7 @@ public class ProductCreationRequest : ProductRequest
         
         ProductDto.Stock = InputHelper.GetValidStock("Type Stock");
         
-        filePath = InputHelper.GetValidInput("Type new Image Path");
+        filePath = InputHelper.GetInputExistingFile("Type new Image Path");
     }
 
     protected override async Task HandleImageSendingAsync()
