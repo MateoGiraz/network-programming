@@ -94,7 +94,8 @@ namespace free_market_client.Request
 
                 Console.Clear();
                 Console.WriteLine(ResponseDto.Message);
-                Thread.Sleep(1500);
+                await Task.Delay(1500);
+                //Thread.Sleep(1500);
             }
             catch (NetworkHelper.ServerDisconnectedException ex)
             {
