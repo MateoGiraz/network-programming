@@ -27,18 +27,18 @@ public static class Program
             }
             catch (SocketException ex)
             {
-                Console.WriteLine("Error de conexión");
+                Console.WriteLine("Connection error");
             }
             catch (IOException ex)
             {
-                Console.WriteLine("Error de E/S");
+                Console.WriteLine("E/S Error");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error inesperado");
+                Console.WriteLine("Unexpected Error");
             }
            
-            Console.WriteLine($"Reintentando en {retryIntervalMilliseconds / 1000} segundos..."); 
+            Console.WriteLine($"Retrying in {retryIntervalMilliseconds / 1000} segundos..."); 
             Thread.Sleep(retryIntervalMilliseconds);
         }
 
