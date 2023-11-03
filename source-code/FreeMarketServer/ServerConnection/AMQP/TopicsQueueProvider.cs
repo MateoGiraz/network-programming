@@ -13,7 +13,7 @@ namespace ServerConnection.AMQP
         public TopicsQueueProvider()
         {
             channel = new ConnectionFactory() { HostName = "localhost" }.CreateConnection().CreateModel();
-            channel.ExchangeDeclare(exchange: "mails_topic", ExchangeType.Topic);
+            channel.ExchangeDeclare(exchange: "mails_topic", ExchangeType.Topic, true);
         }
 
         public Task<bool> SendMessage(string message, string topicRoutingKey)
