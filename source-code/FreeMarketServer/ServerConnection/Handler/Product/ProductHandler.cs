@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Common.DTO;
 using Common.Helpers;
 using Common.Protocol;
+using ServerConnection.AMQP;
 
 namespace ServerConnection.Handler.Product
 {
@@ -14,10 +15,11 @@ namespace ServerConnection.Handler.Product
         internal UserDTO? UserDto;
         internal Dictionary<string, object>? ProductMap;
         internal NetworkStream stream;
+        internal TopicsQueueProvider? topicsQueueProvider;
 
         protected abstract Task HandleProductSpecificOperationAsync();
 
-        internal async Task HandleAsync(NetworkStream networkStream)
+        internal async Task HandleAsync(NetworkStream networkStream, TopicsQueueProvider? _topicsQueueProvider = null)
         {
             stream = networkStream;
 

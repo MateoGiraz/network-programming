@@ -1,4 +1,5 @@
 ﻿using System.Net.Sockets;
+using ServerConnection.AMQP;
 using ServerConnection.Handler.Product.ConcreteProductHandler;
 using ServerConnection.Handler.Product.GetProducts;
 using ServerConnection.Handler.User;
@@ -17,6 +18,7 @@ internal class OptionHandler
     private readonly ProductPurchaseHandler _productPurchaseHandler;
     private readonly GetProductsHandler _getProductsHandler;
     private readonly GetProductHandler _getProductHandler;
+    private readonly TopicsQueueProvider _topicsQueueProvider;
 
 
     public OptionHandler(NetworkStream stream)
@@ -32,6 +34,7 @@ internal class OptionHandler
         _productPurchaseHandler = new ProductPurchaseHandler();
         _getProductsHandler = new GetProductsHandler();
         _getProductHandler = new GetProductHandler();
+        _topicsQueueProvider = new TopicsQueueProvider();
     }
 
     public async Task HandleAsync(int option)
@@ -45,7 +48,7 @@ internal class OptionHandler
                 await _userLogInHandler.HandleAsync(_stream);
                 break;
             case 3:
-                await _productPurchaseHandler.HandleAsync(_stream);
+                await _productPurchaseHandler.HandleAsync(_stream, _topicsQueueProvider);
                 break;
             case 4:
                 await _productCreationHandler.HandleAsync(_stream);
