@@ -22,6 +22,7 @@ namespace ServerConnection.Handler.Product
         internal async Task HandleAsync(NetworkStream networkStream, TopicsQueueProvider? _topicsQueueProvider = null)
         {
             stream = networkStream;
+            topicsQueueProvider = _topicsQueueProvider;
 
             try
             {

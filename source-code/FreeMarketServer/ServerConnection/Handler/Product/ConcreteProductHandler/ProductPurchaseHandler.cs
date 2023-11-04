@@ -32,7 +32,10 @@ public class ProductPurchaseHandler : ProductHandler
 
         var result = await topicsQueueProvider!.SendMessage(saleJSON, routingKey);
 
-        if (!result)
+        if (result){
+            Console.WriteLine("Sent purchase mail to user {0}", sale.User);
+        }else {
             Console.WriteLine("Failed to send purchase mail to user {0}", sale.User);
+        }
     }
 }
