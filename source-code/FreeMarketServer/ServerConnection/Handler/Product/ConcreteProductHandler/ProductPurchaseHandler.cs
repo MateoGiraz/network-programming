@@ -28,9 +28,7 @@ public class ProductPurchaseHandler : ProductHandler
         };
 
         string saleJSON = JsonSerializer.Serialize(sale);
-        string routingKey = "mails_topic";
-
-        var result = await topicsQueueProvider!.SendMessage(saleJSON, routingKey);
+        var result = await topicsQueueProvider!.SendMessage(saleJSON);
 
         if (result){
             Console.WriteLine("Sent purchase mail to user {0}", sale.User);

@@ -13,16 +13,16 @@ namespace ServerConnection.AMQP
         public TopicsQueueProvider()
         {
             channel = new ConnectionFactory() { HostName = "localhost" }.CreateConnection().CreateModel();
-            channel.ExchangeDeclare(exchange: "mails_topic", ExchangeType.Topic, true);
+            channel.ExchangeDeclare(exchange: "mail-exchange", ExchangeType.Topic, true);
         }
 
-        public Task<bool> SendMessage(string message, string topicRoutingKey)
+        public Task<bool> SendMessage(string message)
         {
             try
             {
                 byte[] body = Encoding.UTF8.GetBytes(message);
-                channel.BasicPublish(exchange: "mails_topic",
-                    routingKey: topicRoutingKey,
+                channel.BasicPublish(exchange: "mail-exchange",
+                    routingKey: "mail.send",
                     basicProperties: null,
                     body: body);
                 return Task.FromResult(true);
