@@ -22,6 +22,17 @@ services:
       mode: replicated
       replicas: 1
 
+  admin-service:
+    build:
+      context: ./admin-service
+      dockerfile: ./admin-service.dockerfile
+    restart: always
+    ports:
+      - '8081:80'
+    deploy:
+      mode: replicated
+      replicas: 1
+
   rabbitmq:
     image: 'rabbitmq:3.9-management-alpine'
     ports:
