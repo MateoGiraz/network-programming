@@ -10,6 +10,18 @@ services:
       mode: replicated
       replicas: 1
 
+  sale-service:
+    build:
+      context: ./sale-service
+      dockerfile: ./sale-service.dockerfile
+    restart: always
+    ports:
+      - '8080:80'
+      - '50001:50001'
+    deploy:
+      mode: replicated
+      replicas: 1
+
   rabbitmq:
     image: 'rabbitmq:3.9-management-alpine'
     ports:
