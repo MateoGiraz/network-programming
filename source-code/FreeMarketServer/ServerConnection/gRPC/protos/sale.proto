@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package sale;
+
+option csharp_namespace = "protos";
+option go_package = "/sale";
+
+message Sale {
+  Product Product = 1;
+  string Username = 2;
+}
+
+message Product {
+  string Name = 1;
+  string Description = 2;
+  int32 Price = 3;
+}
+
+message SaleResponse {
+  string result = 1;
+}
+
+service SaleService {
+  rpc CreateSale(Sale) returns (SaleResponse);
+}
+
+

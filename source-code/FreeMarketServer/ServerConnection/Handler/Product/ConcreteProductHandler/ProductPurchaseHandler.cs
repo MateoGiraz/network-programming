@@ -1,6 +1,7 @@
 ﻿using BusinessLogic;
 using ServerConnection.AMQP;
 using System.Text.Json;
+using ServerConnection.gRPC;
 
 namespace ServerConnection.Handler.Product.ConcreteProductHandler;
 
@@ -18,6 +19,17 @@ public class ProductPurchaseHandler : ProductHandler
         var purchasedProduct = productController.GetProduct(ProductDto!.Name);
         productController.BuyProduct(purchasedProduct, 1);
         
+        var grpcProvider = new GrpcProvider();
+        var (hasError, message) = await grpcProvider.CreateSaleAsync(purchasedProduct, UserDto.UserName);
+        
+        Console.WriteLine(message);
+        if (hasError)
+        {
+            ResponseDto!.StatusCode = 500;
+            ResponseDto.Message = message;
+            return;
+        }
+        
         ResponseDto!.StatusCode = 200;
         ResponseDto.Message = $"Bought Product {purchasedProduct.Name}, new stock is: {purchasedProduct.Stock}";
 
@@ -27,13 +39,11 @@ public class ProductPurchaseHandler : ProductHandler
             Product = purchasedProduct.Name
         };
 
-        string saleJSON = JsonSerializer.Serialize(sale);
-        var result = await topicsQueueProvider!.SendMessage(saleJSON);
+        var saleJson = JsonSerializer.Serialize(sale);
+        var mailServiceResult = await topicsQueueProvider!.SendMessage(saleJson);
 
-        if (result){
-            Console.WriteLine("Sent purchase mail to user {0}", sale.User);
-        }else {
-            Console.WriteLine("Failed to send purchase mail to user {0}", sale.User);
-        }
+        Console.WriteLine(mailServiceResult ? "Sent purchase mail to user {0}" : "Failed to send purchase mail to user {0}",
+            sale.User);
+
     }
 }
