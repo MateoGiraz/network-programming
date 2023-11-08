@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package sale;
 
-option csharp_namespace = "protos";
+option csharp_namespace = "protos.sale";
 option go_package = "/sale";
 
 message Sale {

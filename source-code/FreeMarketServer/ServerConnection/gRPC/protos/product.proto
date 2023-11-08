@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package product;
+
+option csharp_namespace = "protos.product";
+option go_package = "/product";
+
+message Product {
+    string Name = 1;
+    string Description = 2;
+    int32 Stock = 3;
+    int32 Price = 4;
+    Credentials credentials = 5;
+}
+
+message ProductIdentifier {
+    string name = 1;
+    Credentials credentials = 2;
+}
+
+message Credentials {
+    string Username = 1;
+    string Password = 2;
+}
+
+message Rating {
+    int32 Score = 1;
+    string Comment = 2;
+}
+
+message ProductResponse {
+    int32 code = 1;
+    string result = 2;
+}
+
+message RatingResponse {
+    int32 code = 1;
+    repeated Rating result = 2;
+}
+
+service ProductService {
+    rpc CreateProduct(Product) returns (ProductResponse);
+    rpc UpdateProduct(Product) returns (ProductResponse);
+    rpc DeleteProduct(ProductIdentifier) returns (ProductResponse);
+    rpc BuyProduct(ProductIdentifier) returns (ProductResponse);
+    rpc GetRating(ProductIdentifier) returns (RatingResponse);
+}
+
+

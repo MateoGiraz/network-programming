@@ -1,5 +1,6 @@
 ﻿using ServerConnection;
 using Common;
+using ServerConnection.gRPC.protos;
 
 class Program
 {
@@ -10,7 +11,10 @@ class Program
         Startup.PrintWelcomeMessageServer();
         Console.WriteLine("For shutting down all connections, please enter 'shutdown'.");
         
-        var _ = Task.Run(async () => MonitorUserInput());
+        var monitorUser = Task.Run(async () => MonitorUserInput());
+
+        var grpcServer = new GrpcServer();
+        var grpcService = Task.Run(() => grpcServer.Listen());
         
         await server.ListenAsync(3000);
     }

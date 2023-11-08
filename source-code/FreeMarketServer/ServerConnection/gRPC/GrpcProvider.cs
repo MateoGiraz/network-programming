@@ -1,4 +1,4 @@
-using protos;
+using protos.sale;
 using Grpc.Net.Client;
 using Product = CoreBusiness.Product;
 
@@ -19,7 +19,7 @@ public class GrpcProvider
     {
         try
         {
-            var protoProduct = new protos.Product()
+            var protoProduct = new global::protos.sale.Product()
             {
                 Name = product.Name,
                 Description = product.Description,

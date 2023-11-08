@@ -2,31 +2,32 @@ package main
 
 import (
 	"context"
+	"log"
+	"net/http"
+	"time"
+
 	"github.com/ORT-PDR/M6C_241195_256345_231355/admin-service/product"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"net/http"
-	"time"
 )
 
-var conn *grpc.ClientConn
-
 type RequestPayload struct {
-	Name        string
-	Description string
-	Stock       int
-	Price       int
-	Credentials Credentials
+	Name        string      `json:"name"`
+	Description string      `json:"description"`
+	Stock       int         `json:"stock"`
+	Price       int         `json:"price"`
+	Credentials Credentials `json:"credentials"`
 }
 
 type Credentials struct {
-	Username string
-	Password string
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
-type GrpcFunc func(ctx context.Context, in *product.Product, opts ...grpc.CallOption) (*product.ProductResponse, error)
+type ProductPayloadFunc func(ctx context.Context, in *product.Product, opts ...grpc.CallOption) (*product.ProductResponse, error)
+type ProductIdentifierPayloadFunc func(ctx context.Context, in *product.ProductIdentifier, opts ...grpc.CallOption) (*product.ProductResponse, error)
 
-func (app *Config) createProduct(w http.ResponseWriter, r *http.Request) {
+func (app *main.Config) createProduct(w http.ResponseWriter, r *http.Request) {
 	connection, err := GetConnection()
 	if err != nil {
 		app.errorJSON(w, err)
@@ -34,11 +35,12 @@ func (app *Config) createProduct(w http.ResponseWriter, r *http.Request) {
 	}
 	defer connection.Close()
 
-	c := product.NewSaleServiceClient(connection)
-	app.HandleRequest(w, r, c.CreateProduct)
+	log.Print("Connection established")
+	c := product.NewProductServiceClient(connection)
+	app.HandleProductRequest(w, r, c.CreateProduct)
 }
 
-func (app *Config) updateProduct(w http.ResponseWriter, r *http.Request) {
+func (app *main.Config) updateProduct(w http.ResponseWriter, r *http.Request) {
 	connection, err := GetConnection()
 	if err != nil {
 		app.errorJSON(w, err)
@@ -46,11 +48,11 @@ func (app *Config) updateProduct(w http.ResponseWriter, r *http.Request) {
 	}
 	defer connection.Close()
 
-	c := product.NewSaleServiceClient(connection)
-	app.HandleRequest(w, r, c.UpdateProduct)
+	c := product.NewProductServiceClient(connection)
+	app.HandleProductRequest(w, r, c.UpdateProduct)
 }
 
-func (app *Config) deleteProduct(w http.ResponseWriter, r *http.Request) {
+func (app *main.Config) deleteProduct(w http.ResponseWriter, r *http.Request) {
 	connection, err := GetConnection()
 	if err != nil {
 		app.errorJSON(w, err)
@@ -58,11 +60,11 @@ func (app *Config) deleteProduct(w http.ResponseWriter, r *http.Request) {
 	}
 	defer connection.Close()
 
-	c := product.NewSaleServiceClient(connection)
-	app.HandleRequest(w, r, c.DeleteProduct)
+	c := product.NewProductServiceClient(connection)
+	app.HandleProductIdentifierRequest(w, r, c.DeleteProduct)
 }
 
-func (app *Config) buyProduct(w http.ResponseWriter, r *http.Request) {
+func (app *main.Config) buyProduct(w http.ResponseWriter, r *http.Request) {
 	connection, err := GetConnection()
 	if err != nil {
 		app.errorJSON(w, err)
@@ -70,17 +72,19 @@ func (app *Config) buyProduct(w http.ResponseWriter, r *http.Request) {
 	}
 	defer connection.Close()
 
-	c := product.NewSaleServiceClient(connection)
-	app.HandleRequest(w, r, c.BuyProduct)
+	c := product.NewProductServiceClient(connection)
+	app.HandleProductIdentifierRequest(w, r, c.BuyProduct)
 }
 
-func (app *Config) HandleRequest(w http.ResponseWriter, r *http.Request, grpcFunc GrpcFunc) {
+func (app *main.Config) HandleProductRequest(w http.ResponseWriter, r *http.Request, grpcFunc ProductPayloadFunc) {
 	var request RequestPayload
 	err := app.readJSON(w, r, &request)
 	if err != nil {
 		app.errorJSON(w, err)
 		return
 	}
+
+	log.Print(request)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
@@ -104,7 +108,36 @@ func (app *Config) HandleRequest(w http.ResponseWriter, r *http.Request, grpcFun
 	app.writeJSON(w, http.StatusAccepted, res)
 }
 
-func (app *Config) getRating(w http.ResponseWriter, r *http.Request) {
+func (app *main.Config) HandleProductIdentifierRequest(w http.ResponseWriter, r *http.Request, grpcFunc ProductIdentifierPayloadFunc) {
+	var request RequestPayload
+	err := app.readJSON(w, r, &request)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	log.Print(request)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	res, err := grpcFunc(ctx, &product.ProductIdentifier{
+		Name: request.Name,
+		Credentials: &product.Credentials{
+			Username: request.Credentials.Username,
+			Password: request.Credentials.Password,
+		},
+	})
+
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	app.writeJSON(w, http.StatusAccepted, res)
+}
+
+func (app *main.Config) getRating(w http.ResponseWriter, r *http.Request) {
 	var request RequestPayload
 	err := app.readJSON(w, r, &request)
 	if err != nil {
@@ -119,15 +152,12 @@ func (app *Config) getRating(w http.ResponseWriter, r *http.Request) {
 	}
 	defer connection.Close()
 
-	c := product.NewSaleServiceClient(connection)
+	c := product.NewProductServiceClient(connection)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	res, err := c.GetRating(ctx, &product.Product{
-		Name:        request.Name,
-		Description: request.Description,
-		Stock:       int32(request.Stock),
-		Price:       int32(request.Price),
+	res, err := c.GetRating(ctx, &product.ProductIdentifier{
+		Name: request.Name,
 		Credentials: &product.Credentials{
 			Username: request.Credentials.Username,
 			Password: request.Credentials.Password,
@@ -143,15 +173,8 @@ func (app *Config) getRating(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetConnection() (*grpc.ClientConn, error) {
-	if conn == nil {
-		connection, err := grpc.Dial(
-			"localhost:50001",
-			grpc.WithTransportCredentials(insecure.NewCredentials()),
-			grpc.WithBlock())
+	connection, err := grpc.Dial(
+		"172.29.1.246:5001", grpc.WithTransportCredentials(insecure.NewCredentials()))
 
-		conn = connection
-		return conn, err
-	}
-
-	return conn, nil
+	return connection, err
 }
