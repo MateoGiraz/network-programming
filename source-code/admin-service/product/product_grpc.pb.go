@@ -18,230 +18,230 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// SaleServiceClient is the client API for SaleService service.
+// ProductServiceClient is the client API for ProductService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type SaleServiceClient interface {
+type ProductServiceClient interface {
 	CreateProduct(ctx context.Context, in *Product, opts ...grpc.CallOption) (*ProductResponse, error)
 	UpdateProduct(ctx context.Context, in *Product, opts ...grpc.CallOption) (*ProductResponse, error)
-	DeleteProduct(ctx context.Context, in *Product, opts ...grpc.CallOption) (*ProductResponse, error)
-	BuyProduct(ctx context.Context, in *Product, opts ...grpc.CallOption) (*ProductResponse, error)
-	GetRating(ctx context.Context, in *Product, opts ...grpc.CallOption) (*RatingResponse, error)
+	DeleteProduct(ctx context.Context, in *ProductIdentifier, opts ...grpc.CallOption) (*ProductResponse, error)
+	BuyProduct(ctx context.Context, in *ProductIdentifier, opts ...grpc.CallOption) (*ProductResponse, error)
+	GetRating(ctx context.Context, in *ProductIdentifier, opts ...grpc.CallOption) (*RatingResponse, error)
 }
 
-type saleServiceClient struct {
+type productServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewSaleServiceClient(cc grpc.ClientConnInterface) SaleServiceClient {
-	return &saleServiceClient{cc}
+func NewProductServiceClient(cc grpc.ClientConnInterface) ProductServiceClient {
+	return &productServiceClient{cc}
 }
 
-func (c *saleServiceClient) CreateProduct(ctx context.Context, in *Product, opts ...grpc.CallOption) (*ProductResponse, error) {
+func (c *productServiceClient) CreateProduct(ctx context.Context, in *Product, opts ...grpc.CallOption) (*ProductResponse, error) {
 	out := new(ProductResponse)
-	err := c.cc.Invoke(ctx, "/product.SaleService/CreateProduct", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/product.ProductService/CreateProduct", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *saleServiceClient) UpdateProduct(ctx context.Context, in *Product, opts ...grpc.CallOption) (*ProductResponse, error) {
+func (c *productServiceClient) UpdateProduct(ctx context.Context, in *Product, opts ...grpc.CallOption) (*ProductResponse, error) {
 	out := new(ProductResponse)
-	err := c.cc.Invoke(ctx, "/product.SaleService/UpdateProduct", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/product.ProductService/UpdateProduct", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *saleServiceClient) DeleteProduct(ctx context.Context, in *Product, opts ...grpc.CallOption) (*ProductResponse, error) {
+func (c *productServiceClient) DeleteProduct(ctx context.Context, in *ProductIdentifier, opts ...grpc.CallOption) (*ProductResponse, error) {
 	out := new(ProductResponse)
-	err := c.cc.Invoke(ctx, "/product.SaleService/DeleteProduct", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/product.ProductService/DeleteProduct", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *saleServiceClient) BuyProduct(ctx context.Context, in *Product, opts ...grpc.CallOption) (*ProductResponse, error) {
+func (c *productServiceClient) BuyProduct(ctx context.Context, in *ProductIdentifier, opts ...grpc.CallOption) (*ProductResponse, error) {
 	out := new(ProductResponse)
-	err := c.cc.Invoke(ctx, "/product.SaleService/BuyProduct", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/product.ProductService/BuyProduct", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *saleServiceClient) GetRating(ctx context.Context, in *Product, opts ...grpc.CallOption) (*RatingResponse, error) {
+func (c *productServiceClient) GetRating(ctx context.Context, in *ProductIdentifier, opts ...grpc.CallOption) (*RatingResponse, error) {
 	out := new(RatingResponse)
-	err := c.cc.Invoke(ctx, "/product.SaleService/GetRating", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/product.ProductService/GetRating", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// SaleServiceServer is the server API for SaleService service.
-// All implementations must embed UnimplementedSaleServiceServer
+// ProductServiceServer is the server API for ProductService service.
+// All implementations must embed UnimplementedProductServiceServer
 // for forward compatibility
-type SaleServiceServer interface {
+type ProductServiceServer interface {
 	CreateProduct(context.Context, *Product) (*ProductResponse, error)
 	UpdateProduct(context.Context, *Product) (*ProductResponse, error)
-	DeleteProduct(context.Context, *Product) (*ProductResponse, error)
-	BuyProduct(context.Context, *Product) (*ProductResponse, error)
-	GetRating(context.Context, *Product) (*RatingResponse, error)
-	mustEmbedUnimplementedSaleServiceServer()
+	DeleteProduct(context.Context, *ProductIdentifier) (*ProductResponse, error)
+	BuyProduct(context.Context, *ProductIdentifier) (*ProductResponse, error)
+	GetRating(context.Context, *ProductIdentifier) (*RatingResponse, error)
+	mustEmbedUnimplementedProductServiceServer()
 }
 
-// UnimplementedSaleServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedSaleServiceServer struct {
+// UnimplementedProductServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedProductServiceServer struct {
 }
 
-func (UnimplementedSaleServiceServer) CreateProduct(context.Context, *Product) (*ProductResponse, error) {
+func (UnimplementedProductServiceServer) CreateProduct(context.Context, *Product) (*ProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateProduct not implemented")
 }
-func (UnimplementedSaleServiceServer) UpdateProduct(context.Context, *Product) (*ProductResponse, error) {
+func (UnimplementedProductServiceServer) UpdateProduct(context.Context, *Product) (*ProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateProduct not implemented")
 }
-func (UnimplementedSaleServiceServer) DeleteProduct(context.Context, *Product) (*ProductResponse, error) {
+func (UnimplementedProductServiceServer) DeleteProduct(context.Context, *ProductIdentifier) (*ProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteProduct not implemented")
 }
-func (UnimplementedSaleServiceServer) BuyProduct(context.Context, *Product) (*ProductResponse, error) {
+func (UnimplementedProductServiceServer) BuyProduct(context.Context, *ProductIdentifier) (*ProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BuyProduct not implemented")
 }
-func (UnimplementedSaleServiceServer) GetRating(context.Context, *Product) (*RatingResponse, error) {
+func (UnimplementedProductServiceServer) GetRating(context.Context, *ProductIdentifier) (*RatingResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRating not implemented")
 }
-func (UnimplementedSaleServiceServer) mustEmbedUnimplementedSaleServiceServer() {}
+func (UnimplementedProductServiceServer) mustEmbedUnimplementedProductServiceServer() {}
 
-// UnsafeSaleServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to SaleServiceServer will
+// UnsafeProductServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ProductServiceServer will
 // result in compilation errors.
-type UnsafeSaleServiceServer interface {
-	mustEmbedUnimplementedSaleServiceServer()
+type UnsafeProductServiceServer interface {
+	mustEmbedUnimplementedProductServiceServer()
 }
 
-func RegisterSaleServiceServer(s grpc.ServiceRegistrar, srv SaleServiceServer) {
-	s.RegisterService(&SaleService_ServiceDesc, srv)
+func RegisterProductServiceServer(s grpc.ServiceRegistrar, srv ProductServiceServer) {
+	s.RegisterService(&ProductService_ServiceDesc, srv)
 }
 
-func _SaleService_CreateProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ProductService_CreateProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Product)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SaleServiceServer).CreateProduct(ctx, in)
+		return srv.(ProductServiceServer).CreateProduct(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/product.SaleService/CreateProduct",
+		FullMethod: "/product.ProductService/CreateProduct",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SaleServiceServer).CreateProduct(ctx, req.(*Product))
+		return srv.(ProductServiceServer).CreateProduct(ctx, req.(*Product))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SaleService_UpdateProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ProductService_UpdateProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Product)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SaleServiceServer).UpdateProduct(ctx, in)
+		return srv.(ProductServiceServer).UpdateProduct(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/product.SaleService/UpdateProduct",
+		FullMethod: "/product.ProductService/UpdateProduct",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SaleServiceServer).UpdateProduct(ctx, req.(*Product))
+		return srv.(ProductServiceServer).UpdateProduct(ctx, req.(*Product))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SaleService_DeleteProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Product)
+func _ProductService_DeleteProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductIdentifier)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SaleServiceServer).DeleteProduct(ctx, in)
+		return srv.(ProductServiceServer).DeleteProduct(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/product.SaleService/DeleteProduct",
+		FullMethod: "/product.ProductService/DeleteProduct",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SaleServiceServer).DeleteProduct(ctx, req.(*Product))
+		return srv.(ProductServiceServer).DeleteProduct(ctx, req.(*ProductIdentifier))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SaleService_BuyProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Product)
+func _ProductService_BuyProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductIdentifier)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SaleServiceServer).BuyProduct(ctx, in)
+		return srv.(ProductServiceServer).BuyProduct(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/product.SaleService/BuyProduct",
+		FullMethod: "/product.ProductService/BuyProduct",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SaleServiceServer).BuyProduct(ctx, req.(*Product))
+		return srv.(ProductServiceServer).BuyProduct(ctx, req.(*ProductIdentifier))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SaleService_GetRating_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Product)
+func _ProductService_GetRating_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductIdentifier)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SaleServiceServer).GetRating(ctx, in)
+		return srv.(ProductServiceServer).GetRating(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/product.SaleService/GetRating",
+		FullMethod: "/product.ProductService/GetRating",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SaleServiceServer).GetRating(ctx, req.(*Product))
+		return srv.(ProductServiceServer).GetRating(ctx, req.(*ProductIdentifier))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// SaleService_ServiceDesc is the grpc.ServiceDesc for SaleService service.
+// ProductService_ServiceDesc is the grpc.ServiceDesc for ProductService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var SaleService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "product.SaleService",
-	HandlerType: (*SaleServiceServer)(nil),
+var ProductService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "product.ProductService",
+	HandlerType: (*ProductServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "CreateProduct",
-			Handler:    _SaleService_CreateProduct_Handler,
+			Handler:    _ProductService_CreateProduct_Handler,
 		},
 		{
 			MethodName: "UpdateProduct",
-			Handler:    _SaleService_UpdateProduct_Handler,
+			Handler:    _ProductService_UpdateProduct_Handler,
 		},
 		{
 			MethodName: "DeleteProduct",
-			Handler:    _SaleService_DeleteProduct_Handler,
+			Handler:    _ProductService_DeleteProduct_Handler,
 		},
 		{
 			MethodName: "BuyProduct",
-			Handler:    _SaleService_BuyProduct_Handler,
+			Handler:    _ProductService_BuyProduct_Handler,
 		},
 		{
 			MethodName: "GetRating",
-			Handler:    _SaleService_GetRating_Handler,
+			Handler:    _ProductService_GetRating_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -8,8 +8,7 @@ import (
 
 const webPort = "80"
 
-type Config struct {
-}
+type Config struct{}
 
 func main() {
 	app := Config{}

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"log"
 	"net/http"
 	"time"
@@ -27,7 +28,7 @@ type Credentials struct {
 type ProductPayloadFunc func(ctx context.Context, in *product.Product, opts ...grpc.CallOption) (*product.ProductResponse, error)
 type ProductIdentifierPayloadFunc func(ctx context.Context, in *product.ProductIdentifier, opts ...grpc.CallOption) (*product.ProductResponse, error)
 
-func (app *main.Config) createProduct(w http.ResponseWriter, r *http.Request) {
+func (app *Config) createProduct(w http.ResponseWriter, r *http.Request) {
 	connection, err := GetConnection()
 	if err != nil {
 		app.errorJSON(w, err)
@@ -40,7 +41,7 @@ func (app *main.Config) createProduct(w http.ResponseWriter, r *http.Request) {
 	app.HandleProductRequest(w, r, c.CreateProduct)
 }
 
-func (app *main.Config) updateProduct(w http.ResponseWriter, r *http.Request) {
+func (app *Config) updateProduct(w http.ResponseWriter, r *http.Request) {
 	connection, err := GetConnection()
 	if err != nil {
 		app.errorJSON(w, err)
@@ -52,7 +53,7 @@ func (app *main.Config) updateProduct(w http.ResponseWriter, r *http.Request) {
 	app.HandleProductRequest(w, r, c.UpdateProduct)
 }
 
-func (app *main.Config) deleteProduct(w http.ResponseWriter, r *http.Request) {
+func (app *Config) deleteProduct(w http.ResponseWriter, r *http.Request) {
 	connection, err := GetConnection()
 	if err != nil {
 		app.errorJSON(w, err)
@@ -64,7 +65,7 @@ func (app *main.Config) deleteProduct(w http.ResponseWriter, r *http.Request) {
 	app.HandleProductIdentifierRequest(w, r, c.DeleteProduct)
 }
 
-func (app *main.Config) buyProduct(w http.ResponseWriter, r *http.Request) {
+func (app *Config) buyProduct(w http.ResponseWriter, r *http.Request) {
 	connection, err := GetConnection()
 	if err != nil {
 		app.errorJSON(w, err)
@@ -76,7 +77,7 @@ func (app *main.Config) buyProduct(w http.ResponseWriter, r *http.Request) {
 	app.HandleProductIdentifierRequest(w, r, c.BuyProduct)
 }
 
-func (app *main.Config) HandleProductRequest(w http.ResponseWriter, r *http.Request, grpcFunc ProductPayloadFunc) {
+func (app *Config) HandleProductRequest(w http.ResponseWriter, r *http.Request, grpcFunc ProductPayloadFunc) {
 	var request RequestPayload
 	err := app.readJSON(w, r, &request)
 	if err != nil {
@@ -101,14 +102,14 @@ func (app *main.Config) HandleProductRequest(w http.ResponseWriter, r *http.Requ
 	})
 
 	if err != nil {
-		app.errorJSON(w, err)
+		app.errorJSON(w, errors.New(res.Result))
 		return
 	}
 
 	app.writeJSON(w, http.StatusAccepted, res)
 }
 
-func (app *main.Config) HandleProductIdentifierRequest(w http.ResponseWriter, r *http.Request, grpcFunc ProductIdentifierPayloadFunc) {
+func (app *Config) HandleProductIdentifierRequest(w http.ResponseWriter, r *http.Request, grpcFunc ProductIdentifierPayloadFunc) {
 	var request RequestPayload
 	err := app.readJSON(w, r, &request)
 	if err != nil {
@@ -130,14 +131,14 @@ func (app *main.Config) HandleProductIdentifierRequest(w http.ResponseWriter, r 
 	})
 
 	if err != nil {
-		app.errorJSON(w, err)
+		app.errorJSON(w, errors.New(res.Result))
 		return
 	}
 
 	app.writeJSON(w, http.StatusAccepted, res)
 }
 
-func (app *main.Config) getRating(w http.ResponseWriter, r *http.Request) {
+func (app *Config) getRating(w http.ResponseWriter, r *http.Request) {
 	var request RequestPayload
 	err := app.readJSON(w, r, &request)
 	if err != nil {
@@ -165,7 +166,7 @@ func (app *main.Config) getRating(w http.ResponseWriter, r *http.Request) {
 	})
 
 	if err != nil {
-		app.errorJSON(w, err)
+		app.errorJSON(w, errors.New(string(res.Code)))
 		return
 	}
 

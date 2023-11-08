@@ -12,6 +12,8 @@ FROM alpine:latest
 
 RUN mkdir /app
 
+EXPOSE 80
+
 COPY --from=builder /app/adminServiceApp /app
 
 CMD ["/app/adminServiceApp"]
