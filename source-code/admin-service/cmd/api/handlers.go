@@ -112,7 +112,7 @@ func (app *Config) HandleProductRequest(w http.ResponseWriter, r *http.Request, 
 }
 
 func (app *Config) HandleProductIdentifierRequest(w http.ResponseWriter, r *http.Request, grpcFunc ProductIdentifierPayloadFunc) {
-	var request RequestPayload
+	var request Credentials
 	err := app.readJSON(w, r, &request)
 	if err != nil {
 		app.errorJSON(w, err)
@@ -134,8 +134,8 @@ func (app *Config) HandleProductIdentifierRequest(w http.ResponseWriter, r *http
 	res, err := grpcFunc(ctx, &product.ProductIdentifier{
 		Name: name,
 		Credentials: &product.Credentials{
-			Username: request.Credentials.Username,
-			Password: request.Credentials.Password,
+			Username: request.Username,
+			Password: request.Password,
 		},
 	})
 
@@ -148,12 +148,22 @@ func (app *Config) HandleProductIdentifierRequest(w http.ResponseWriter, r *http
 }
 
 func (app *Config) getRating(w http.ResponseWriter, r *http.Request) {
-	var request RequestPayload
+	var request Credentials
 	err := app.readJSON(w, r, &request)
 	if err != nil {
 		app.errorJSON(w, err)
 		return
 	}
+
+	parts := strings.Split(r.URL.Path, "/")
+	if len(parts) >= 3 {
+		id := parts[2]
+		fmt.Printf("ID: %s\n", id)
+	} else {
+		http.Error(w, "Invalid URL", http.StatusBadRequest)
+	}
+
+	name := parts[2]
 
 	connection, err := GetConnection()
 	if err != nil {
@@ -167,10 +177,10 @@ func (app *Config) getRating(w http.ResponseWriter, r *http.Request) {
 	defer cancel()
 
 	res, err := c.GetRating(ctx, &product.ProductIdentifier{
-		Name: request.Name,
+		Name: name,
 		Credentials: &product.Credentials{
-			Username: request.Credentials.Username,
-			Password: request.Credentials.Password,
+			Username: request.Username,
+			Password: request.Password,
 		},
 	})
 

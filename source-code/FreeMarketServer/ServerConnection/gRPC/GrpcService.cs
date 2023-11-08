@@ -212,8 +212,35 @@ public class GrpcService : ProductService.ProductServiceBase
 
     public override Task<RatingResponse> GetRating(ProductIdentifier request, ServerCallContext context)
     {
-        return Task.FromResult(new RatingResponse()
+        var productController = new ProductController();
+        var ownerController = new OwnerController();
+        
+        try
         {
-        });
+            ownerController.LogIn(request.Credentials.Username, request.Credentials.Password);
+        }
+        catch (AuthenticatorException)
+        {
+            return Task.FromResult(new RatingResponse()
+            {
+                Code = 401,
+                Message = "Wrong username or password"
+            });
+        }
+        
+        var product = productController.GetProduct(request.Name);
+        var response = new RatingResponse();
+        
+        foreach (var rating in product.Ratings)
+        {
+                response.Result.Add(new Rating()
+                {
+                    Comment = rating.Comment,
+                    Score = rating.Score
+                });
+        }
+
+        response.Code = 200;
+        return Task.FromResult(response);
     }
 }

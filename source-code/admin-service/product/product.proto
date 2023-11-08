@@ -36,6 +36,7 @@ message ProductResponse {
 message RatingResponse {
     int32 code = 1;
     repeated Rating result = 2;
+    string message = 3;
 }
 
 service ProductService {
