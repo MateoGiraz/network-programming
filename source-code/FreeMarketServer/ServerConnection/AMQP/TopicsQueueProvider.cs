@@ -12,7 +12,7 @@ namespace ServerConnection.AMQP
         private readonly IModel channel;
         public TopicsQueueProvider()
         {
-            channel = new ConnectionFactory() { HostName = "localhost" }.CreateConnection().CreateModel();
+            channel = new ConnectionFactory() { HostName = "192.168.1.80" }.CreateConnection().CreateModel();
             channel.ExchangeDeclare(exchange: "mail-exchange", ExchangeType.Topic, true);
         }
 

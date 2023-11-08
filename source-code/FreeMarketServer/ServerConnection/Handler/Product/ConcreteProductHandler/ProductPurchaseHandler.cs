@@ -7,11 +7,13 @@ namespace ServerConnection.Handler.Product.ConcreteProductHandler;
 
 public class ProductPurchaseHandler : ProductHandler
 {
-    private struct Sale
+    public struct Sale
     {
         public string User { get; set; }
         public string Product { get; set; }
     }
+
+    private static TopicsQueueProvider? topicsQueueProvider;
 
     protected override async Task HandleProductSpecificOperationAsync()
     {
@@ -19,10 +21,8 @@ public class ProductPurchaseHandler : ProductHandler
         var purchasedProduct = productController.GetProduct(ProductDto!.Name);
         productController.BuyProduct(purchasedProduct, 1);
         
-        var grpcProvider = new GrpcProvider();
-        var (hasError, message) = await grpcProvider.CreateSaleAsync(purchasedProduct, UserDto.UserName);
+        var (hasError, message) = CreateProductSale(purchasedProduct, UserDto.UserName);
         
-        Console.WriteLine(message);
         if (hasError)
         {
             ResponseDto!.StatusCode = 500;
@@ -40,10 +40,37 @@ public class ProductPurchaseHandler : ProductHandler
         };
 
         var saleJson = JsonSerializer.Serialize(sale);
-        var mailServiceResult = await topicsQueueProvider!.SendMessage(saleJson);
+        var mailServiceResult = SendProductSale(saleJson);
 
         Console.WriteLine(mailServiceResult ? "Sent purchase mail to user {0}" : "Failed to send purchase mail to user {0}",
             sale.User);
 
+    }
+
+    public static (bool, string) CreateProductSale(CoreBusiness.Product product, string username)
+    {
+        var task = CreateProductSaleAsync(product, username);
+        task.Wait();
+        return task.Result;
+    }
+    
+    private static async Task<(bool, string)> CreateProductSaleAsync(CoreBusiness.Product product, string username)
+    {
+        var grpcProvider = new GrpcProvider();
+        var res = await grpcProvider.CreateSaleAsync(product, username);
+        return res;
+    }
+    
+    public static bool SendProductSale(string jsonSale)
+    {
+        var task = SendProductSaleAsync(jsonSale);
+        task.Wait();
+        return task.Result;
+    }
+    
+    private static async Task<bool> SendProductSaleAsync(string jsonSale)
+    {
+        topicsQueueProvider ??= new TopicsQueueProvider();
+        return await topicsQueueProvider!.SendMessage(jsonSale);
     }
 }

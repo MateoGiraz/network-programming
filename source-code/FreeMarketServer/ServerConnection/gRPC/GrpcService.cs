@@ -1,7 +1,8 @@
+using System.Text.Json;
 using BusinessLogic;
-using CoreBusiness;
 using Grpc.Core;
 using protos.product;
+using ServerConnection.Handler.Product.ConcreteProductHandler;
 using Product = protos.product.Product;
 
 namespace ServerConnection.gRPC;
@@ -10,11 +11,61 @@ public class GrpcService : ProductService.ProductServiceBase
 {
     public override Task<ProductResponse> BuyProduct(ProductIdentifier request, ServerCallContext context)
     {
+        var productController = new ProductController();
+        var ownerController = new OwnerController();
+        
+        try
+        {
+            ownerController.LogIn(request.Credentials.Username, request.Credentials.Password);
+        }
+        catch (AuthenticatorException)
+        {
+            return Task.FromResult(new ProductResponse()
+            {
+                Code = 401,
+                Result = "Wrong username or password"
+            });
+        }
+
+        var productToBuy = productController.GetProduct(request.Name);
+        try
+        {
+            productController.BuyProduct(productToBuy, 1);
+        }
+        catch (Exception e)
+        {
+            return Task.FromResult(new ProductResponse()
+            {
+                Code = 401,
+                Result = e.Message
+            });
+        }
+
+        var (hasError, message) =  ProductPurchaseHandler.CreateProductSale(productToBuy, request.Credentials.Username);
+        if (hasError)
+        {
+            return Task.FromResult(new ProductResponse()
+            {
+                Code = 500,
+                Result = message
+            });
+        }
+        
+        var sale = new ProductPurchaseHandler.Sale()
+        {
+            User = request.Credentials.Username,
+            Product = request.Name
+        };
+        var saleJson = JsonSerializer.Serialize(sale);
+        var mailServiceResult =  ProductPurchaseHandler.SendProductSale(saleJson);
+        
+        Console.WriteLine(mailServiceResult ? "Sent purchase mail to user {0}" : "Failed to send purchase mail to user {0}",
+            sale.User);
         
         return Task.FromResult(new ProductResponse()
         {
             Code = 200,
-            Result = "Hello from rpc"
+            Result = $"Bought product {productToBuy.Name}"
         });
     }
 
@@ -46,7 +97,18 @@ public class GrpcService : ProductService.ProductServiceBase
             Owner = ownerController.GetOwner(request.Credentials.Username)
         };
 
-        productController.AddProduct(productToBeCreated);
+        try
+        {
+            productController.AddProduct(productToBeCreated);
+        }
+        catch (Exception e)
+        {
+            return Task.FromResult(new ProductResponse()
+            {
+                Code = 401,
+                Result = e.Message
+            });
+        }
         
         return Task.FromResult(new ProductResponse()
         {
@@ -82,8 +144,20 @@ public class GrpcService : ProductService.ProductServiceBase
             ImageRoute = "./default-image.jpeg",
             Owner = ownerController.GetOwner(request.Credentials.Username)
         };
-        
-        productController.UpdateProduct(request.Name, ownerController.GetOwner(request.Credentials.Username), productToBeEdited);
+
+        try
+        {
+            productController.UpdateProduct(request.Name, ownerController.GetOwner(request.Credentials.Username),
+                productToBeEdited);
+        }
+        catch (Exception e)
+        {
+            return Task.FromResult(new ProductResponse()
+            {
+                Code = 401,
+                Result = e.Message
+            });
+        }
         
         return Task.FromResult(new ProductResponse()
         {
@@ -115,8 +189,19 @@ public class GrpcService : ProductService.ProductServiceBase
             Name = request!.Name,
             Owner = ownerController.GetOwner(request.Credentials.Username)
         };
-        
-        productController.RemoveProduct(toBeDeletedProduct, toBeDeletedProduct.Owner);
+
+        try
+        {
+            productController.RemoveProduct(toBeDeletedProduct, toBeDeletedProduct.Owner);
+        }        
+        catch (Exception e)
+        {
+            return Task.FromResult(new ProductResponse()
+            {
+                Code = 401,
+                Result = e.Message
+            });
+        }
         
         return Task.FromResult(new ProductResponse()
         {

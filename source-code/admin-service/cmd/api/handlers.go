@@ -3,8 +3,10 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/ORT-PDR/M6C_241195_256345_231355/admin-service/product"
@@ -117,13 +119,20 @@ func (app *Config) HandleProductIdentifierRequest(w http.ResponseWriter, r *http
 		return
 	}
 
-	log.Print(request)
+	parts := strings.Split(r.URL.Path, "/")
+	if len(parts) >= 3 {
+		id := parts[2]
+		fmt.Printf("ID: %s\n", id)
+	} else {
+		http.Error(w, "Invalid URL", http.StatusBadRequest)
+	}
 
+	name := parts[2]
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
 	res, err := grpcFunc(ctx, &product.ProductIdentifier{
-		Name: request.Name,
+		Name: name,
 		Credentials: &product.Credentials{
 			Username: request.Credentials.Username,
 			Password: request.Credentials.Password,
@@ -175,7 +184,7 @@ func (app *Config) getRating(w http.ResponseWriter, r *http.Request) {
 
 func GetConnection() (*grpc.ClientConn, error) {
 	connection, err := grpc.Dial(
-		"172.29.1.246:5001", grpc.WithTransportCredentials(insecure.NewCredentials()))
+		"192.168.1.80:5001", grpc.WithTransportCredentials(insecure.NewCredentials()))
 
 	return connection, err
 }

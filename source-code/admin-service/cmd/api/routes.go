@@ -23,11 +23,11 @@ func (app *Config) routes() http.Handler {
 
 	mux.Post("/product", app.createProduct)
 	mux.Put("/product", app.updateProduct)
-	mux.Delete("/product", app.deleteProduct)
+	mux.Delete("/product/{name}", app.deleteProduct)
 
-	mux.Post("/buy/{id}", app.buyProduct)
+	mux.Post("/buy/{name}", app.buyProduct)
 
-	mux.Get("/rating/{id}", app.getRating)
+	mux.Get("/rating/{name}", app.getRating)
 
 	return mux
 }

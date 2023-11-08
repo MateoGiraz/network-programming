@@ -15,14 +15,12 @@ namespace ServerConnection.Handler.Product
         internal UserDTO? UserDto;
         internal Dictionary<string, object>? ProductMap;
         internal NetworkStream stream;
-        internal TopicsQueueProvider? topicsQueueProvider;
 
         protected abstract Task HandleProductSpecificOperationAsync();
 
         internal async Task HandleAsync(NetworkStream networkStream, TopicsQueueProvider? _topicsQueueProvider = null)
         {
             stream = networkStream;
-            topicsQueueProvider = _topicsQueueProvider;
 
             try
             {
