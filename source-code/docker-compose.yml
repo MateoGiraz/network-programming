@@ -37,7 +37,7 @@ services:
       mode: replicated
       replicas: 1
     environment:
-      - GRPC_URL=192.168.1.80:5001
+      - GRPC_URL=192.168.1.10:5001
 
   rabbitmq:
     image: 'rabbitmq:3.9-management-alpine'

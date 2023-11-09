@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Common.Config;
 
 namespace ServerConnection.AMQP
 {
@@ -12,7 +13,10 @@ namespace ServerConnection.AMQP
         private readonly IModel channel;
         public TopicsQueueProvider()
         {
-            channel = new ConnectionFactory() { HostName = "192.168.1.80" }.CreateConnection().CreateModel();
+            ISettingsManager settingsManager = new SettingsManager();
+
+            var rabbitMQIpAddress = settingsManager.Get(ServerConfig.RabbitMQIpConfigKey);
+            channel = new ConnectionFactory() { HostName = rabbitMQIpAddress }.CreateConnection().CreateModel();
             channel.ExchangeDeclare(exchange: "mail-exchange", ExchangeType.Topic, true);
         }
 

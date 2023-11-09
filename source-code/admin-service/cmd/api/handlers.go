@@ -203,7 +203,7 @@ func GetConnection() (*grpc.ClientConn, error) {
 func getGrpcURL() string {
 	grpcURL := os.Getenv("GRPC_URL")
 	if grpcURL == "" {
-		grpcURL = "192.168.1.80:5001"
+		grpcURL = "192.168.1.10:5001"
 	}
 
 	return grpcURL

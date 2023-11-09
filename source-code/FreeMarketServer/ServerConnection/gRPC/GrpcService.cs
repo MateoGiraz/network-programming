@@ -227,17 +227,28 @@ public class GrpcService : ProductService.ProductServiceBase
                 Message = "Wrong username or password"
             });
         }
-        
-        var product = productController.GetProduct(request.Name);
+
         var response = new RatingResponse();
-        
-        foreach (var rating in product.Ratings)
+
+        try
         {
-                response.Result.Add(new Rating()
-                {
-                    Comment = rating.Comment,
-                    Score = rating.Score
-                });
+
+            var product = productController.GetProduct(request.Name);
+
+            foreach (var rating in product.Ratings)
+            {
+                    response.Result.Add(new Rating()
+                    {
+                        Comment = rating.Comment,
+                        Score = rating.Score
+                    });
+            }
+        }
+        catch (Exception e)
+        {
+            response.Code = 500;
+            response.Message = e.Message;
+            return Task.FromResult(response);
         }
 
         response.Code = 200;
