@@ -198,10 +198,10 @@ func (app *Config) getRating(w http.ResponseWriter, r *http.Request) {
 
 func (app *Config) GetConnection() (*grpc.ClientConn, error) {
 	var grpcURL string
-	if app.Server.URL == nil {
+	if app.Server.URL == "" {
 		grpcURL = getGrpcURL()
 	}
-	grpcURL = app.Server.URL.String()
+	grpcURL = app.Server.URL
 	connection, err := grpc.Dial(grpcURL, grpc.WithTransportCredentials(insecure.NewCredentials()))
 
 	return connection, err

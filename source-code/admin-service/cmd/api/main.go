@@ -17,7 +17,7 @@ type Config struct {
 }
 
 func main() {
-	app, err := loadConfig("./../../config.json")
+	app, err := loadConfig("./config.json")
 	if err != nil {
 		log.Panic(err)
 	}
@@ -36,13 +36,14 @@ func main() {
 
 func loadConfig(filename string) (*Config, error) {
 	var app Config
-	configFile, err := os.Open(filename)
+	configFile, err := os.ReadFile(filename)
 	if err != nil {
-		return Config{}, err
+		return &Config{}, err
 	}
-	defer configFile.Close()
 
-	jsonParser := json.NewDecoder(configFile)
-	err = jsonParser.Decode(&app)
+	err = json.Unmarshal(configFile, &app)
+	if err != nil {
+		return &Config{}, err
+	}
 	return &app, err
 }

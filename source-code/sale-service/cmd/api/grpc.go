@@ -37,9 +37,11 @@ func (s *SaleServer) CreateSale(ctx context.Context, req *sale.Sale) (*sale.Sale
 	return res, nil
 }
 
-func (app *Config) gRPCListen() {
-	grpcPort := getGrpcPort()
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", grpcPort))
+func (app *Config) gRPCListen(port string) {
+	if port == "" {
+		port = getGrpcPort()
+	}
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
 	if err != nil {
 		log.Panic(err)
 	}
@@ -47,7 +49,7 @@ func (app *Config) gRPCListen() {
 	s := grpc.NewServer()
 
 	sale.RegisterSaleServiceServer(s, &SaleServer{repo: app.repo})
-	log.Printf("gRPC server started on port %s", grpcPort)
+	log.Printf("gRPC server started on port %s", port)
 
 	if err := s.Serve(lis); err != nil {
 		log.Panic(err)

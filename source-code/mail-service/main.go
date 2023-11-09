@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -12,6 +13,12 @@ import (
 
 type Config struct {
 	Rabbit *amqp.Connection
+}
+
+type AppConfig struct {
+	RabbitMQ struct {
+		URL string `json:"url"`
+	}
 }
 
 func main() {
@@ -33,12 +40,15 @@ func main() {
 }
 
 func getRabbitURL() string {
-	rabbitURL := os.Getenv("RABBITMQ_URL")
-	if rabbitURL == "" {
-		rabbitURL = "amqp://guest:guest@rabbitmq"
+	app, err := loadConfig("./config.json")
+	if app.RabbitMQ.URL == "" || err != nil {
+		rabbitURL := os.Getenv("RABBITMQ_URL")
+		if rabbitURL == "" {
+			rabbitURL = "amqp://guest:guest@rabbitmq"
+		}
+		return rabbitURL
 	}
-
-	return rabbitURL
+	return app.RabbitMQ.URL
 }
 
 func connect(rabbitURL string) (*amqp.Connection, error) {
@@ -57,4 +67,18 @@ func connect(rabbitURL string) (*amqp.Connection, error) {
 		break
 	}
 	return connection, nil
+}
+
+func loadConfig(filename string) (*AppConfig, error) {
+	var app AppConfig
+	configFile, err := os.ReadFile(filename)
+	if err != nil {
+		return &AppConfig{}, err
+	}
+
+	err = json.Unmarshal(configFile, &app)
+	if err != nil {
+		return &AppConfig{}, err
+	}
+	return &app, err
 }
