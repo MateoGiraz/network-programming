@@ -1,17 +1,26 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 )
 
 const webPort = "80"
 
-type Config struct{}
+type Config struct {
+	Server struct {
+		URL string `json:"url"`
+	}
+}
 
 func main() {
-	app := Config{}
+	app, err := loadConfig("./../../config.json")
+	if err != nil {
+		log.Panic(err)
+	}
 
 	log.Println("starting service on port", webPort)
 	srv := &http.Server{
@@ -19,8 +28,21 @@ func main() {
 		Handler: app.routes(),
 	}
 
-	err := srv.ListenAndServe()
+	err = srv.ListenAndServe()
 	if err != nil {
 		log.Panic(err)
 	}
+}
+
+func loadConfig(filename string) (*Config, error) {
+	var app Config
+	configFile, err := os.Open(filename)
+	if err != nil {
+		return Config{}, err
+	}
+	defer configFile.Close()
+
+	jsonParser := json.NewDecoder(configFile)
+	err = jsonParser.Decode(&app)
+	return &app, err
 }

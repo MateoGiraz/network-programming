@@ -32,7 +32,7 @@ type ProductPayloadFunc func(ctx context.Context, in *product.Product, opts ...g
 type ProductIdentifierPayloadFunc func(ctx context.Context, in *product.ProductIdentifier, opts ...grpc.CallOption) (*product.ProductResponse, error)
 
 func (app *Config) createProduct(w http.ResponseWriter, r *http.Request) {
-	connection, err := GetConnection()
+	connection, err := app.GetConnection()
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -45,7 +45,7 @@ func (app *Config) createProduct(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *Config) updateProduct(w http.ResponseWriter, r *http.Request) {
-	connection, err := GetConnection()
+	connection, err := app.GetConnection()
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -57,7 +57,7 @@ func (app *Config) updateProduct(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *Config) deleteProduct(w http.ResponseWriter, r *http.Request) {
-	connection, err := GetConnection()
+	connection, err := app.GetConnection()
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -69,7 +69,7 @@ func (app *Config) deleteProduct(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *Config) buyProduct(w http.ResponseWriter, r *http.Request) {
-	connection, err := GetConnection()
+	connection, err := app.GetConnection()
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -88,7 +88,10 @@ func (app *Config) HandleProductRequest(w http.ResponseWriter, r *http.Request, 
 		return
 	}
 
-	log.Print(request)
+	if request.Name == "" || request.Description == "" || request.Stock == 0 || request.Price == 0 {
+		app.errorJSON(w, errors.New("missing required fields"))
+		return
+	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
@@ -166,7 +169,7 @@ func (app *Config) getRating(w http.ResponseWriter, r *http.Request) {
 
 	name := parts[2]
 
-	connection, err := GetConnection()
+	connection, err := app.GetConnection()
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -193,8 +196,12 @@ func (app *Config) getRating(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, res)
 }
 
-func GetConnection() (*grpc.ClientConn, error) {
-	grpcURL := getGrpcURL()
+func (app *Config) GetConnection() (*grpc.ClientConn, error) {
+	var grpcURL string
+	if app.Server.URL == nil {
+		grpcURL = getGrpcURL()
+	}
+	grpcURL = app.Server.URL.String()
 	connection, err := grpc.Dial(grpcURL, grpc.WithTransportCredentials(insecure.NewCredentials()))
 
 	return connection, err
