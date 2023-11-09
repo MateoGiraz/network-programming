@@ -9,6 +9,8 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+    environment:
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq
 
   sale-service:
     build:
@@ -21,6 +23,8 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+    environment:
+      - GRPC_PORT=50001
 
   admin-service:
     build:
@@ -32,6 +36,8 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+    environment:
+      - GRPC_URL=192.168.1.80:5001
 
   rabbitmq:
     image: 'rabbitmq:3.9-management-alpine'

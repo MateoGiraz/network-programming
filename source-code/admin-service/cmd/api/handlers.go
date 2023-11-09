@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -193,8 +194,17 @@ func (app *Config) getRating(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetConnection() (*grpc.ClientConn, error) {
-	connection, err := grpc.Dial(
-		"192.168.1.80:5001", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	grpcURL := getGrpcURL()
+	connection, err := grpc.Dial(grpcURL, grpc.WithTransportCredentials(insecure.NewCredentials()))
 
 	return connection, err
+}
+
+func getGrpcURL() string {
+	grpcURL := os.Getenv("GRPC_URL")
+	if grpcURL == "" {
+		grpcURL = "192.168.1.80:5001"
+	}
+
+	return grpcURL
 }

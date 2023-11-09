@@ -3,15 +3,15 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
+	"net"
+	"os"
+
 	"github.com/ORT-PDR/M6C_241195_256345_231355/sale-service/data"
 	repo "github.com/ORT-PDR/M6C_241195_256345_231355/sale-service/data/repository"
 	"github.com/ORT-PDR/M6C_241195_256345_231355/sale-service/sale"
 	"google.golang.org/grpc"
-	"log"
-	"net"
 )
-
-const gRpcPort = "50001"
 
 type SaleServer struct {
 	sale.UnimplementedSaleServiceServer
@@ -38,7 +38,8 @@ func (s *SaleServer) CreateSale(ctx context.Context, req *sale.Sale) (*sale.Sale
 }
 
 func (app *Config) gRPCListen() {
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", gRpcPort))
+	grpcPort := getGrpcPort()
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", grpcPort))
 	if err != nil {
 		log.Panic(err)
 	}
@@ -46,10 +47,19 @@ func (app *Config) gRPCListen() {
 	s := grpc.NewServer()
 
 	sale.RegisterSaleServiceServer(s, &SaleServer{repo: app.repo})
-	log.Printf("gRPC server started on port %s", gRpcPort)
+	log.Printf("gRPC server started on port %s", grpcPort)
 
 	if err := s.Serve(lis); err != nil {
 		log.Panic(err)
 	}
 
+}
+
+func getGrpcPort() string {
+	grpcPort := os.Getenv("GRPC_PORT")
+	if grpcPort == "" {
+		grpcPort = "50001"
+	}
+
+	return grpcPort
 }
