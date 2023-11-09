@@ -3,13 +3,14 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	repo "github.com/ORT-PDR/M6C_241195_256345_231355/sale-service/data/repository"
 	"log"
 	"net/http"
 	"os"
+
+	repo "github.com/ORT-PDR/M6C_241195_256345_231355/sale-service/data/repository"
 )
 
-const webPort = "80"
+const webPort = "8080"
 
 type Config struct {
 	repo repo.SaleRepository
@@ -19,6 +20,7 @@ type AppConfig struct {
 	Grpc struct {
 		Port string `json:"port"`
 	}
+	Port string `json:"port"`
 }
 
 func main() {
@@ -27,19 +29,23 @@ func main() {
 	}
 
 	appConfig, err := loadConfig("./config.json")
-	var port string
+	var grpcPort string
 
 	if err != nil {
-		port = ""
+		grpcPort = ""
 	} else {
-		port = appConfig.Grpc.Port
+		grpcPort = appConfig.Grpc.Port
 	}
 
-	go app.gRPCListen(port)
+	go app.gRPCListen(grpcPort)
 
-	log.Println("starting service on port", webPort)
+	port := webPort
+	if appConfig.Port != "" {
+		port = appConfig.Port
+	}
+	log.Println("starting service on port", port)
 	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%s", webPort),
+		Addr:    fmt.Sprintf(":%s", port),
 		Handler: app.routes(),
 	}
 

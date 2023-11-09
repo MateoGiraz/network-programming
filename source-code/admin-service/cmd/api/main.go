@@ -8,12 +8,13 @@ import (
 	"os"
 )
 
-const webPort = "80"
+const webPort = "8081"
 
 type Config struct {
 	Server struct {
 		URL string `json:"url"`
 	}
+	Port string `json:"port"`
 }
 
 func main() {
@@ -22,9 +23,14 @@ func main() {
 		log.Panic(err)
 	}
 
-	log.Println("starting service on port", webPort)
+	port := webPort
+	if app.Port != "" {
+		port = app.Port
+	}
+
+	log.Println("starting service on port", port)
 	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%s", webPort),
+		Addr:    fmt.Sprintf(":%s", port),
 		Handler: app.routes(),
 	}
 
