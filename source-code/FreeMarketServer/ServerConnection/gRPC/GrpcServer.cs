@@ -1,4 +1,5 @@
 using System.Net;
+using Common.Config;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -11,13 +12,17 @@ public class GrpcServer
 {
     public void Listen()
     {
+        ISettingsManager settingsManager = new SettingsManager();
+
+        var serverGrpcPortConfigKey = int.Parse(settingsManager.Get(ServerConfig.ServerGrpcPortConfigKey));
+
         Console.WriteLine("Listening as gRPC server...");
         
         var builder = WebApplication.CreateBuilder();
-        
+
         builder.WebHost.ConfigureKestrel(options =>
         {
-            options.Listen(IPAddress.Any, 5001, listenOptions =>
+            options.Listen(IPAddress.Any, serverGrpcPortConfigKey, listenOptions =>
             {
                 listenOptions.Protocols = HttpProtocols.Http2;
             });

@@ -11,7 +11,7 @@ import (
 const webPort = "8081"
 
 type Config struct {
-	Server struct {
+	GrpcServer struct {
 		URL string `json:"url"`
 	}
 	Port string `json:"port"`
