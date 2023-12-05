@@ -43,7 +43,7 @@ Finalmente, el proyecto Common es una biblioteca de clases donde se encuentra to
 
 ### NetworkHelper
 
-	NetworkHelper implementa la funcionalidad básica para enviar y recibir mensajes, hace uso de dos métodos principales. 
+NetworkHelper implementa la funcionalidad básica para enviar y recibir mensajes, hace uso de dos métodos principales. 
 
 SendMessage recibe un mensaje en bytes y un socket, Este método permite enviar un mensaje a través de un socket. El método envía el mensaje, y si no pudiera hacerlo completamente, sigue enviando la información faltante en trozos  hasta que se haya enviado todo el mensaje.
 
