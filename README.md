@@ -1,4 +1,4 @@
-> :warning: **Docs yet not updated for three last services: sale-service, admin-service, mail-serive:** will be updated on 11/12
+> :warning: **Docs yet not updated for three last services: sale-service, admin-service, mail-serive:** will be updated on 23/12
 
 
 # Alcance de la Aplicación
