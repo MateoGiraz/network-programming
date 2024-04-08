@@ -1,6 +1,3 @@
-> :warning: **Docs yet not updated for three last services: sale-service, admin-service, mail-serive:** will be updated on 23/12
-
-
 # Alcance de la Aplicación
 
 La aplicación FreeMarket, compuesta por los módulos FreeMarketServer y FreeMarketClient, ambos comunicados a través del módulo Common, permite a los usuarios interactuar con un mercado virtual a través de una interfaz de consola. Su propósito es proporcionar una plataforma donde los usuarios puedan gestionar y acceder a productos en el sistema. La aplicación permite el registro e inicio de sesión de usuarios, y para estos, la compra, creación, borrado, edición, calificación y consulta de productos. Se permite registrar y consultar imágenes de los diferentes productos. Se permite el acceso de diferentes clientes simultáneos a la aplicación, garantizando el correcto acceso a los recursos compartidos, manteniendo los datos con integridad en todo momento.
